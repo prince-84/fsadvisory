@@ -1508,3 +1508,71 @@ php artisan optimize:clear
    - For all project pages (e.g. Wadeem Gardens, managed from Projects), communities, and city pages, the Content tab now displays only the original single Summernote editor ("Content (Summernote Editor)").
 2. **Dynamic Custom Pages Retain Short & Long Content**:
    - The dual editor UI (Short Content + Long Content) is only active when creating dynamic pages via "Add Page" and editing custom dynamic pages. Standard projects retain their original clean single-editor CMS workflow.
+
+
+### Global Favicon Consistency (Frontend, CMS, `sitemap.xml` & `view-source:`)
+
+**Files changed:**
+- `public/favicon.ico`
+- `routes/web.php`
+- `resources/views/admin/layouts/app.blade.php`
+- `resources/views/admin/auth/login.blade.php`
+- `resources/views/layouts/app.blade.php`
+- `resources/views/dynamic-page.blade.php`
+
+**Updates:**
+1. **CMS Admin Panel & Login Favicon**:
+   - Added `<link rel="icon" type="image/png" href="{{ asset('favicon.png') }}?v=...">`, `<link rel="shortcut icon">`, `<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v=...">`, and `<link rel="apple-touch-icon">` inside `<head>` of `resources/views/admin/layouts/app.blade.php` and `resources/views/admin/auth/login.blade.php`.
+   - Replaced the old `H` badge inside `.adm-brand-mark` in the CMS sidebar with `public/favicon.png`.
+2. **Valid `.ico` Binary & Browser Cache Refresh for `sitemap.xml` and `view-source:`**:
+   - Converted `public/favicon.ico` into a valid Windows `.ico` container embedding the 32×32 `public/favicon.png` image so non-HTML tabs (`sitemap.xml`, sub-sitemaps, and `view-source:`) decode `/favicon.ico` properly.
+   - Added a one-time session `fetch('/favicon.ico', { cache: 'reload' })` and fallback routes in `routes/web.php` so browsers immediately evict any previously cached default/old `/favicon.ico`.
+
+
+### Dynamic Page Creation: Prevent Auto-Selection & Auto-Saving of Unselected Cards (Project Highlights & Project Cards)
+
+**Files changed:**
+- `app/Http/Controllers/Admin/PageController.php`
+- `app/Http/Controllers/Admin/ProjectController.php`
+- `app/Services/PageBlueprintService.php`
+- `resources/views/admin/pages/edit.blade.php`
+- `resources/views/admin/pages/index.blade.php`
+
+**Updates:**
+1. **Unselected Cards Stay Unselected on Add Page & Save**:
+   - In `PageController@store` and `PageController@edit`, dynamic pages created via "Add Page" now keep all cards unselected by default (`selected_ids => []`, `items => []`).
+   - Removed fallback logic in `PageController@edit` and `ProjectController@edit` that previously defaulted `$selectedProjectIds` to `$allProjects->pluck('id')->all()` when no cards were selected.
+2. **Project Highlights Cards Only Save When Explicitly Selected**:
+   - In `resources/views/admin/pages/edit.blade.php`, removed hardcoded fallback highlight values (`Modon Properties`, `AED 4,300,000*`, etc.) so unselected highlight cards remain blank/unselected (`-- Choose Amenity --`).
+   - In `PageController@store`, `PageController@update`, and `ProjectController@store`, highlight cards are only saved when both the metric/amenity label and value are explicitly filled by the admin.
+
+
+### Amenities-Powered Icon + Name Dropdown in CMS (Project Highlights, Direct Contact Channels & Amenities)
+
+**Files changed:**
+- `resources/views/admin/pages/edit.blade.php`
+- `resources/views/admin/pages/index.blade.php`
+- `resources/views/contact-us.blade.php`
+
+**Updates:**
+1. **Rich Icon + Name Dropdown Populated from Amenities (`$allAmenities`)**:
+   - Updated the custom `.adm-metric-input-wrap` + `.adm-metric-menu` dropdown across **Project Highlights** (`edit.blade.php` & `index.blade.php`), **Direct Contact Channels** (`edit.blade.php`), and **Amenities & Facilities** (`edit.blade.php`) to dynamically load names and icons from active **Amenities** (`\App\Models\Amenity`).
+   - Selecting any item from the dropdown updates the input label, the prefix icon preview (`<img>`), and the hidden icon input field.
+2. **Frontend Contact Channel Icon Rendering**:
+   - Updated `resources/views/contact-us.blade.php` so channel cards render uploaded Amenity icon images (`<img>`) alongside built-in SVG icons.
+
+
+
+
+## Changelog — 2026-11-08 (Project Cards stay empty after Save)
+
+- **Bug:** On a page (e.g. newly added) with no project cards selected in the CMS, clicking *Save Changes* still rendered a stale default card (e.g. Wadeem Gardens) on the UI, because the section's old `items` array was never cleared.
+- **Fix:** `Admin/PageController` now rebuilds the section `items` from the selected project IDs on every save (`buildProjectCardItems()`); an empty selection saves `items = []` so nothing is shown. Used in the section loop, the top-level dual-picker catch, and `store()`.
+- **Files changed:** `app/Http/Controllers/Admin/PageController.php`, `README.md`.
+- **Migrations / DB tables:** none created or changed. Re-save an affected page once to clear its stale card.
+
+## Changelog — 2026-11-08 (Investigation: cards auto-selected after Save Changes)
+
+- Simulated page create (store) → edit → Save Changes with an empty picker against the local DB inside a rolled-back transaction: `selected_ids` stayed `[]` and the edit page showed 0 selected cards. Could not reproduce locally, so no code change was made.
+- **Files changed:** `README.md` only.
+- **Migrations / DB tables:** none created or changed.

@@ -164,10 +164,7 @@ class ProjectController extends Controller
                         if (!is_array($hlItem)) continue;
                         $lbl = trim((string)($hlItem['label'] ?? ''));
                         $val = trim((string)($hlItem['value'] ?? ''));
-                        if ($lbl === '' && $val === '') continue;
-                        if ($lbl === '') {
-                            $hlItem['icon'] = '';
-                        }
+                        if ($lbl === '' || $val === '') continue;
                         $cleanHl[] = $hlItem;
                     }
                     $hlContent['items'] = $cleanHl;
@@ -465,14 +462,12 @@ class ProjectController extends Controller
         $commSection = $page->sections->firstWhere('section_key', 'communities') 
                     ?? $page->sections->firstWhere('section_key', 'projects');
         $commContent = $commSection ? ($commSection->content ?? []) : [];
-        $unselectedProjectIds = (array) ($commContent['unselected_ids'] ?? []);
 
-        if (isset($commContent['unselected_ids'])) {
-            $allIds = $allProjects->pluck('id')->all();
-            $activeSelected = array_values(array_diff($allIds, array_map('intval', $unselectedProjectIds)));
-            $selectedProjectIds = $activeSelected;
+        if (isset($commContent['selected_ids']) || isset($commContent['project_ids'])) {
+            $rawSelected = (array) ($commContent['selected_ids'] ?? $commContent['project_ids']);
+            $selectedProjectIds = array_values(array_unique(array_filter(array_map('intval', $rawSelected))));
         } else {
-            $selectedProjectIds = $allProjects->pluck('id')->all();
+            $selectedProjectIds = [];
         }
 
         $communities = \App\Models\Community::with('city')->orderBy('order', 'asc')->orderBy('name', 'asc')->get();

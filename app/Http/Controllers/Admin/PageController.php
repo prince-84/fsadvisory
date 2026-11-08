@@ -161,25 +161,25 @@ class PageController extends Controller
 
             // Fallback if section_order was not passed
             if (empty($orderedKeys)) {
-                if ($request->input('has_hero') == '1' || $request->filled('hero_title')) {
+                if ($request->input('has_hero') == '1') {
                     $orderedKeys[] = 'hero';
                 }
-                if ($request->input('has_highlights') == '1' || $request->filled('highlights_items')) {
+                if ($request->input('has_highlights') == '1') {
                     $orderedKeys[] = 'highlights';
                 }
-                if ($request->input('has_about') == '1' || $request->filled('about_title')) {
+                if ($request->input('has_about') == '1') {
                     $orderedKeys[] = 'about';
                 }
                 if ($request->input('has_content') == '1' || $request->filled('article_intro') || $request->filled('article_summernote')) {
                     $orderedKeys[] = 'content';
                 }
-                if ($request->input('has_communities') == '1' || $request->has('communities_items')) {
+                if ($request->input('has_communities') == '1') {
                     $orderedKeys[] = 'communities';
                 }
-                if ($request->input('has_faq') == '1' || $request->has('faq_items')) {
+                if ($request->input('has_faq') == '1') {
                     $orderedKeys[] = 'faq';
                 }
-                if ($request->input('has_contact') == '1' || $request->filled('contact_heading')) {
+                if ($request->input('has_contact') == '1') {
                     $orderedKeys[] = 'contact';
                 }
             }
@@ -244,21 +244,21 @@ class PageController extends Controller
             if ($request->filled('highlights_title')) {
                 $hlContent['title'] = $request->input('highlights_title');
             }
+            $cleanItems = [];
             if ($request->has('highlights_items') && is_array($request->input('highlights_items'))) {
-                $cleanItems = [];
                 foreach ($request->input('highlights_items') as $raw) {
-                    if (!empty($raw['label']) || !empty($raw['value'])) {
+                    $lbl = trim((string) ($raw['label'] ?? ''));
+                    $val = trim((string) ($raw['value'] ?? ''));
+                    if ($lbl !== '' && $val !== '') {
                         $cleanItems[] = [
-                            'label' => trim($raw['label'] ?? ''),
-                            'value' => trim($raw['value'] ?? ''),
-                            'icon'  => trim($raw['icon'] ?? 'building'),
+                            'label' => $lbl,
+                            'value' => $val,
+                            'icon'  => trim((string) ($raw['icon'] ?? '')),
                         ];
                     }
                 }
-                if (!empty($cleanItems)) {
-                    $hlContent['items'] = $cleanItems;
-                }
             }
+            $hlContent['items'] = $cleanItems;
             $hlSection->update(['content' => $hlContent]);
         }
 
@@ -326,29 +326,17 @@ class PageController extends Controller
             if ($request->filled('communities_subtitle')) {
                 $commContent['subtitle'] = $request->input('communities_subtitle');
             }
+            $allProjectIds = \App\Models\Project::pluck('id')->map(fn($id) => (int) $id)->all();
+            $selectedIds = [];
             if ($request->has('selected_project_ids') && is_array($request->input('selected_project_ids'))) {
-                $selectedIds = array_values(array_filter($request->input('selected_project_ids')));
-                $commContent['project_ids'] = $selectedIds;
+                $selectedIds = array_values(array_filter(array_map('intval', $request->input('selected_project_ids'))));
+            }
+            $commContent['selected_ids'] = $selectedIds;
+            $commContent['project_ids'] = $selectedIds;
+            $commContent['unselected_ids'] = array_values(array_diff($allProjectIds, $selectedIds));
 
-                $cleanItems = [];
-                foreach ($selectedIds as $pid) {
-                    $proj = \App\Models\Project::with('page')->find($pid);
-                    if ($proj) {
-                        $href = $proj->page ? ($proj->page->slug === '/' ? '/' : '/' . ltrim($proj->page->slug, '/')) : ($proj->slug ? '/' . ltrim($proj->slug, '/') : '#');
-                        $cleanItems[] = [
-                            'id'          => $proj->id,
-                            'name'        => $proj->title,
-                            'location'    => $proj->location ?: 'Hudayriyat Island, Abu Dhabi',
-                            'price'       => $proj->price ?: '',
-                            'delivery'    => $proj->delivery_date ?: '',
-                            'developer'   => $proj->developer ?: 'Modon Properties',
-                            'paymentPlan' => $proj->payment_plan ?: 'Flexible Payment Plan',
-                            'href'        => $href,
-                            'image'       => $proj->image ?: '/images/communities/wadeem-gardens.png',
-                        ];
-                    }
-                }
-                $commContent['items'] = $cleanItems;
+            if (!empty($selectedIds)) {
+                $commContent['items'] = $this->buildProjectCardItems($selectedIds);
             } elseif ($request->has('communities_items') && is_array($request->input('communities_items'))) {
                 $cleanItems = [];
                 foreach ($request->input('communities_items') as $idx => $raw) {
@@ -504,45 +492,19 @@ class PageController extends Controller
                     ?? $page->sections->firstWhere('section_key', 'projects');
         $commContent = $commSection ? ($commSection->content ?? []) : [];
         $unselectedProjectIds = (array) ($commContent['unselected_ids'] ?? []);
+        $isHomePage = ($page->slug === '/' || $page->slug === 'home');
 
-        // By default: every project is selected! Any newly added project has an ID NOT in unselected_ids, so it defaults to selected.
-        if (isset($commContent['unselected_ids'])) {
-            $allIds = $allProjects->pluck('id')->all();
-            $activeSelected = array_values(array_diff($allIds, array_map('intval', $unselectedProjectIds)));
-            
-            if (!empty($commContent['selected_ids']) && is_array($commContent['selected_ids'])) {
-                $ordered = [];
-                foreach ($commContent['selected_ids'] as $sid) {
-                    $sid = (int) $sid;
-                    if (in_array($sid, $activeSelected, true)) {
-                        $ordered[] = $sid;
-                    }
-                }
-                $newIds = [];
-                foreach ($activeSelected as $sid) {
-                    if (!in_array($sid, $ordered, true)) {
-                        $newIds[] = $sid;
-                    }
-                }
-                // Prepend newly added projects at the TOP!
-                $selectedProjectIds = array_merge($newIds, $ordered);
-            } else {
-                $selectedProjectIds = $activeSelected;
-            }
-        } elseif (isset($commContent['selected_ids']) || isset($commContent['project_ids'])) {
+        if (isset($commContent['selected_ids']) || isset($commContent['project_ids'])) {
             $rawSelected = (array) ($commContent['selected_ids'] ?? $commContent['project_ids']);
-            $selectedProjectIds = array_values(array_unique(array_map('intval', $rawSelected)));
-            // Also prepend any newly created project that isn't in selectedProjectIds yet at the TOP!
-            $newProjects = [];
-            foreach ($allProjects as $p) {
-                if (!in_array($p->id, $selectedProjectIds, true)) {
-                    $newProjects[] = $p->id;
-                }
-            }
-            $selectedProjectIds = array_merge($newProjects, $selectedProjectIds);
-        } else {
-            // Default: ALL projects are selected!
+            $selectedProjectIds = array_values(array_unique(array_filter(array_map('intval', $rawSelected))));
+        } elseif ($isHomePage && isset($commContent['unselected_ids'])) {
+            $allIds = $allProjects->pluck('id')->all();
+            $selectedProjectIds = array_values(array_diff($allIds, array_map('intval', $unselectedProjectIds)));
+        } elseif ($isHomePage) {
             $selectedProjectIds = $allProjects->pluck('id')->all();
+        } else {
+            // For dynamic / custom pages, all project cards remain unselected by default unless explicitly chosen by the user
+            $selectedProjectIds = [];
         }
 
         $communities = \App\Models\Community::with('city')->orderBy('order', 'asc')->orderBy('name', 'asc')->get();
@@ -553,6 +515,33 @@ class PageController extends Controller
     /**
      * Update the page general information, SEO meta, and section contents.
      */
+    /**
+     * Build the rendered card items for the selected project IDs (empty selection => empty list).
+     */
+    private function buildProjectCardItems(array $selectedIds): array
+    {
+        $items = [];
+        foreach ($selectedIds as $pid) {
+            $proj = \App\Models\Project::with('page')->find($pid);
+            if (!$proj) {
+                continue;
+            }
+            $href = $proj->page ? ($proj->page->slug === '/' ? '/' : '/' . ltrim($proj->page->slug, '/')) : ($proj->slug ? '/' . ltrim($proj->slug, '/') : '#');
+            $items[] = [
+                'id'          => $proj->id,
+                'name'        => $proj->title,
+                'location'    => $proj->location ?: 'Saima Island',
+                'price'       => $proj->price ?: '',
+                'delivery'    => $proj->delivery_date ?: '',
+                'developer'   => $proj->developer ?: 'Saima Group',
+                'paymentPlan' => $proj->payment_plan ?: 'Flexible Payment Plan',
+                'href'        => $href,
+                'image'       => $proj->image ?: '/images/communities/wadeem-gardens.png',
+            ];
+        }
+        return $items;
+    }
+
     public function update(Request $request, Page $page)
     {
         $validated = $request->validate([
@@ -719,7 +708,7 @@ class PageController extends Controller
                             return !empty(trim((string)($item['name'] ?? '')));
                         }
                         if ($secKey === 'highlights') {
-                            return !empty(trim((string)($item['label'] ?? ''))) || !empty(trim((string)($item['value'] ?? '')));
+                            return !empty(trim((string)($item['label'] ?? ''))) && !empty(trim((string)($item['value'] ?? '')));
                         }
                         foreach ($item as $subVal) {
                             if (!empty(trim((string)$subVal))) return true;
@@ -994,6 +983,8 @@ class PageController extends Controller
                         $currentContent['selected_ids'] = $cleanSelected;
                         $currentContent['project_ids'] = $cleanSelected;
                         $currentContent['unselected_ids'] = $cleanUnselected;
+                        // Keep rendered cards in sync with the picker: empty selection => no cards at all
+                        $currentContent['items'] = $this->buildProjectCardItems($cleanSelected);
                     } else {
                         // Dual picker was NOT submitted — preserve existing selected/unselected IDs from DB
                         // so that saving other sections (e.g. content) does NOT auto-reset project card selection.
@@ -1040,6 +1031,7 @@ class PageController extends Controller
                 $cData['selected_ids'] = $cleanSelected;
                 $cData['project_ids'] = $cleanSelected;
                 $cData['unselected_ids'] = $cleanUnselected;
+                $cData['items'] = $this->buildProjectCardItems($cleanSelected);
                 $commSection->update(['content' => $cData]);
             }
         }

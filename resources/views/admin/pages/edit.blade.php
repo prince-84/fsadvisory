@@ -3,6 +3,13 @@
 @php
     $isProjectEdit = request()->routeIs('admin.projects.*') || !empty($isProjectContext) || request('from') === 'project';
     $projectObj = $linkedProject ?? ($project ?? null);
+    if (!isset($allAmenities) || $allAmenities->isEmpty()) {
+        try {
+            $allAmenities = \App\Models\Amenity::where('is_active', true)->orderBy('order', 'asc')->orderBy('name', 'asc')->get();
+        } catch (\Throwable $e) {
+            $allAmenities = collect();
+        }
+    }
 @endphp
 
 @section('title', 'Manage ' . ($isProjectEdit && $projectObj ? $projectObj->title : $page->title))
@@ -640,13 +647,11 @@
                     <div class="adm-card-body">
                         <input type="hidden" name="sections[highlights][_has_items]" value="1">
                         @php
-                            $hlItems = $sContent['items'] ?? [
-                                ['key' => 'developer', 'label' => 'Developer', 'value' => $sContent['developer'] ?? 'Modon Properties'],
-                                ['key' => 'price', 'label' => 'Price', 'value' => $sContent['price'] ?? ($sContent['launch_price'] ?? 'AED 4,300,000*')],
-                                ['key' => 'handover', 'label' => 'Handover Date', 'value' => $sContent['handover'] ?? 'Q3 2030'],
-                                ['key' => 'property_type', 'label' => 'Property Type', 'value' => $sContent['property_type'] ?? 'Villas & Apartments'],
-                                ['key' => 'ownership', 'label' => 'Ownership', 'value' => $sContent['ownership'] ?? 'Freehold'],
-                            ];
+                            $hlItems = (!empty($sContent['items']) && is_array($sContent['items']))
+                                ? $sContent['items']
+                                : [
+                                    ['key' => 'highlight_0', 'label' => '', 'value' => '', 'icon' => ''],
+                                ];
 
                             $metricPresets = [
                                 ['label' => 'Developer', 'key' => 'developer', 'icon' => 'building', 'svg' => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01"/><path d="M9 12v.01"/><path d="M9 15v.01"/><path d="M9 18v.01"/></svg>'],
@@ -712,27 +717,58 @@
                                                 if (isset($allAmenities) && $allAmenities->isNotEmpty() && !empty($curLabel)) {
                                                     $matchedHlAmenity = $allAmenities->first(fn($am) => strtolower(trim($am->name)) === strtolower(trim($curLabel)));
                                                 }
-                                                $curIcon = $matchedHlAmenity ? trim((string)($matchedHlAmenity->icon ?? '')) : '';
+                                                $curIcon = $matchedHlAmenity ? trim((string)($matchedHlAmenity->icon ?? '')) : trim((string)($hl['icon'] ?? ''));
+                                                $curIconSrc = !empty($curIcon) && (str_starts_with($curIcon, '/') || str_starts_with($curIcon, 'http') || str_contains($curIcon, '.'))
+                                                    ? (str_starts_with($curIcon, 'http') ? $curIcon : asset(ltrim($curIcon, '/')))
+                                                    : '';
                                             @endphp
                                             <input type="hidden" name="sections[highlights][items][{{ $idx }}][key]" value="{{ $hl['key'] ?? ('highlight_' . $idx) }}">
                                             <input type="hidden" class="adm-hl-icon-input" name="sections[highlights][items][{{ $idx }}][icon]" value="{{ $curIcon }}">
                                             <div class="adm-grid-2-col" style="align-items: flex-end;">
                                                 <div class="adm-field">
                                                     <label class="adm-label" style="font-size: 11px; margin-bottom: 4px; color: #0284c7; font-weight: 700;">Choose Amenity</label>
-                                                    <div style="display: flex; gap: 8px; align-items: center;">
-                                                        <div class="adm-hl-icon-preview" style="width: 38px; height: 38px; border-radius: 6px; background: #faf8f5; border: 1px solid #cbd5e1; display: {{ !empty($curIcon) ? 'flex' : 'none' }}; align-items: center; justify-content: center; flex-shrink: 0;">
-                                                            @if(!empty($curIcon))
-                                                                <img src="{{ str_starts_with($curIcon, 'http') ? $curIcon : asset(ltrim($curIcon, '/')) }}" style="width: 22px; height: 22px; object-fit: contain;">
-                                                            @endif
+                                                    <div class="adm-metric-input-wrap">
+                                                        <div class="adm-metric-input-group">
+                                                            <span class="adm-metric-prefix-icon" title="Amenity Icon">
+                                                                @if(!empty($curIconSrc))
+                                                                    <img src="{{ $curIconSrc }}" alt="" style="width: 18px; height: 18px; object-fit: contain;">
+                                                                @else
+                                                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                                                @endif
+                                                            </span>
+                                                            <input type="text"
+                                                                   name="sections[highlights][items][{{ $idx }}][label]"
+                                                                   value="{{ $curLabel }}"
+                                                                   class="adm-input adm-metric-input adm-hl-label-input"
+                                                                   placeholder="-- Choose Amenity --"
+                                                                   onclick="toggleMetricDropdown(this)"
+                                                                   oninput="onAmenityMetricInputChange(this)">
+                                                            <button type="button" class="adm-metric-dropdown-btn" onclick="toggleMetricDropdown(this)" title="Choose Amenity">
+                                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                                </svg>
+                                                            </button>
                                                         </div>
-                                                        <select class="adm-select hl-choice-select" name="sections[highlights][items][{{ $idx }}][label]" onchange="applyHighlightPreset(this)" style="font-size: 12px; background: #f0f9ff; border-color: #bae6fd; padding: 6px 10px; border-radius: 6px; width: 100%;">
-                                                            <option value="">-- Choose Amenity --</option>
+                                                        <div class="adm-metric-menu">
+                                                            <div class="adm-metric-menu-header">Select Amenity</div>
                                                             @if(isset($allAmenities) && $allAmenities->isNotEmpty())
                                                                 @foreach($allAmenities as $am)
-                                                                    <option value="{{ $am->name }}" data-icon="{{ $am->icon }}" {{ $matchedHlAmenity && $matchedHlAmenity->id === $am->id ? 'selected' : '' }}>{{ $am->name }}</option>
+                                                                    @php
+                                                                        $amIconSrc = !empty($am->icon) ? (str_starts_with($am->icon, 'http') ? $am->icon : asset(ltrim($am->icon, '/'))) : '';
+                                                                    @endphp
+                                                                    <div class="adm-metric-menu-item" onclick="selectAmenityMetricOption(this, '{{ addslashes($am->name) }}', '{{ addslashes($am->icon ?? '') }}')">
+                                                                        <span class="adm-metric-menu-item-icon">
+                                                                            @if(!empty($amIconSrc))
+                                                                                <img src="{{ $amIconSrc }}" alt="{{ $am->name }}" style="width: 18px; height: 18px; object-fit: contain;">
+                                                                            @else
+                                                                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                                                            @endif
+                                                                        </span>
+                                                                        <span class="adm-metric-menu-item-label">{{ $am->name }}</span>
+                                                                    </div>
                                                                 @endforeach
                                                             @endif
-                                                        </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="adm-field">
@@ -1800,24 +1836,36 @@
                                     @php
                                         $curTitle = $item['title'] ?? '';
                                         $curIcon = $item['icon'] ?? 'phone';
-                                        $matchedSvg = $channelPresets[1]['svg'];
-                                        foreach ($channelPresets as $cp) {
-                                            if ($cp['icon'] === $curIcon) {
-                                                $matchedSvg = $cp['svg'];
-                                                break;
-                                            }
+                                        $matchedChAmenity = null;
+                                        if (isset($allAmenities) && $allAmenities->isNotEmpty() && !empty($curTitle)) {
+                                            $matchedChAmenity = $allAmenities->first(fn($am) => strtolower(trim($am->name)) === strtolower(trim($curTitle)));
                                         }
-                                        if ($curIcon === 'phone' && !empty($curTitle)) {
-                                            $lowTitle = strtolower($curTitle);
-                                            if (str_contains($lowTitle, 'whatsapp')) {
-                                                $matchedSvg = $channelPresets[0]['svg'];
-                                                $curIcon = 'whatsapp';
-                                            } elseif (str_contains($lowTitle, 'email') || str_contains($lowTitle, 'mail')) {
-                                                $matchedSvg = $channelPresets[2]['svg'];
-                                                $curIcon = 'email';
-                                            } elseif (str_contains($lowTitle, 'location') || str_contains($lowTitle, 'address')) {
-                                                $matchedSvg = $channelPresets[3]['svg'];
-                                                $curIcon = 'location';
+                                        if ($matchedChAmenity && !empty($matchedChAmenity->icon)) {
+                                            $curIcon = $matchedChAmenity->icon;
+                                        }
+                                        $matchedSvg = $channelPresets[1]['svg'];
+                                        if (!empty($curIcon) && (str_starts_with($curIcon, '/') || str_starts_with($curIcon, 'http') || str_contains($curIcon, '.'))) {
+                                            $chIconSrc = str_starts_with($curIcon, 'http') ? $curIcon : asset(ltrim($curIcon, '/'));
+                                            $matchedSvg = '<img src="' . e($chIconSrc) . '" alt="" style="width:18px;height:18px;object-fit:contain;">';
+                                        } else {
+                                            foreach ($channelPresets as $cp) {
+                                                if ($cp['icon'] === $curIcon) {
+                                                    $matchedSvg = $cp['svg'];
+                                                    break;
+                                                }
+                                            }
+                                            if ($curIcon === 'phone' && !empty($curTitle)) {
+                                                $lowTitle = strtolower($curTitle);
+                                                if (str_contains($lowTitle, 'whatsapp')) {
+                                                    $matchedSvg = $channelPresets[0]['svg'];
+                                                    $curIcon = 'whatsapp';
+                                                } elseif (str_contains($lowTitle, 'email') || str_contains($lowTitle, 'mail')) {
+                                                    $matchedSvg = $channelPresets[2]['svg'];
+                                                    $curIcon = 'email';
+                                                } elseif (str_contains($lowTitle, 'location') || str_contains($lowTitle, 'address')) {
+                                                    $matchedSvg = $channelPresets[3]['svg'];
+                                                    $curIcon = 'location';
+                                                }
                                             }
                                         }
                                     @endphp
@@ -1851,21 +1899,39 @@
                                                         <span class="adm-metric-prefix-icon" title="Channel Icon">
                                                             {!! $matchedSvg !!}
                                                         </span>
-                                                        <input type="text" name="sections[channels][items][{{ $idx }}][title]" value="{{ $curTitle }}" class="adm-input adm-metric-input adm-ch-title-input" oninput="onChannelInputChange(this)" placeholder="e.g. WhatsApp Us, Direct Call...">
-                                                        <button type="button" class="adm-metric-dropdown-btn" onclick="toggleChannelDropdown(this)" title="Choose Contact Channel">
+                                                        <input type="text" name="sections[channels][items][{{ $idx }}][title]" value="{{ $curTitle }}" class="adm-input adm-metric-input adm-ch-title-input" onclick="toggleChannelDropdown(this)" oninput="onChannelInputChange(this)" placeholder="e.g. Choose Amenity / Channel...">
+                                                        <button type="button" class="adm-metric-dropdown-btn" onclick="toggleChannelDropdown(this)" title="Choose Amenity / Contact Channel">
                                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                                                 <polyline points="6 9 12 15 18 9"></polyline>
                                                             </svg>
                                                         </button>
                                                     </div>
                                                     <div class="adm-metric-menu adm-channel-menu">
-                                                        <div class="adm-metric-menu-header">Select Contact Channel</div>
-                                                        @foreach($channelPresets as $preset)
-                                                            <div class="adm-metric-menu-item" onclick="selectChannelOption(this, '{{ $preset['label'] }}', '{{ $preset['icon'] }}')">
-                                                                <span class="adm-metric-menu-item-icon">{!! $preset['svg'] !!}</span>
-                                                                <span class="adm-metric-menu-item-label">{{ $preset['label'] }}</span>
-                                                            </div>
-                                                        @endforeach
+                                                        <div class="adm-metric-menu-header">Select Amenity</div>
+                                                        @if(isset($allAmenities) && $allAmenities->isNotEmpty())
+                                                            @foreach($allAmenities as $am)
+                                                                @php
+                                                                    $amIconSrc = !empty($am->icon) ? (str_starts_with($am->icon, 'http') ? $am->icon : asset(ltrim($am->icon, '/'))) : '';
+                                                                @endphp
+                                                                <div class="adm-metric-menu-item" onclick="selectChannelOption(this, '{{ addslashes($am->name) }}', '{{ addslashes($am->icon ?? '') }}')">
+                                                                    <span class="adm-metric-menu-item-icon">
+                                                                        @if(!empty($amIconSrc))
+                                                                            <img src="{{ $amIconSrc }}" alt="{{ $am->name }}" style="width:18px;height:18px;object-fit:contain;">
+                                                                        @else
+                                                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                                                        @endif
+                                                                    </span>
+                                                                    <span class="adm-metric-menu-item-label">{{ $am->name }}</span>
+                                                                </div>
+                                                            @endforeach
+                                                        @else
+                                                            @foreach($channelPresets as $preset)
+                                                                <div class="adm-metric-menu-item" onclick="selectChannelOption(this, '{{ $preset['label'] }}', '{{ $preset['icon'] }}')">
+                                                                    <span class="adm-metric-menu-item-icon">{!! $preset['svg'] !!}</span>
+                                                                    <span class="adm-metric-menu-item-label">{{ $preset['label'] }}</span>
+                                                                </div>
+                                                            @endforeach
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
@@ -2508,7 +2574,7 @@
                                 </button>
                             </div>
 
-                            <div id="amenities_cards_container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px;">
+                            <div id="amenities_cards_container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px;">
                                 @foreach($amenitiesItems as $aIdx => $aItem)
                                     @php
                                         $matchedAm = null;
@@ -2520,22 +2586,55 @@
                                                 }
                                             }
                                         }
-                                        $curAmIcon = $matchedAm ? ($matchedAm->icon ?: ($aItem['icon'] ?? '')) : '';
+                                        $curAmIcon = $matchedAm ? ($matchedAm->icon ?: ($aItem['icon'] ?? '')) : ($aItem['icon'] ?? '');
+                                        $curAmIconSrc = !empty($curAmIcon) ? (str_starts_with($curAmIcon, 'http') ? $curAmIcon : asset(ltrim($curAmIcon, '/'))) : '';
                                     @endphp
-                                    <div class="adm-card" id="amenity_card_{{ $aIdx }}" style="border: 1px solid #dcd3c6; background: #fff; margin-bottom: 0; padding: 10px 14px; border-radius: 8px;">
+                                    <div class="adm-card adm-repeater-item" id="amenity_card_{{ $aIdx }}" style="border: 1px solid #dcd3c6; background: #fff; margin-bottom: 0; padding: 10px 14px; border-radius: 8px; overflow: visible;">
                                         <div style="display: flex; gap: 10px; align-items: center;">
-                                            <div class="adm-am-icon-wrap" style="width: 40px; height: 40px; border-radius: 6px; background: #faf8f5; border: 1px solid #e0d7cb; display: {{ !empty($curAmIcon) ? 'flex' : 'none' }}; align-items: center; justify-content: center; flex-shrink: 0;">
-                                                <img id="preview_amenity_{{ $aIdx }}" src="{{ !empty($curAmIcon) ? $curAmIcon : '' }}" alt="Icon" style="width: 24px; height: 24px; object-fit: contain;">
+                                            <div class="adm-metric-input-wrap" style="flex: 1; min-width: 150px;">
+                                                <div class="adm-metric-input-group">
+                                                    <span class="adm-metric-prefix-icon" title="Amenity Icon">
+                                                        @if(!empty($curAmIconSrc))
+                                                            <img id="preview_amenity_{{ $aIdx }}" src="{{ $curAmIconSrc }}" alt="Icon" style="width: 18px; height: 18px; object-fit: contain;">
+                                                        @else
+                                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                                        @endif
+                                                    </span>
+                                                    <input type="text"
+                                                           name="sections[amenities][items][{{ $aIdx }}][name]"
+                                                           value="{{ $aItem['name'] ?? '' }}"
+                                                           class="adm-input adm-metric-input"
+                                                           placeholder="-- Choose Amenity --"
+                                                           onclick="toggleMetricDropdown(this)"
+                                                           oninput="onAmenityMetricInputChange(this)">
+                                                    <button type="button" class="adm-metric-dropdown-btn" onclick="toggleMetricDropdown(this)" title="Choose Amenity">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <div class="adm-metric-menu">
+                                                    <div class="adm-metric-menu-header">Select Amenity</div>
+                                                    @if(isset($allAmenities) && $allAmenities->isNotEmpty())
+                                                        @foreach($allAmenities as $am)
+                                                            @php
+                                                                $amIconSrc = !empty($am->icon) ? (str_starts_with($am->icon, 'http') ? $am->icon : asset(ltrim($am->icon, '/'))) : '';
+                                                            @endphp
+                                                            <div class="adm-metric-menu-item" onclick="selectAmenityMetricOption(this, '{{ addslashes($am->name) }}', '{{ addslashes($am->icon ?? '') }}')">
+                                                                <span class="adm-metric-menu-item-icon">
+                                                                    @if(!empty($amIconSrc))
+                                                                        <img src="{{ $amIconSrc }}" alt="{{ $am->name }}" style="width: 18px; height: 18px; object-fit: contain;">
+                                                                    @else
+                                                                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                                                    @endif
+                                                                </span>
+                                                                <span class="adm-metric-menu-item-label">{{ $am->name }}</span>
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
+                                                </div>
                                             </div>
-                                            <select class="adm-select" name="sections[amenities][items][{{ $aIdx }}][name]" onchange="applyPredefinedAmenity(this, '{{ $aIdx }}')" style="flex: 1; min-width: 120px; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 6px; background: #f0f9ff; border-color: #bae6fd; cursor: pointer;">
-                                                <option value="">-- Choose Amenity --</option>
-                                                @if(isset($allAmenities))
-                                                    @foreach($allAmenities as $am)
-                                                        <option value="{{ $am->name }}" data-icon="{{ $am->icon }}" {{ strtolower(trim($aItem['name'] ?? '')) === strtolower(trim($am->name)) ? 'selected' : '' }}>{{ $am->name }}</option>
-                                                    @endforeach
-                                                @endif
-                                            </select>
-                                            <input type="hidden" name="sections[amenities][items][{{ $aIdx }}][icon]" id="input_amenity_{{ $aIdx }}" value="{{ !empty($curAmIcon) ? $curAmIcon : '' }}">
+                                            <input type="hidden" class="adm-hl-icon-input" name="sections[amenities][items][{{ $aIdx }}][icon]" id="input_amenity_{{ $aIdx }}" value="{{ !empty($curAmIcon) ? $curAmIcon : '' }}">
                                             <button type="button" class="adm-btn-item-delete" onclick="removeAmenityCard(this)" style="padding: 4px 8px; font-size: 11px; flex-shrink: 0;" title="Delete Amenity">
                                                 ✕
                                             </button>
@@ -3709,25 +3808,25 @@
     }
 
     function selectChannelOption(itemEl, label, iconType) {
-        const wrap = itemEl.closest('.adm-channel-input-wrap');
+        const wrap = itemEl.closest('.adm-channel-input-wrap') || itemEl.closest('.adm-metric-input-wrap');
         if (!wrap) return;
         const card = wrap.closest('.adm-repeater-item');
-        const input = wrap.querySelector('.adm-ch-title-input');
+        const input = wrap.querySelector('.adm-ch-title-input') || wrap.querySelector('.adm-metric-input');
         const prefixIcon = wrap.querySelector('.adm-metric-prefix-icon');
-        const menu = wrap.querySelector('.adm-channel-menu');
+        const menu = wrap.querySelector('.adm-channel-menu') || wrap.querySelector('.adm-metric-menu');
 
         if (input) {
             input.value = label;
             updateCardHeading(input);
         }
 
-        const itemSvg = itemEl.querySelector('svg');
-        if (prefixIcon && itemSvg) {
-            prefixIcon.innerHTML = itemSvg.outerHTML;
+        const itemIconBox = itemEl.querySelector('.adm-metric-menu-item-icon');
+        if (prefixIcon && itemIconBox) {
+            prefixIcon.innerHTML = itemIconBox.innerHTML;
         }
 
         if (card) {
-            const iconInput = card.querySelector('.adm-ch-icon-input');
+            const iconInput = card.querySelector('.adm-ch-icon-input') || card.querySelector('.adm-hl-icon-input');
             if (iconInput) {
                 iconInput.value = iconType;
             }
@@ -3740,11 +3839,25 @@
 
     function onChannelInputChange(input) {
         updateCardHeading(input);
-        const wrap = input.closest('.adm-channel-input-wrap');
+        const wrap = input.closest('.adm-channel-input-wrap') || input.closest('.adm-metric-input-wrap');
         if (!wrap) return;
         const card = wrap.closest('.adm-repeater-item');
         const prefixIcon = wrap.querySelector('.adm-metric-prefix-icon');
         const val = (input.value || '').toLowerCase().trim();
+
+        const matchedAm = (window.ALL_AMENITIES || []).find(am => (am.name || '').toLowerCase().trim() === val);
+        if (matchedAm && matchedAm.icon) {
+            const iconSrc = matchedAm.icon.startsWith('http') ? matchedAm.icon : '/' + matchedAm.icon.replace(/^\/+/, '');
+            if (prefixIcon) {
+                prefixIcon.innerHTML = `<img src="${iconSrc}" alt="" style="width:18px;height:18px;object-fit:contain;">`;
+            }
+            if (card) {
+                const iconInput = card.querySelector('.adm-ch-icon-input');
+                if (iconInput) iconInput.value = matchedAm.icon;
+            }
+            return;
+        }
+
         let detectedIcon = 'phone';
         if (val.includes('whatsapp') || val.includes('wa') || val.includes('chat')) {
             detectedIcon = 'whatsapp';
@@ -3847,23 +3960,56 @@
         }
     });
 
+    function buildAmenitiesMenuItemsHtml(handlerFn = 'selectAmenityMetricOption') {
+        const list = (window.ALL_AMENITIES && window.ALL_AMENITIES.length) ? window.ALL_AMENITIES : [];
+        if (!list.length) {
+            return '';
+        }
+        return list.map(am => {
+            const safeName = escapeHtml(am.name || '');
+            const jsName = String(am.name || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+            const rawIcon = am.icon || '';
+            const jsIcon = String(rawIcon).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+            const iconSrc = rawIcon ? (rawIcon.startsWith('http') ? rawIcon : '/' + rawIcon.replace(/^\/+/, '')) : '';
+            const iconHtml = iconSrc
+                ? `<img src="${escapeHtml(iconSrc)}" alt="${safeName}" style="width:18px;height:18px;object-fit:contain;">`
+                : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+            return `
+                <div class="adm-metric-menu-item" onclick="${handlerFn}(this, '${jsName}', '${jsIcon}')">
+                    <span class="adm-metric-menu-item-icon">${iconHtml}</span>
+                    <span class="adm-metric-menu-item-label">${safeName}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function onAmenityMetricInputChange(input) {
+        updateCardHeading(input);
+        const wrap = input.closest('.adm-metric-input-wrap');
+        if (!wrap) return;
+        const card = wrap.closest('.adm-repeater-item') || wrap.closest('.adm-card');
+        const prefixIcon = wrap.querySelector('.adm-metric-prefix-icon');
+        const val = (input.value || '').toLowerCase().trim();
+        const matchedAm = (window.ALL_AMENITIES || []).find(am => (am.name || '').toLowerCase().trim() === val);
+        if (matchedAm && matchedAm.icon) {
+            const iconSrc = matchedAm.icon.startsWith('http') ? matchedAm.icon : '/' + matchedAm.icon.replace(/^\/+/, '');
+            if (prefixIcon) {
+                prefixIcon.innerHTML = `<img src="${escapeHtml(iconSrc)}" alt="" style="width:18px;height:18px;object-fit:contain;">`;
+            }
+            if (card) {
+                const iconInput = card.querySelector('.adm-hl-icon-input') || card.querySelector('input[name*="[icon]"]');
+                if (iconInput) iconInput.value = matchedAm.icon;
+            }
+        }
+    }
+
     function addHighlightItem() {
         const list = document.getElementById('repeater_highlights_items');
         if (!list) return;
 
         const newId = 'new_' + Date.now();
         const currentCount = list.querySelectorAll('.adm-repeater-item').length + 1;
-
-        let amenitiesOptHtml = '';
-        if (window.ALL_AMENITIES && window.ALL_AMENITIES.length) {
-            amenitiesOptHtml = window.ALL_AMENITIES.map(am => `<option value="${escapeHtml(am.name)}" data-icon="${am.icon || ''}">${escapeHtml(am.name)}</option>`).join('');
-        } else {
-            @if(isset($allAmenities))
-                @foreach($allAmenities as $am)
-                    amenitiesOptHtml += `<option value="{{ addslashes($am->name) }}" data-icon="{{ $am->icon }}">{{ $am->name }}</option>`;
-                @endforeach
-            @endif
-        }
+        const menuItemsHtml = buildAmenitiesMenuItemsHtml('selectAmenityMetricOption');
 
         const card = document.createElement('div');
         card.className = 'adm-repeater-item';
@@ -3900,12 +4046,28 @@
                 <div class="adm-grid-2-col" style="align-items: flex-end;">
                     <div class="adm-field">
                         <label class="adm-label" style="font-size: 11px; margin-bottom: 4px; color: #0284c7; font-weight: 700;">Choose Amenity</label>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <div class="adm-hl-icon-preview" style="width: 38px; height: 38px; border-radius: 6px; background: #faf8f5; border: 1px solid #cbd5e1; display: none; align-items: center; justify-content: center; flex-shrink: 0;"></div>
-                            <select class="adm-select hl-choice-select" name="sections[highlights][items][${newId}][label]" onchange="applyHighlightPreset(this)" style="font-size: 12px; background: #f0f9ff; border-color: #bae6fd; padding: 6px 10px; border-radius: 6px; width: 100%;">
-                                <option value="">-- Choose Amenity --</option>
-                                ${amenitiesOptHtml}
-                            </select>
+                        <div class="adm-metric-input-wrap">
+                            <div class="adm-metric-input-group">
+                                <span class="adm-metric-prefix-icon" title="Amenity Icon">
+                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                </span>
+                                <input type="text"
+                                       name="sections[highlights][items][${newId}][label]"
+                                       value=""
+                                       class="adm-input adm-metric-input adm-hl-label-input"
+                                       placeholder="-- Choose Amenity --"
+                                       onclick="toggleMetricDropdown(this)"
+                                       oninput="onAmenityMetricInputChange(this)">
+                                <button type="button" class="adm-metric-dropdown-btn" onclick="toggleMetricDropdown(this)" title="Choose Amenity">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="adm-metric-menu">
+                                <div class="adm-metric-menu-header">Select Amenity</div>
+                                ${menuItemsHtml}
+                            </div>
                         </div>
                     </div>
                     <div class="adm-field">
@@ -3922,8 +4084,8 @@
         setTimeout(() => {
             card.style.opacity = '1';
             card.style.transform = 'none';
-            const sel = card.querySelector('select');
-            if (sel) sel.focus();
+            const inp = card.querySelector('.adm-hl-label-input');
+            if (inp) inp.focus();
             card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }, 50);
 
@@ -4393,7 +4555,7 @@
         card.style.opacity = '0';
         card.style.transform = 'translateY(-10px)';
 
-        const menuItemsHtml = CHANNEL_PRESETS.map(p => `
+        const menuItemsHtml = buildAmenitiesMenuItemsHtml('selectChannelOption') || CHANNEL_PRESETS.map(p => `
             <div class="adm-metric-menu-item" onclick="selectChannelOption(this, '${p.label}', '${p.icon}')">
                 <span class="adm-metric-menu-item-icon">${p.svg}</span>
                 <span class="adm-metric-menu-item-label">${p.label}</span>
@@ -4887,7 +5049,7 @@
     function selectAmenityMetricOption(itemEl, name, iconUrl) {
         const wrap = itemEl.closest('.adm-metric-input-wrap');
         if (!wrap) return;
-        const card = wrap.closest('.adm-repeater-item');
+        const card = wrap.closest('.adm-repeater-item') || wrap.closest('.adm-card');
         const input = wrap.querySelector('.adm-metric-input');
         const prefixIcon = wrap.querySelector('.adm-metric-prefix-icon');
         const menu = wrap.querySelector('.adm-metric-menu');
@@ -4897,17 +5059,18 @@
             if (typeof updateCardHeading === 'function') updateCardHeading(input);
         }
 
-        const itemSvg = itemEl.querySelector('svg');
+        const itemIconBox = itemEl.querySelector('.adm-metric-menu-item-icon');
         if (prefixIcon) {
-            if (itemSvg) {
-                prefixIcon.innerHTML = itemSvg.outerHTML;
+            if (itemIconBox && itemIconBox.innerHTML.trim()) {
+                prefixIcon.innerHTML = itemIconBox.innerHTML;
             } else if (iconUrl) {
-                prefixIcon.innerHTML = `<img src="${iconUrl}" style="width:18px;height:18px;object-fit:contain;" alt="">`;
+                const iconSrc = iconUrl.startsWith('http') ? iconUrl : '/' + iconUrl.replace(/^\/+/, '');
+                prefixIcon.innerHTML = `<img src="${iconSrc}" style="width:18px;height:18px;object-fit:contain;" alt="">`;
             }
         }
 
         if (card) {
-            const iconInput = card.querySelector('.adm-hl-icon-input');
+            const iconInput = card.querySelector('.adm-hl-icon-input') || card.querySelector('input[name*="[icon]"]');
             if (iconInput) {
                 iconInput.value = iconUrl;
             }
@@ -4933,30 +5096,38 @@
         if (!grid) return;
         const newIdx = 'am_' + Date.now();
         const card = document.createElement('div');
-        card.className = 'adm-card';
+        card.className = 'adm-card adm-repeater-item';
         card.id = `amenity_card_${newIdx}`;
-        card.style.cssText = 'border: 1px solid #dcd3c6; background: #fff; margin-bottom: 0; padding: 10px 14px; border-radius: 8px;';
+        card.style.cssText = 'border: 1px solid #dcd3c6; background: #fff; margin-bottom: 0; padding: 10px 14px; border-radius: 8px; overflow: visible;';
 
-        let amenitiesOptions = '<option value="">-- Choose Amenity --</option>';
-        if (window.ALL_AMENITIES && window.ALL_AMENITIES.length) {
-            amenitiesOptions += window.ALL_AMENITIES.map(am => `<option value="${escapeHtml(am.name)}" data-icon="${am.icon || ''}">${escapeHtml(am.name)}</option>`).join('');
-        } else {
-            @if(isset($allAmenities))
-                @foreach($allAmenities as $am)
-                    amenitiesOptions += `<option value="{{ addslashes($am->name) }}" data-icon="{{ $am->icon }}">{{ $am->name }}</option>`;
-                @endforeach
-            @endif
-        }
+        const menuItemsHtml = buildAmenitiesMenuItemsHtml('selectAmenityMetricOption');
 
         card.innerHTML = `
             <div style="display: flex; gap: 10px; align-items: center;">
-                <div class="adm-am-icon-wrap" style="width: 40px; height: 40px; border-radius: 6px; background: #faf8f5; border: 1px solid #e0d7cb; display: none; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <img id="preview_amenity_${newIdx}" src="" alt="Icon" style="width: 24px; height: 24px; object-fit: contain;">
+                <div class="adm-metric-input-wrap" style="flex: 1; min-width: 150px;">
+                    <div class="adm-metric-input-group">
+                        <span class="adm-metric-prefix-icon" title="Amenity Icon">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </span>
+                        <input type="text"
+                               name="sections[amenities][items][${newIdx}][name]"
+                               value=""
+                               class="adm-input adm-metric-input"
+                               placeholder="-- Choose Amenity --"
+                               onclick="toggleMetricDropdown(this)"
+                               oninput="onAmenityMetricInputChange(this)">
+                        <button type="button" class="adm-metric-dropdown-btn" onclick="toggleMetricDropdown(this)" title="Choose Amenity">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="adm-metric-menu">
+                        <div class="adm-metric-menu-header">Select Amenity</div>
+                        ${menuItemsHtml}
+                    </div>
                 </div>
-                <select class="adm-select" name="sections[amenities][items][${newIdx}][name]" onchange="applyPredefinedAmenity(this, '${newIdx}')" style="flex: 1; min-width: 120px; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 6px; background: #f0f9ff; border-color: #bae6fd; cursor: pointer;">
-                    ${amenitiesOptions}
-                </select>
-                <input type="hidden" name="sections[amenities][items][${newIdx}][icon]" id="input_amenity_${newIdx}" value="">
+                <input type="hidden" class="adm-hl-icon-input" name="sections[amenities][items][${newIdx}][icon]" id="input_amenity_${newIdx}" value="">
                 <button type="button" class="adm-btn-item-delete" onclick="removeAmenityCard(this)" style="padding: 4px 8px; font-size: 11px; flex-shrink: 0;" title="Delete Amenity">
                     ✕
                 </button>

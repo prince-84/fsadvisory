@@ -7,6 +7,18 @@
     <meta name="robots" content="noindex, nofollow">
     <title>@yield('title', 'Dashboard') · Saima Admin</title>
     <meta name="description" content="Saima admin panel for managing website content, table of contents and leads.">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v={{ file_exists(public_path('favicon.ico')) ? filemtime(public_path('favicon.ico')) : time() }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
+    <script>
+        if (!sessionStorage.getItem('saima_favicon_v2')) {
+            fetch('{{ asset("favicon.ico") }}', { cache: 'reload', credentials: 'same-origin' }).catch(function(){});
+            fetch('{{ asset("favicon.png") }}', { cache: 'reload', credentials: 'same-origin' }).catch(function(){});
+            sessionStorage.setItem('saima_favicon_v2', '1');
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
@@ -121,7 +133,9 @@
 <div class="adm-shell" id="admShell">
     <aside class="adm-sidebar" id="admSidebar" aria-label="Admin navigation">
         <a href="{{ route('admin.dashboard') }}" class="adm-brand" id="admBrandLink">
-            <div class="adm-brand-mark">H</div>
+            <div class="adm-brand-mark" style="padding: 4px; display: flex; align-items: center; justify-content: center;">
+                <img src="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}" alt="Saima" style="width: 22px; height: 22px; object-fit: contain;">
+            </div>
             <div class="adm-brand-text">
                 <strong>CMS</strong>
             </div>

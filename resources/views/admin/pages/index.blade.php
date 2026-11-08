@@ -357,7 +357,6 @@
         <form method="POST" action="{{ route('admin.pages.store') }}" id="createPageForm" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="page_type" value="custom">
-            <input type="hidden" name="has_hero" id="hasHeroInput" value="0">
 
             <div style="padding:28px 24px;">
                 
@@ -747,6 +746,13 @@
                                             ['label' => 'Featured Highlight', 'key' => 'featured', 'icon' => 'star', 'svg' => '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'],
                                         ];
 
+                                        if (!isset($allAmenities) || $allAmenities->isEmpty()) {
+                                            try {
+                                                $allAmenities = \App\Models\Amenity::where('is_active', true)->orderBy('order', 'asc')->orderBy('name', 'asc')->get();
+                                            } catch (\Throwable $e) {
+                                                $allAmenities = collect();
+                                            }
+                                        }
                                         $initialHighlightCards = [
                                             ['label' => 'Developer', 'value' => 'Modon Properties', 'icon' => 'building'],
                                             ['label' => 'Price', 'value' => 'AED 4,300,000*', 'icon' => 'price'],
@@ -763,37 +769,46 @@
                                                 <div style="font-size:11.5px; font-weight:700; color:#374151; margin-bottom:6px;">Card {{ $idx + 1 }}</div>
                                                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
                                                     <div>
-                                                        <label style="font-size:11px; color:#6b7280; display:block; margin-bottom:2px; font-weight:600;">Metric</label>
-                                                        <input type="hidden" name="highlights_items[{{ $idx }}][icon]" class="adm-hl-icon-input" value="{{ $card['icon'] }}">
+                                                        <label style="font-size:11px; color:#6b7280; display:block; margin-bottom:2px; font-weight:600;">Choose Amenity</label>
+                                                        <input type="hidden" name="highlights_items[{{ $idx }}][icon]" class="adm-hl-icon-input" value="">
                                                         <div class="adm-metric-input-wrap">
                                                             <div class="adm-metric-input-group">
-                                                                <span class="adm-metric-prefix-icon" title="Metric Icon">
-                                                                    @php
-                                                                        $matchedSvg = $metricPresetsList[0]['svg'];
-                                                                        foreach($metricPresetsList as $mp) {
-                                                                            if(strtolower($mp['label']) === strtolower($card['label'])) {
-                                                                                $matchedSvg = $mp['svg'];
-                                                                                break;
-                                                                            }
-                                                                        }
-                                                                    @endphp
-                                                                    {!! $matchedSvg !!}
+                                                                <span class="adm-metric-prefix-icon" title="Amenity Icon">
+                                                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                                                                 </span>
-                                                                <input type="text" name="highlights_items[{{ $idx }}][label]" value="" class="adm-input adm-metric-input" oninput="onMetricInputChange(this)" placeholder="{{ $card['label'] }}" style="font-size:12px; padding:5px 30px 5px 38px;">
-                                                                <button type="button" class="adm-metric-dropdown-btn" onclick="toggleMetricDropdown(this)" title="Choose Metric Name">
+                                                                <input type="text" name="highlights_items[{{ $idx }}][label]" value="" class="adm-input adm-metric-input" onclick="toggleMetricDropdown(this)" oninput="onMetricInputChange(this)" placeholder="-- Choose Amenity --" style="font-size:12px; padding:5px 30px 5px 38px;">
+                                                                <button type="button" class="adm-metric-dropdown-btn" onclick="toggleMetricDropdown(this)" title="Choose Amenity">
                                                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                                                         <polyline points="6 9 12 15 18 9"></polyline>
                                                                     </svg>
                                                                 </button>
                                                             </div>
                                                             <div class="adm-metric-menu">
-                                                                <div class="adm-metric-menu-header">Select Predefined Metric</div>
-                                                                @foreach($metricPresetsList as $preset)
-                                                                    <div class="adm-metric-menu-item" onclick="selectMetricOption(this, '{{ $preset['label'] }}', '{{ $preset['key'] }}', '{{ $preset['icon'] }}')">
-                                                                        <span class="adm-metric-menu-item-icon">{!! $preset['svg'] !!}</span>
-                                                                        <span class="adm-metric-menu-item-label">{{ $preset['label'] }}</span>
-                                                                    </div>
-                                                                @endforeach
+                                                                <div class="adm-metric-menu-header">Select Amenity</div>
+                                                                @if(isset($allAmenities) && $allAmenities->isNotEmpty())
+                                                                    @foreach($allAmenities as $am)
+                                                                        @php
+                                                                            $amIconSrc = !empty($am->icon) ? (str_starts_with($am->icon, 'http') ? $am->icon : asset(ltrim($am->icon, '/'))) : '';
+                                                                        @endphp
+                                                                        <div class="adm-metric-menu-item" onclick="selectMetricOption(this, '{{ addslashes($am->name) }}', '{{ \Illuminate\Support\Str::slug($am->name, '_') }}', '{{ addslashes($am->icon ?? '') }}')">
+                                                                            <span class="adm-metric-menu-item-icon">
+                                                                                @if(!empty($amIconSrc))
+                                                                                    <img src="{{ $amIconSrc }}" alt="{{ $am->name }}" style="width:17px;height:17px;object-fit:contain;">
+                                                                                @else
+                                                                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                                                                @endif
+                                                                            </span>
+                                                                            <span class="adm-metric-menu-item-label">{{ $am->name }}</span>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @else
+                                                                    @foreach($metricPresetsList as $preset)
+                                                                        <div class="adm-metric-menu-item" onclick="selectMetricOption(this, '{{ $preset['label'] }}', '{{ $preset['key'] }}', '{{ $preset['icon'] }}')">
+                                                                            <span class="adm-metric-menu-item-icon">{!! $preset['svg'] !!}</span>
+                                                                            <span class="adm-metric-menu-item-label">{{ $preset['label'] }}</span>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1605,8 +1620,10 @@
         const menu = wrap.querySelector('.adm-metric-menu');
 
         if (input) input.value = label;
-        const itemSvg = itemEl.querySelector('svg');
-        if (prefixIcon && itemSvg) prefixIcon.innerHTML = itemSvg.outerHTML;
+        const itemIconBox = itemEl.querySelector('.adm-metric-menu-item-icon');
+        if (prefixIcon && itemIconBox) {
+            prefixIcon.innerHTML = itemIconBox.innerHTML;
+        }
 
         if (card) {
             const iconInput = card.querySelector('.adm-hl-icon-input');

@@ -19,6 +19,22 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
+// Global Favicon Fallback Routes (ensures /favicon.ico and /favicon.png always serve public/favicon.png for sitemap.xml & view-source)
+Route::get('/favicon.ico', function () {
+    $path = public_path('favicon.png');
+    return response()->file($path, [
+        'Content-Type' => 'image/png',
+        'Cache-Control' => 'no-cache, must-revalidate',
+    ]);
+});
+Route::get('/favicon.png', function () {
+    $path = public_path('favicon.png');
+    return response()->file($path, [
+        'Content-Type' => 'image/png',
+        'Cache-Control' => 'no-cache, must-revalidate',
+    ]);
+});
+
 // Dynamic XML Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.xml');
 Route::get('/sitemap', fn () => redirect('/sitemap.xml', 301));

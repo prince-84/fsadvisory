@@ -220,6 +220,8 @@ class PageBlueprintService
             'communities' => [
                 'heading' => '',
                 'subtitle' => '',
+                'selected_ids' => [],
+                'project_ids' => [],
                 'items' => [],
             ],
 

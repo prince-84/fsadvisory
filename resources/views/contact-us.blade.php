@@ -129,7 +129,9 @@
                                 @if($isLink)
                                     <a href="{{ $chUrl }}" {{ str_starts_with($chUrl, 'http') ? 'target="_blank" rel="noopener noreferrer"' : '' }} class="channelCard">
                                         <div class="iconCircle">
-                                            @if($chIcon === 'whatsapp')
+                                            @if(!empty($chIcon) && (str_starts_with($chIcon, '/') || str_starts_with($chIcon, 'http') || str_contains($chIcon, '.')))
+                                                <img src="{{ str_starts_with($chIcon, 'http') ? $chIcon : asset(ltrim($chIcon, '/')) }}" alt="{{ $chTitle }}" style="width:24px;height:24px;object-fit:contain;">
+                                            @elseif($chIcon === 'whatsapp')
                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
                                                 </svg>
@@ -154,7 +156,9 @@
                                 @else
                                     <div class="channelCardStatic">
                                         <div class="iconCircle">
-                                            @if($chIcon === 'whatsapp')
+                                            @if(!empty($chIcon) && (str_starts_with($chIcon, '/') || str_starts_with($chIcon, 'http') || str_contains($chIcon, '.')))
+                                                <img src="{{ str_starts_with($chIcon, 'http') ? $chIcon : asset(ltrim($chIcon, '/')) }}" alt="{{ $chTitle }}" style="width:24px;height:24px;object-fit:contain;">
+                                            @elseif($chIcon === 'whatsapp')
                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
                                                 </svg>

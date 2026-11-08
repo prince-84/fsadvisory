@@ -56,8 +56,16 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
-    <link rel="shortcut icon" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v={{ file_exists(public_path('favicon.ico')) ? filemtime(public_path('favicon.ico')) : time() }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
+    <script>
+        if (!sessionStorage.getItem('saima_favicon_v2')) {
+            fetch('{{ asset("favicon.ico") }}', { cache: 'reload', credentials: 'same-origin' }).catch(function(){});
+            fetch('{{ asset("favicon.png") }}', { cache: 'reload', credentials: 'same-origin' }).catch(function(){});
+            sessionStorage.setItem('saima_favicon_v2', '1');
+        }
+    </script>
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="{{ asset('css/saima.css') }}?v={{ time() }}">
