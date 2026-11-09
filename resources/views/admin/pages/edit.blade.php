@@ -59,7 +59,7 @@
         font-size: 14px !important;
         font-weight: 500 !important;
         color: #475569 !important;
-        display: flex !important;
+        display: flex;
         align-items: center !important;
         gap: 12px !important;
         width: 100% !important;
@@ -67,6 +67,11 @@
         cursor: pointer !important;
         transition: all 0.18s ease !important;
         position: relative !important;
+    }
+
+    .adm-edit-layout > #pageSectionTabs .adm-tab.is-hidden,
+    .adm-edit-layout > #pageSectionTabs .adm-tab-draggable.is-hidden {
+        display: none !important;
     }
 
     .adm-edit-layout > #pageSectionTabs .adm-tab svg {
@@ -206,7 +211,7 @@
     .adm-edit-layout .adm-sticky-save {
         position: sticky !important;
         bottom: 14px !important;
-        z-index: 9999 !important;
+        z-index: 99 !important;
         background: #ffffff !important;
         border: 1.5px solid #d4c7b5 !important;
         border-radius: 12px !important;
@@ -306,6 +311,9 @@
     }
     $heroSection = $page->section('hero');
     $otherSections = $allSections->reject(fn($s) => $s->section_key === 'hero');
+    $selectedSectionKeysJson = json_encode($allSections->filter(function($s) {
+        return $s->is_active !== false && $s->is_active !== 0;
+    })->pluck('section_key')->values()->all());
 @endphp
 
 <div class="adm-edit-layout">
@@ -338,12 +346,14 @@
                     'contact'           => 'mail',
                     default             => 'edit'
                 };
+                $isActiveSec = ($sec->is_active !== false && $sec->is_active !== 0 && in_array($sec->section_key, json_decode($selectedSectionKeysJson, true) ?? [], true));
             @endphp
             <button type="button"
-                    class="adm-tab adm-tab-draggable {{ $currentTab === $sec->section_key ? 'is-active' : '' }}"
+                    class="adm-tab adm-tab-draggable {{ $currentTab === $sec->section_key ? 'is-active' : '' }} {{ $isActiveSec ? '' : 'is-hidden' }}"
                     onclick="handleTabClick(event, '{{ $sec->section_key }}')"
                     data-tab-id="{{ $sec->section_key }}"
                     data-section-key="{{ $sec->section_key }}"
+                    style="{{ $isActiveSec ? 'display:flex !important;' : 'display:none !important;' }}"
                     draggable="true"
                     title="Drag to reorder this section on the page">
                 <span class="adm-tab-drag-handle" title="Drag to reorder">
@@ -555,6 +565,92 @@
                         </div>
                     </div>
                 @endif
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- SECTION LAYOUT & COMPONENT MANAGER (IMAGE 1 & 2 IMPLEMENTATION)           -->
+        <!-- ========================================================================= -->
+        <div class="adm-card" style="margin-top: 24px; border: 1.5px solid #e2e8f0; border-radius: 12px; background: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.04); overflow: visible;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: #ecfdf5; border-radius: 6px; color: #166534;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                        </span>
+                        <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #1e293b; text-transform: uppercase; letter-spacing: 0.03em;">
+                            Page Components &amp; Layout
+                        </h3>
+                    </div>
+                    <div style="font-size: 12.5px; color: #64748b; margin-top: 4px;">
+                        Drag &amp; drop cards to arrange sequence. Whichever is first will show first on the page and sidebar.
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span id="activeSectionsCountBadge" style="background: #1a4731; color: #ffffff; font-size: 11.5px; font-weight: 700; padding: 4px 12px; border-radius: 999px;">
+                        0 Active
+                    </span>
+                </div>
+            </div>
+
+            <div style="padding: 20px;">
+                <!-- UPPER ROW: ACTIVE SELECTED SECTIONS (IMAGE 1 TOP STRIP) -->
+                <div style="margin-bottom: 22px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label style="font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.04em;">
+                            Selected Page Sections (Drag cards with mouse to reorder sequence):
+                        </label>
+                        <span style="font-size: 11.5px; color: #94a3b8;">
+                            Drag ⠿ to rearrange &bull; Click card to edit &bull; ✕ to remove
+                        </span>
+                    </div>
+
+                    <!-- Draggable Cards Container -->
+                    <div id="compSelectedCardsRow" style="display: flex; flex-wrap: wrap; gap: 12px; min-height: 60px; padding: 12px; background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 10px; align-items: center;">
+                        <!-- Dynamically populated -->
+                    </div>
+                    <div id="compSelectedCardsEmptyNotice" style="display: none; text-align: center; padding: 18px; color: #94a3b8; font-size: 13px;">
+                        No sections currently selected for this page. Add sections below.
+                    </div>
+                </div>
+
+                <!-- LOWER COMPONENT: "SELECT COMPONENTS" DROPDOWN (IMAGE 1 BOTTOM) -->
+                <div style="position: relative;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label style="font-size: 12px; font-weight: 700; color: #1e293b; text-transform: uppercase; letter-spacing: 0.04em;">
+                            Select Components
+                        </label>
+                        <span style="font-size: 11.5px; color: #64748b;">Click input to open available sections dropdown</span>
+                    </div>
+
+                    <!-- Select Box Container with Tags -->
+                    <div id="componentSelectBox" onclick="toggleComponentDropdown(event)"
+                         style="min-height: 48px; border: 1.5px solid #cbd5e1; border-radius: 8px; background: #ffffff; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color 0.15s ease, box-shadow 0.15s ease;">
+                        
+                        <!-- Chips container -->
+                        <div id="componentChipsContainer" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; flex: 1;">
+                            <!-- Populated with tags -->
+                        </div>
+
+                        <!-- Right icons -->
+                        <div style="display: flex; align-items: center; gap: 8px; padding-left: 8px;">
+                            <button type="button" id="compClearAllBtn" onclick="event.stopPropagation(); clearAllSelectedSections();" title="Clear all"
+                                    style="border: none; background: transparent; color: #94a3b8; font-size: 15px; cursor: pointer; padding: 0 4px; line-height: 1;">
+                                ✕
+                            </button>
+                            <span style="color: #cbd5e1;">|</span>
+                            <span id="compDropdownChevron" style="color: #64748b; font-size: 11px; transition: transform 0.2s ease; display: inline-block;">
+                                ▼
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown Menu (Image 1 Dropdown with Image 2 Sections) -->
+                    <div id="componentsDropdownMenu"
+                         style="display: none; position: relative; margin-top: 10px; width: 100%; max-height: 420px; overflow-y: auto; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); z-index: 1000; padding: 6px;">
+                        <!-- Populated by JavaScript from catalog -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2935,6 +3031,9 @@
         white-space: normal;
         text-align: left;
     }
+    .adm-edit-layout > #pageSectionTabs .adm-tab.is-hidden {
+        display: none !important;
+    }
     .adm-edit-layout > #pageSectionTabs .adm-tab:hover { transform: translateX(2px); }
     .adm-edit-layout > #pageSectionTabs .adm-draggable-tabs-group {
         display: flex;
@@ -2970,7 +3069,7 @@
     .adm-edit-layout .adm-sticky-save {
         position: sticky;
         bottom: 14px !important;
-        z-index: 9999;
+        z-index: 99;
         margin-top: 20px;
         margin-bottom: 8px;
         background: #ffffff !important;
@@ -3297,9 +3396,23 @@
         const container = document.getElementById('draggableTabsContainer');
         if (!container) return;
 
-        const orderedKeys = Array.from(container.querySelectorAll('.adm-tab-draggable'))
+        const visibleOrderedKeys = Array.from(container.querySelectorAll('.adm-tab-draggable'))
+            .filter(t => !t.classList.contains('is-hidden') && t.style.display !== 'none')
             .map(t => t.getAttribute('data-section-key'))
             .filter(Boolean);
+
+        if (typeof currentSelectedSectionKeys !== 'undefined') {
+            currentSelectedSectionKeys = visibleOrderedKeys;
+            if (typeof syncPageSectionLayout === 'function') {
+                syncPageSectionLayout();
+            }
+        }
+
+        saveSectionTabOrderAjax(visibleOrderedKeys);
+    }
+
+    function saveSectionTabOrderAjax(keys) {
+        const orderedKeys = keys || (typeof currentSelectedSectionKeys !== 'undefined' ? currentSelectedSectionKeys : []);
 
         // 1. Sync hidden inputs in the form
         const inputsContainer = document.getElementById('sectionOrderInputs');
@@ -3315,29 +3428,33 @@
         }
 
         // 2. Persist immediately via AJAX
+        @if(!$isProjectEdit)
         const csrfToken = document.querySelector('input[name="_token"]')?.value;
         const reorderUrl = "{{ route('admin.pages.reorder-sections', $page) }}";
 
-        fetch(reorderUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ order: orderedKeys })
-        })
-        .then(res => res.json())
-        .then(data => {
-            const toast = document.getElementById('tabReorderToast');
-            if (toast) {
-                toast.style.display = 'inline-flex';
-                setTimeout(() => {
-                    toast.style.display = 'none';
-                }, 2200);
-            }
-        })
-        .catch(err => console.error('Error saving tab order:', err));
+        if (reorderUrl && csrfToken) {
+            fetch(reorderUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ order: orderedKeys })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const toast = document.getElementById('tabReorderToast');
+                if (toast) {
+                    toast.style.display = 'inline-flex';
+                    setTimeout(() => {
+                        toast.style.display = 'none';
+                    }, 2200);
+                }
+            })
+            .catch(err => console.error('Error saving tab order:', err));
+        }
+        @endif
     }
 
     function previewItemImage(input) {
@@ -5682,6 +5799,339 @@
         }
     }
 
+    /* ========================================================================= */
+    /* SECTION LAYOUT & COMPONENT MANAGER (IMAGE 1 & 2 IMPLEMENTATION)           */
+    /* ========================================================================= */
+    const SECTION_CATALOG = {
+        'hero': {
+            key: 'hero',
+            name: 'Hero Section',
+            badge: 'TOP BANNER',
+            image: '{{ asset("hero.png") }}',
+            desc: 'Header banner with headline, subtitle, badge, photo & lead capture form.'
+        },
+        'highlights': {
+            key: 'highlights',
+            name: 'Project Highlights',
+            badge: 'KEY FACTS GRID',
+            image: '{{ asset("project_hightlights.png") }}',
+            desc: '6 key highlight cards (Developer, Price, Handover, Type, Ownership, Payment Plan).'
+        },
+        'about': {
+            key: 'about',
+            name: 'About Community',
+            badge: 'EDITORIAL & VIDEO',
+            image: '{{ asset("about_community.png") }}',
+            desc: 'Editorial story narrative, community overview paragraphs & video player showcase.'
+        },
+        'content': {
+            key: 'content',
+            name: 'Article & Booking',
+            badge: 'ARTICLE & BOOKING',
+            image: '{{ asset("article_booking.png") }}',
+            desc: 'Intro text area, "Read More" button, Summernote editor & side appointment form.'
+        },
+        'communities': {
+            key: 'communities',
+            name: 'Project Cards',
+            badge: 'PROJECT CARDS',
+            image: '{{ asset("card.png") }}',
+            desc: 'Dynamic project cards grid with page attachment dropdown, price, delivery & "Add to Card" button.'
+        },
+        'faq': {
+            key: 'faq',
+            name: 'FAQ Section',
+            badge: 'FAQ ACCORDION',
+            image: '{{ asset("FAQ.png") }}',
+            desc: 'Interactive questions & answers accordion with section title, description & add/delete FAQ items.'
+        },
+        'contact': {
+            key: 'contact',
+            name: 'Contact Section',
+            badge: 'CONTACT & CALLBACK',
+            image: '{{ asset("contact_section.png") }}',
+            desc: 'Lead capture and call back inquiry form with customizable titles, full phone country selector & instant submission.'
+        }
+    };
+
+    let currentSelectedSectionKeys = {!! $selectedSectionKeysJson !!} || [];
+    let draggedCompKey = null;
+
+    function handleCompDragStart(e, key) {
+        draggedCompKey = key;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', key);
+        e.currentTarget.style.opacity = '0.35';
+    }
+
+    function handleCompDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    }
+
+    function handleCompDrop(e, targetKey) {
+        e.preventDefault();
+        if (!draggedCompKey || draggedCompKey === targetKey) return;
+
+        const fromIdx = currentSelectedSectionKeys.indexOf(draggedCompKey);
+        const toIdx = currentSelectedSectionKeys.indexOf(targetKey);
+
+        if (fromIdx !== -1 && toIdx !== -1) {
+            currentSelectedSectionKeys.splice(fromIdx, 1);
+            currentSelectedSectionKeys.splice(toIdx, 0, draggedCompKey);
+            syncPageSectionLayout(true);
+        }
+    }
+
+    function handleCompDragEnd(e) {
+        if (e.currentTarget) e.currentTarget.style.opacity = '1';
+        draggedCompKey = null;
+    }
+
+    function toggleComponentDropdown(e) {
+        if (e) e.stopPropagation();
+        const dropdown = document.getElementById('componentsDropdownMenu');
+        const chevron = document.getElementById('compDropdownChevron');
+        if (!dropdown) return;
+
+        const isOpen = dropdown.style.display === 'block';
+        dropdown.style.display = isOpen ? 'none' : 'block';
+        if (chevron) {
+            chevron.style.transform = isOpen ? 'none' : 'rotate(180deg)';
+        }
+        if (!isOpen) {
+            setTimeout(() => {
+                dropdown.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 60);
+        }
+    }
+
+    function addSectionComponent(key) {
+        if (!currentSelectedSectionKeys.includes(key)) {
+            currentSelectedSectionKeys.push(key);
+            syncPageSectionLayout(true);
+        }
+    }
+
+    function removeSectionComponent(key) {
+        const idx = currentSelectedSectionKeys.indexOf(key);
+        if (idx !== -1) {
+            currentSelectedSectionKeys.splice(idx, 1);
+            syncPageSectionLayout(true);
+        }
+    }
+
+    function clearAllSelectedSections() {
+        if (confirm('Are you sure you want to remove all components from this page layout?')) {
+            currentSelectedSectionKeys = [];
+            syncPageSectionLayout(true);
+        }
+    }
+
+    function renderComponentDropdownItems() {
+        const dropdown = document.getElementById('componentsDropdownMenu');
+        if (!dropdown) return;
+        dropdown.innerHTML = '';
+
+        Object.keys(SECTION_CATALOG).forEach(key => {
+            const info = SECTION_CATALOG[key];
+            const isSelected = currentSelectedSectionKeys.includes(key);
+
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:6px; cursor:pointer; transition:background 0.15s ease; border-bottom:1px solid #f8fafc;' + (isSelected ? ' background:#f0fdf4;' : '');
+            row.innerHTML = `
+                <img src="${info.image}" alt="" style="width:65px; height:42px; object-fit:cover; border-radius:5px; border:1px solid #cbd5e1; flex-shrink:0;">
+                <div style="flex:1; min-width:0;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2px;">
+                        <strong style="font-size:13.5px; color:#1e293b;">${info.name}</strong>
+                        <span style="font-size:10px; font-weight:700; color:#475569; background:#f1f5f9; padding:2px 6px; border-radius:4px; text-transform:uppercase;">${info.badge}</span>
+                    </div>
+                    <div style="font-size:11.5px; color:#64748b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${info.desc}</div>
+                </div>
+                <div style="flex-shrink:0; margin-left:8px;">
+                    ${isSelected 
+                        ? '<span style="color:#16a34a; font-weight:700; font-size:12px; display:inline-flex; align-items:center; gap:3px;">✓ Selected</span>' 
+                        : '<span style="border:1px solid #bbf7d0; background:#f0fdf4; color:#15803d; font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:6px; display:inline-block;">+ Add</span>'
+                    }
+                </div>
+            `;
+
+            row.addEventListener('mouseenter', () => {
+                row.style.background = '#e0edff';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.background = isSelected ? '#f0fdf4' : '';
+            });
+
+            row.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (isSelected) {
+                    removeSectionComponent(key);
+                } else {
+                    addSectionComponent(key);
+                }
+            });
+
+            dropdown.appendChild(row);
+        });
+    }
+
+    function syncPageSectionLayout(shouldPersist = false) {
+        // 1. Render Upper Cards Row
+        const cardsRow = document.getElementById('compSelectedCardsRow');
+        const emptyNotice = document.getElementById('compSelectedCardsEmptyNotice');
+        const countBadge = document.getElementById('activeSectionsCountBadge');
+
+        if (cardsRow) {
+            cardsRow.innerHTML = '';
+            if (currentSelectedSectionKeys.length === 0) {
+                if (emptyNotice) emptyNotice.style.display = 'block';
+            } else {
+                if (emptyNotice) emptyNotice.style.display = 'none';
+                currentSelectedSectionKeys.forEach((key, idx) => {
+                    const info = SECTION_CATALOG[key] || {
+                        name: key.replace(/_/g, ' ').toUpperCase(),
+                        badge: 'SECTION',
+                        image: '{{ asset("hero.png") }}'
+                    };
+
+                    const card = document.createElement('div');
+                    card.setAttribute('draggable', 'true');
+                    card.setAttribute('data-key', key);
+                    card.style.cssText = 'display:flex; align-items:center; gap:10px; background:#ffffff; border:1.5px solid #cbd5e1; border-radius:8px; padding:6px 12px; cursor:grab; user-select:none; box-shadow:0 1px 3px rgba(0,0,0,0.04); transition:all 0.18s ease;';
+                    card.innerHTML = `
+                        <span style="font-size:11px; font-weight:700; color:#1a4731; background:#f0fdf4; border:1px solid #bbf7d0; padding:2px 6px; border-radius:4px;">#${idx + 1}</span>
+                        <img src="${info.image}" alt="" style="width:48px; height:34px; object-fit:cover; border-radius:5px; border:1px solid #cbd5e1; flex-shrink:0;">
+                        <div style="cursor:pointer;" onclick="switchTab('${key}')" title="Click to open editor for this section">
+                            <strong style="font-size:13px; color:#1e293b; display:block;">${info.name}</strong>
+                            <span style="font-size:10.5px; color:#64748b; font-weight:600;">${info.badge} &bull; Click to edit &rarr;</span>
+                        </div>
+                        <span style="color:#94a3b8; font-size:14px; margin-left:6px; cursor:grab;" title="Drag with mouse to reorder">⠿</span>
+                        <button type="button" onclick="event.stopPropagation(); removeSectionComponent('${key}')" title="Remove section"
+                                style="border:none; background:#fee2e2; color:#b91c1c; border-radius:50%; width:20px; height:20px; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; cursor:pointer; margin-left:4px; padding:0; line-height:1;">
+                            ✕
+                        </button>
+                    `;
+
+                    card.addEventListener('dragstart', (e) => handleCompDragStart(e, key));
+                    card.addEventListener('dragover', (e) => handleCompDragOver(e));
+                    card.addEventListener('drop', (e) => handleCompDrop(e, key));
+                    card.addEventListener('dragend', (e) => handleCompDragEnd(e));
+
+                    cardsRow.appendChild(card);
+                });
+            }
+        }
+
+        if (countBadge) {
+            countBadge.textContent = `${currentSelectedSectionKeys.length} Active`;
+        }
+
+        // 2. Render Select Components Chips
+        const chipsContainer = document.getElementById('componentChipsContainer');
+        if (chipsContainer) {
+            chipsContainer.innerHTML = '';
+            if (currentSelectedSectionKeys.length === 0) {
+                chipsContainer.innerHTML = '<span style="font-size:13px; color:#94a3b8;">Select components from dropdown...</span>';
+            } else {
+                currentSelectedSectionKeys.forEach(key => {
+                    const info = SECTION_CATALOG[key] || {
+                        name: key.replace(/_/g, ' ').toUpperCase(),
+                        image: '{{ asset("hero.png") }}'
+                    };
+                    const chip = document.createElement('div');
+                    chip.style.cssText = 'display:inline-flex; align-items:center; gap:6px; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:5px; padding:4px 8px; font-size:12.5px; font-weight:600; color:#1e293b; user-select:none;';
+                    chip.innerHTML = `
+                        <img src="${info.image}" alt="" style="width:24px; height:18px; object-fit:cover; border-radius:3px; border:1px solid #cbd5e1;">
+                        <span>${info.name}</span>
+                        <span onclick="event.stopPropagation(); removeSectionComponent('${key}')" style="cursor:pointer; color:#94a3b8; font-weight:700; margin-left:2px; font-size:12px;" title="Remove">&times;</span>
+                    `;
+                    chipsContainer.appendChild(chip);
+                });
+            }
+        }
+
+        // 3. Refresh Dropdown Items
+        renderComponentDropdownItems();
+
+        // 4. Synchronize Left Sidebar Navigation Tabs
+        const sidebarTabsContainer = document.getElementById('draggableTabsContainer');
+        if (sidebarTabsContainer) {
+            // First: for all selected keys, show them and append them in the exact selected sequence
+            currentSelectedSectionKeys.forEach(key => {
+                const btn = sidebarTabsContainer.querySelector(`[data-section-key="${key}"]`);
+                if (btn) {
+                    btn.classList.remove('is-hidden');
+                    btn.style.setProperty('display', 'flex', 'important');
+                    sidebarTabsContainer.appendChild(btn);
+                }
+            });
+
+            // Second: for any keys NOT selected, hide them and move them to the end
+            sidebarTabsContainer.querySelectorAll('.adm-tab-draggable').forEach(btn => {
+                const key = btn.getAttribute('data-section-key');
+                if (!currentSelectedSectionKeys.includes(key)) {
+                    btn.classList.add('is-hidden');
+                    btn.style.setProperty('display', 'none', 'important');
+                    sidebarTabsContainer.appendChild(btn);
+                }
+            });
+        }
+
+        // If active tab was an unselected section, switch back to general
+        const activeTabInput = document.getElementById('activeTabInput');
+        if (activeTabInput && !['general', 'seo'].includes(activeTabInput.value)) {
+            if (!currentSelectedSectionKeys.includes(activeTabInput.value)) {
+                switchTab('general');
+            }
+        }
+
+        // 5. Update Hidden Inputs in Form
+        const inputsContainer = document.getElementById('sectionOrderInputs');
+        if (inputsContainer) {
+            inputsContainer.innerHTML = '';
+            currentSelectedSectionKeys.forEach(key => {
+                const inp = document.createElement('input');
+                inp.type = 'hidden';
+                inp.name = 'section_order[]';
+                inp.value = key;
+                inputsContainer.appendChild(inp);
+            });
+        }
+
+        // 6. Save via AJAX if requested
+        if (shouldPersist) {
+            persistSectionOrderAjax(currentSelectedSectionKeys);
+        }
+    }
+
+    function persistSectionOrderAjax(orderedKeys) {
+        @if(!$isProjectEdit)
+        const csrfToken = document.querySelector('input[name="_token"]')?.value;
+        const reorderUrl = "{{ route('admin.pages.reorder-sections', $page) }}";
+        if (!reorderUrl || !csrfToken) return;
+
+        fetch(reorderUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ order: orderedKeys })
+        })
+        .then(res => res.json())
+        .then(data => {
+            const toast = document.getElementById('tabReorderToast');
+            if (toast) {
+                toast.style.display = 'inline-flex';
+                setTimeout(() => { toast.style.display = 'none'; }, 1800);
+            }
+        })
+        .catch(err => console.error('Error syncing section order:', err));
+        @endif
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         updateDualBoxState();
 
@@ -5695,6 +6145,22 @@
             }
             window.pageBadgeManager = new BadgeManager('page', initialBadges);
         }
+
+        // Initialize Section Components Manager
+        syncPageSectionLayout();
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('componentsDropdownMenu');
+            const box = document.getElementById('componentSelectBox');
+            const chevron = document.getElementById('compDropdownChevron');
+            if (dropdown && dropdown.style.display === 'block') {
+                if (box && !box.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                    if (chevron) chevron.style.transform = 'none';
+                }
+            }
+        });
     });
 </script>
 @endpush

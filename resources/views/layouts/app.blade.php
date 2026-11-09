@@ -7,13 +7,17 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @php
     $activePage = page_data();
-    $pageMetaTitle = $activePage?->meta_title ?: 'Saima – Luxury Villas & Waterfront Living';
-    $pageMetaDesc = $activePage?->meta_description ?: 'Discover Saima, a premier luxury waterfront community offering exclusive villas, apartments, mansions, and world-class amenities. Invest in your dream home today.';
+    $sectionTitle = trim($__env->yieldContent('title'));
+    $sectionMetaDesc = trim($__env->yieldContent('meta_description'));
+    $sectionCanonical = trim($__env->yieldContent('canonical'));
+    $pageMetaTitle = $sectionTitle ?: ($activePage?->meta_title ?: 'Saima – Luxury Villas & Waterfront Living');
+    $pageMetaDesc = $sectionMetaDesc ?: ($activePage?->meta_description ?: 'Discover Saima, a premier luxury waterfront community offering exclusive villas, apartments, mansions, and world-class amenities. Invest in your dream home today.');
     $pageMetaKeywords = $activePage?->meta_keywords ?: 'Saima, Saima Projects, Saima Group, Luxury villas, Waterfront living, Villas for sale, Saima apartments, Real estate investment';
     $pageOgImage = $activePage?->og_image ? (str_starts_with($activePage->og_image, 'http') ? $activePage->og_image : asset($activePage->og_image)) : asset('images/hero/slide-1.jpg');
+    $pageCanonicalUrl = canonical_url($sectionCanonical ?: null);
 @endphp
-    <title>{{ $pageMetaTitle }}</title>
-    <link rel="canonical" href="{{ url()->current() }}">
+    <title>{{ $pageMetaTitle }}</title> 
+    <link rel="canonical" href="{{ $pageCanonicalUrl }}" />
     <meta name="description" content="{{ $pageMetaDesc }}">
     <meta name="keywords" content="{{ $pageMetaKeywords }}">
     <meta name="author" content="Saima Group">

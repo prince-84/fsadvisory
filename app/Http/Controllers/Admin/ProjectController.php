@@ -454,6 +454,30 @@ class ProjectController extends Controller
             }
         }
 
+        // Ensure all core sections exist for the page (missing ones start as inactive)
+        $existingKeys = $page->sections->pluck('section_key')->all();
+        $globalSections = PageBlueprintService::getGlobalSections();
+        $coreKeys = ['hero', 'highlights', 'about', 'content', 'communities', 'faq', 'contact'];
+        $hasMissing = false;
+        foreach ($coreKeys as $cKey) {
+            if (!in_array($cKey, $existingKeys, true)) {
+                $defaultContent = PageBlueprintService::getDefaultSectionContent($cKey, $page->title);
+                $name = $globalSections[$cKey]['name'] ?? ucwords(str_replace('_', ' ', $cKey));
+                \App\Models\PageSection::create([
+                    'page_id'      => $page->id,
+                    'section_key'  => $cKey,
+                    'section_name' => $name,
+                    'order'        => 90 + (int) array_search($cKey, $coreKeys),
+                    'is_active'    => false,
+                    'content'      => $defaultContent,
+                ]);
+                $hasMissing = true;
+            }
+        }
+        if ($hasMissing) {
+            $page->load(['sections' => fn($q) => $q->orderBy('order')]);
+        }
+
         $projectSlugs = Page::projectSlugs();
         $projectPages = Page::whereIn('slug', $projectSlugs)->orderBy('title', 'asc')->get(['id', 'title', 'slug']);
         $linkedProject = $project;

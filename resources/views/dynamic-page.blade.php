@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $page->meta_title ?: ($page->title . ' | Saima') }}</title>
+    <title>{{ ($page ?? null)?->meta_title ?: ((($page ?? null)?->title ?? ($project->title ?? ($city->name ?? ($community->name ?? 'Page')))) . ' | Saima') }}</title>
+    <link rel="canonical" href="{{ canonical_url() }}" />
     
-@if($page->meta_description)
+@if(($page ?? null)?->meta_description)
         <meta name="description" content="{{ $page->meta_description }}">
     
 @endif
-@if($page->meta_keywords)
+@if(($page ?? null)?->meta_keywords)
         <meta name="keywords" content="{{ $page->meta_keywords }}">
     
 @endif

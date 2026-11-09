@@ -480,6 +480,45 @@ if (! function_exists('render_faq_schema')) {
     }
 }
 
+if (! function_exists('canonical_url')) {
+    /**
+     * Resolve the clean, dynamic canonical URL for the current or specified page path.
+     * Uses the configured SEO canonical base URL when set on production, and appends the current page path.
+     */
+    function canonical_url(?string $customUrl = null): string
+    {
+        if (!empty($customUrl)) {
+            return rtrim($customUrl, '/') ?: $customUrl;
+        }
+
+        try {
+            $base = trim((string) \App\Models\SiteSetting::get('seo_canonical_url', ''));
+            $currentHost = request()->getHost();
+
+            // Ignore localhost/127.0.0.1 saved in DB when running on a live domain
+            if ($base !== '' && (str_contains($base, 'localhost') || str_contains($base, '127.0.0.1')) && !str_contains($currentHost, 'localhost') && !str_contains($currentHost, '127.0.0.1')) {
+                $base = '';
+            }
+
+            if ($base === '') {
+                $base = rtrim(url('/'), '/');
+            } else {
+                $base = rtrim($base, '/');
+            }
+
+            $path = trim(request()->path(), '/');
+
+            if ($path === '' || $path === '/') {
+                return $base;
+            }
+
+            return $base . '/' . $path;
+        } catch (\Throwable $e) {
+            return url()->current();
+        }
+    }
+}
+
 if (! function_exists('render_header_schemas')) {
     /**
      * Render exact JSON-LD schemas in document header (<head>) for:

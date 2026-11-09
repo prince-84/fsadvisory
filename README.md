@@ -1576,3 +1576,44 @@ php artisan optimize:clear
 - Simulated page create (store) → edit → Save Changes with an empty picker against the local DB inside a rolled-back transaction: `selected_ids` stayed `[]` and the edit page showed 0 selected cards. Could not reproduce locally, so no code change was made.
 - **Files changed:** `README.md` only.
 - **Migrations / DB tables:** none created or changed.
+
+## Changelog — 2026-11-09 (Page Layout Component Manager with Drag & Drop Reorder & Dynamic Canonical Tag)
+
+1. **Dynamic SEO Canonical Tag Across All Pages**:
+   - Added dynamic `canonical_url()` helper function in `app/helpers.php` that resolves clean page canonical URLs based on the configured SEO Canonical Base URL (or current domain) + clean path.
+   - Updated `resources/views/layouts/app.blade.php` and `resources/views/dynamic-page.blade.php` with `<link rel="canonical" href="{{ canonical_url() }}" />`.
+
+2. **Page Edit Component Manager (Image 1 & 2 Parity)**:
+   - Added Section Layout & Component Manager at the end of General Settings in `resources/views/admin/pages/edit.blade.php`.
+   - **Top Area (Image 1 Top)**: Draggable cards of currently active/selected sections with live order badges, thumbnails, section title, direct edit shortcut, and remove ('✕') button. Supports drag-and-drop mouse reordering.
+   - **Bottom Area (Image 1 Bottom & Image 2)**: 'Select Components' multi-select input box with selected component chips and dropdown menu displaying all 7 core sections (Hero Section, Project Highlights, About Community, Article & Booking, Project Cards, FAQ Section, Contact Section) with thumbnails and status (+ Add / ✓ Selected).
+   - Selecting from dropdown instantly adds the component to active cards, adds its chip, and shows its tab in the left sidebar.
+   - Reordering via drag-and-drop instantly syncs the left sidebar navigation items into the exact sequence and persists via AJAX and form submission.
+   - Updated `PageController.php` and `ProjectController.php` to ensure core sections are available and properly update `order` and `is_active` on save/reorder.
+- **Files changed**: `resources/views/admin/pages/edit.blade.php`, `app/Http/Controllers/Admin/PageController.php`, `app/Http/Controllers/Admin/ProjectController.php`, `app/helpers.php`, `resources/views/layouts/app.blade.php`, `resources/views/dynamic-page.blade.php`, `README.md`.
+- **Database / Migrations**: No new database tables or migrations created (used existing `page_sections` table and `is_active`/`order` columns).
+
+## Changelog — 2026-11-09 (Fix: Components Dropdown Push Down Save Changes Bar)
+
+- **Issue**: When opening the 'Select Components' dropdown in Page Edit, the sticky 'Save Changes' bottom bar was overlapping on top of the dropdown menu.
+- **Fix**: Changed `#componentsDropdownMenu` from floating `position: absolute` to natural in-flow `position: relative; margin-top: 10px; width: 100%`. When the dropdown opens, it expands the layout card smoothly and naturally pushes the Save Changes bar down below the dropdown. Also lowered `.adm-sticky-save` z-index to `99` and added automatic smooth scroll into view on open.
+- **Files changed**: `resources/views/admin/pages/edit.blade.php`, `README.md`.
+- **Database / Migrations**: No database tables or migrations modified.
+
+## Changelog — 2026-11-09 (Fix: Left Sidebar Navigation Tabs Strictly Match Selected Components & Sequence)
+
+- **Issue**: In Admin Page Edit (`admin/pages/{id}/edit`), all section tabs on the left sidebar were visible even when only 2 sections (e.g. Hero Section and Article & Booking) were selected in General Settings. Furthermore, unselected sections were appearing at the top and active sections were pushed to the bottom.
+- **Root Cause**:
+  1. `.adm-edit-layout > #pageSectionTabs .adm-tab` had CSS `display: flex !important;`, which completely overrode inline `style="display:none;"` from Blade and `btn.style.display = 'none'` from JavaScript.
+  2. Tab elements in `#draggableTabsContainer` were not hidden cleanly using `!important` or an explicit `.is-hidden` CSS rule.
+- **Fix**:
+  1. Updated CSS in `resources/views/admin/pages/edit.blade.php`: removed `!important` from `display: flex;` on `.adm-tab` and added `.adm-edit-layout > #pageSectionTabs .adm-tab.is-hidden { display: none !important; }`.
+  2. In the Blade template, tabs for unselected sections are rendered with `is-hidden` class and `style="display:none !important;"` initially so unselected sections never flash or appear on screen.
+  3. "General Settings" tab (top) and "SEO & Meta" tab (bottom) remain permanently fixed by default.
+  4. Updated `syncPageSectionLayout()` and `saveSectionTabOrder()`:
+     - All active/selected sections are ordered in `#draggableTabsContainer` in the exact sequence (#1, #2, etc.) matching the top cards in General Settings and displayed with `display: flex !important`.
+     - All unselected sections are moved to the bottom and hidden with `is-hidden` and `display: none !important`.
+     - Reordering cards in General Settings or reordering tabs on the sidebar keeps both views 100% synchronized in real time.
+     - Auto-switches active pane to 'general' if an active section is removed from selection.
+- **Files changed**: `resources/views/admin/pages/edit.blade.php`, `README.md`.
+- **Database / Migrations**: No database tables or migrations modified.

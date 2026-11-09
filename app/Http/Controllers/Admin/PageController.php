@@ -482,6 +482,30 @@ class PageController extends Controller
             }
         }
 
+        // Ensure all core sections exist for the page (missing ones start as inactive)
+        $existingKeys = $page->sections->pluck('section_key')->all();
+        $globalSections = \App\Services\PageBlueprintService::getGlobalSections();
+        $coreKeys = ['hero', 'highlights', 'about', 'content', 'communities', 'faq', 'contact'];
+        $hasMissing = false;
+        foreach ($coreKeys as $cKey) {
+            if (!in_array($cKey, $existingKeys, true)) {
+                $defaultContent = \App\Services\PageBlueprintService::getDefaultSectionContent($cKey, $page->title);
+                $name = $globalSections[$cKey]['name'] ?? ucwords(str_replace('_', ' ', $cKey));
+                \App\Models\PageSection::create([
+                    'page_id'      => $page->id,
+                    'section_key'  => $cKey,
+                    'section_name' => $name,
+                    'order'        => 90 + (int) array_search($cKey, $coreKeys),
+                    'is_active'    => false,
+                    'content'      => $defaultContent,
+                ]);
+                $hasMissing = true;
+            }
+        }
+        if ($hasMissing) {
+            $page->load(['sections' => fn($q) => $q->orderBy('order')]);
+        }
+
         $projectSlugs = Page::projectSlugs();
         $projectPages = Page::whereIn('slug', $projectSlugs)->orderBy('title', 'asc')->get(['id', 'title', 'slug']);
         $linkedProject = \App\Models\Project::where('page_id', $page->id)->orWhere('slug', $page->slug)->first();
@@ -1036,10 +1060,23 @@ class PageController extends Controller
             }
         }
 
-        // Update overall section order if submitted
+        // Update overall section order and active state if submitted
         if ($request->has('section_order') && is_array($request->input('section_order'))) {
-            foreach ($request->input('section_order') as $index => $secKey) {
-                $page->sections()->where('section_key', $secKey)->update(['order' => $index + 1]);
+            $submittedOrder = array_values(array_filter($request->input('section_order')));
+            if (!empty($submittedOrder)) {
+                $globalSections = \App\Services\PageBlueprintService::getGlobalSections();
+                foreach ($submittedOrder as $index => $secKey) {
+                    $secName = $globalSections[$secKey]['name'] ?? ucwords(str_replace('_', ' ', $secKey));
+                    $page->sections()->updateOrCreate(
+                        ['section_key' => $secKey],
+                        [
+                            'order' => $index + 1,
+                            'is_active' => true,
+                            'section_name' => $secName,
+                        ]
+                    );
+                }
+                $page->sections()->whereNotIn('section_key', $submittedOrder)->update(['is_active' => false]);
             }
         }
 
@@ -1068,14 +1105,27 @@ class PageController extends Controller
             'order' => ['required', 'array'],
         ]);
 
-        foreach ($request->input('order') as $index => $sectionKey) {
-            $page->sections()->where('section_key', $sectionKey)->update(['order' => $index + 1]);
+        $submittedOrder = array_values(array_filter($request->input('order')));
+        if (!empty($submittedOrder)) {
+            $globalSections = \App\Services\PageBlueprintService::getGlobalSections();
+            foreach ($submittedOrder as $index => $secKey) {
+                $secName = $globalSections[$secKey]['name'] ?? ucwords(str_replace('_', ' ', $secKey));
+                $page->sections()->updateOrCreate(
+                    ['section_key' => $secKey],
+                    [
+                        'order' => $index + 1,
+                        'is_active' => true,
+                        'section_name' => $secName,
+                    ]
+                );
+            }
+            $page->sections()->whereNotIn('section_key', $submittedOrder)->update(['is_active' => false]);
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Page sections reordered successfully.',
-            'order' => $request->input('order'),
+            'order' => $submittedOrder,
         ]);
     }
 
