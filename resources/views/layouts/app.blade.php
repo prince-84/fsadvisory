@@ -36,9 +36,7 @@
     <!-- Header Schemas: Organization, Dynamic FAQPage & RealEstateAgent (JSON-LD) -->
     {!! render_header_schemas($activePage ?? null, $blog ?? null) !!}
 
-    @if($headerScripts = site_setting('header_scripts'))
-    {!! $headerScripts !!}
-    @endif
+    @include('partials.seo-head-scripts')
 
     <!-- OpenGraph -->
     <meta property="og:title" content="{{ $pageMetaTitle }}">

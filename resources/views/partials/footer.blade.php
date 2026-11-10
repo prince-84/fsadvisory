@@ -7,8 +7,8 @@
         <div class="footerGrid Footer-module__S6Hkya__footerGrid">
             <!-- Col 1: Brand Logo & Description -->
             <div class="brandCol Footer-module__S6Hkya__brandCol">
-                <a href="/" class="logoLink Footer-module__S6Hkya__logoLink" style="text-decoration: none;">
-                    <span class="footerBrandText" style="font-size: 38px; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; line-height: 1.1; display: inline-block; font-family: 'Playfair Display', Georgia, serif;">{{ $fData->brand_title ?: 'Saima' }}</span>
+                <a href="/" class="logoLink Footer-module__S6Hkya__logoLink" style="text-decoration: none; display: inline-block; margin-bottom: 14px;">
+                    <img src="{{ asset('logo_saima.png') }}" alt="Saima Group" style="height: 54px; width: auto; object-fit: contain; display: block;">
                 </a>
                 <p class="brandDescription Footer-module__S6Hkya__brandDescription">
                     {{ $fData->brand_description ?: 'Saima trusted property advisory serving local and international buyers. We specialize in residential and investment properties, offering clear guidance, market insight, and long term value.' }}

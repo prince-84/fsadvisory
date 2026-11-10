@@ -200,6 +200,8 @@ Seamlessly renders dynamic page content from MySQL with zero-downtime fallbacks:
 
 ## 🌟 Key Architecture & Features
 
+> **Footer Logo**: `resources/views/partials/footer.blade.php` ab brand text ("Saima") ki jagah navbar wala `logo_saima.png` image dikhata hai. Koi DB/migration change nahi.
+
 ### 1. Database Integration (MySQL)
 - **Database Name**: `hudayriyat` (configured in `.env` via phpMyAdmin / XAMPP).
 - **Leads Table (`leads`)**:
@@ -1617,3 +1619,41 @@ php artisan optimize:clear
      - Auto-switches active pane to 'general' if an active section is removed from selection.
 - **Files changed**: `resources/views/admin/pages/edit.blade.php`, `README.md`.
 - **Database / Migrations**: No database tables or migrations modified.
+
+## Changelog — 2026-11-10 (Dynamic Page: Content & Property Cards Layout Priority)
+
+- **Requirement**:
+  1. When adding/editing a page, if **Short Content** is NOT provided (`article_intro` empty) and **Property Cards** ARE selected, the **Cards must appear at the top** (beside the appointment form), followed by **Long Content** (`article_summernote`) below the cards.
+  2. If **Short Content** IS provided and Property Cards ARE selected, the sequence must be: **Short Content first** (beside the appointment form) -> then **Property Cards** -> then **Long Content** below the cards.
+- **Fix**:
+  - In `resources/views/partials/article.blade.php`, pre-calculated property cards availability (`$pcHasCards`).
+  - Removed unconditional fallback rendering of `longContentHtml` before property cards when `hasShortContent` was false.
+  - When short content is empty and cards exist, cards render directly at the top of the column (`margin-top: 0px`), followed cleanly by long content rendered in `<section class="saimaLongContentSection" id="pageLongContent">` below the cards.
+  - When short content is provided, short content renders first with the inline smooth-scroll 'Read more' link, followed directly by project cards, followed by long content below.
+## Changelog — 2026-11-10 (Fix: Blade ParseError unexpected token 'else' in article.blade.php)
+
+- **Issue**: Opening newly created dynamic pages (e.g., `/danish`) caused a Laravel `ParseError: syntax error, unexpected token "else"` at `article.blade.php:1003`.
+- **Root Cause**: An accidental duplicate `@endif` block existed around line 905 inside the section subtitle rendering, which prematurely closed the outer `@if($isNewPage)` check before reaching `@else`.
+- **Fix**: Removed the duplicate lines from `resources/views/partials/article.blade.php`. Verified successful Blade template compilation and confirmed live rendering of `/danish`.
+- **Files changed**: `resources/views/partials/article.blade.php`, `README.md`.
+- **Database / Migrations**: No database tables or migrations modified.
+
+## Changelog — 2026-11-10 (Global Search Engine Verifications & Google Analytics Head Tags)
+
+- **Requirement**: Inject Webmaster verification meta tags (Google Search Console, Bing Webmaster, Yandex) and Google Analytics GA4 gtag.js scripts into the `<head>` of all website pages.
+- **Implemented Tags**:
+  1. **Google Search Console**: `<meta name="google-site-verification" content="Pm7-Vgw4thZ8OH-WltmZSRwDdqxp9q4Xn5mMU_06tRg" />`
+  2. **Bing Webmaster Tools**: `<meta name="msvalidate.01" content="E65C761395C7D12E4A6CFCB1B51CD0E8" />`
+  3. **Yandex Webmaster**: `<meta name="yandex-verification" content="433a6fd3c0ac4850" />`
+  4. **Google Analytics (GA4)**: `gtag.js` and `gtm.js` loader for ID `G-N3YF0EL0QY` with dataLayer initialization and `gtag('config', 'G-N3YF0EL0QY')`.
+- **Architecture**:
+  - Created centralized partial `resources/views/partials/seo-head-scripts.blade.php`.
+  - Injected into master layout (`layouts/app.blade.php`), universal dynamic pages (`dynamic-page.blade.php`), and all 10 legacy community pages (`resources/views/communities/*.blade.php`).
+  - Synced into CMS `site_settings` table under `seo_header_scripts` and `header_scripts` so the admin Global SEO panel (`/admin/seo`) displays these scripts.
+- **Files changed**:
+  - `resources/views/partials/seo-head-scripts.blade.php` (created)
+  - `resources/views/layouts/app.blade.php`
+  - `resources/views/dynamic-page.blade.php`
+  - `resources/views/communities/*.blade.php` (10 files)
+  - `README.md`
+- **Database / Migrations**: Existing `site_settings` key updated. No new tables or migrations created.

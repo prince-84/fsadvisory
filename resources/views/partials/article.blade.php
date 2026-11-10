@@ -61,7 +61,7 @@
 
     $hasProjectCards = $pageHasCommunitiesSec && (!empty($commSelectedIds) || !empty($commCustomItems));
 
-    $hasContentSection = $hasLongContent || $hasShortContent;
+    $hasContentSection = $hasLongContent || $hasShortContent || $hasProjectCards;
 @endphp
 
 @if($hasContentSection || $isSaimaMangrove)
@@ -838,38 +838,6 @@
                     @if($hasProjectCards)
                         {{-- SPLIT LAYOUT: Short Content + Blue Read More Link beside Appointment Form --}}
                         @php
-                            $readMoreLink = '<a href="#pageLongContent" class="saimaReadMoreInline" onclick="scrollToLongContent(event)" style="color: #2563eb; font-weight: 600; text-decoration: underline; cursor: pointer; margin-left: 6px; white-space: nowrap; font-size: inherit; display: inline;">Read more</a>';
-                            $shortWithReadMore = $shortContentHtml;
-                            if (!empty(trim((string)$shortWithReadMore))) {
-                                if (preg_match('/(\s*(?:<\/(?:p|div|h[1-6]|span|li|b|strong|em|i)>\s*)+)$/i', trim($shortWithReadMore))) {
-                                    $shortWithReadMore = preg_replace('/(\s*(?:<\/(?:p|div|h[1-6]|span|li|b|strong|em|i)>\s*)+)$/i', ' ' . $readMoreLink . '$1', trim($shortWithReadMore));
-                                } else {
-                                    $shortWithReadMore = trim($shortWithReadMore) . ' ' . $readMoreLink;
-                                }
-                            }
-                        @endphp
-                        @if($hasShortContent)
-                            <div class="saimaShortContent" style="font-size: 16.5px; line-height: 1.8; color: #2b2b2b;">
-                                {!! $shortWithReadMore !!}
-                            </div>
-                        @elseif($isSaimaMangrove)
-                            <p class="saimaIntroP">
-                                Saima Mangrove Residences is a new benchmark for living in the city’s waterfront. The project is a blend of contemporary design and a tranquil coastal setting. Residents enjoy fresh sea breezes and access to major urban destinations.
-                            </p>
-                            <p class="saimaIntroP">
-                                Saima Mangrove Residences Karachi is located on the banks of Korangi Creek Road and faces protected mangrove areas. The development offers a lifestyle for professionals, investors, and families inspired by a resort. Furthermore, the area has a peaceful atmosphere, which is away from the noise and hustle of the city center.
-                            </p>
-                            <p class="saimaIntroP">
-                                The project is a blend of luxury, convenience, and investment value. Hence, buyers can purchase a high-value waterfront property in one of the upcoming coastal areas of Karachi. {!! $readMoreLink !!}
-                            </p>
-                        @elseif($hasLongContent)
-                            <div class="saimaDynamicContent" style="font-size: 16.5px; line-height: 1.8; color: #2b2b2b;">
-                                {!! $longContentHtml !!}
-                            </div>
-                        @endif
-
-                        {{-- Project Cards directly below Short Content with minimal gap --}}
-                        @php
                             $pcSelectedIds = array_values(array_filter(
                                 (array)(page_section('communities', 'selected_ids', null, $page->slug)
                                     ?: page_section('communities', 'project_ids', null, $page->slug))
@@ -891,10 +859,43 @@
                             $pcHasCards = $pcDbProjects->isNotEmpty() || !empty($pcCustomItems);
                             $pcHeading  = page_section('communities', 'heading', 'Projects', $page->slug);
                             $pcSubtitle = page_section('communities', 'subtitle', '', $page->slug);
+
+                            $readMoreLink = '<a href="#pageLongContent" class="saimaReadMoreInline" onclick="scrollToLongContent(event)" style="color: #2563eb; font-weight: 600; text-decoration: underline; cursor: pointer; margin-left: 6px; white-space: nowrap; font-size: inherit; display: inline;">Read more</a>';
+                            $shortWithReadMore = $shortContentHtml;
+                            if (!empty(trim((string)$shortWithReadMore))) {
+                                if (preg_match('/(\s*(?:<\/(?:p|div|h[1-6]|span|li|b|strong|em|i)>\s*)+)$/i', trim($shortWithReadMore))) {
+                                    $shortWithReadMore = preg_replace('/(\s*(?:<\/(?:p|div|h[1-6]|span|li|b|strong|em|i)>\s*)+)$/i', ' ' . $readMoreLink . '$1', trim($shortWithReadMore));
+                                } else {
+                                    $shortWithReadMore = trim($shortWithReadMore) . ' ' . $readMoreLink;
+                                }
+                            }
                         @endphp
 
+                        @if($hasShortContent)
+                            {{-- Case: Short Content provided -> Shows first beside appointment form --}}
+                            <div class="saimaShortContent" style="font-size: 16.5px; line-height: 1.8; color: #2b2b2b;">
+                                {!! $shortWithReadMore !!}
+                            </div>
+                        @elseif($isSaimaMangrove)
+                            <p class="saimaIntroP">
+                                Saima Mangrove Residences is a new benchmark for living in the city’s waterfront. The project is a blend of contemporary design and a tranquil coastal setting. Residents enjoy fresh sea breezes and access to major urban destinations.
+                            </p>
+                            <p class="saimaIntroP">
+                                Saima Mangrove Residences Karachi is located on the banks of Korangi Creek Road and faces protected mangrove areas. The development offers a lifestyle for professionals, investors, and families inspired by a resort. Furthermore, the area has a peaceful atmosphere, which is away from the noise and hustle of the city center.
+                            </p>
+                            <p class="saimaIntroP">
+                                The project is a blend of luxury, convenience, and investment value. Hence, buyers can purchase a high-value waterfront property in one of the upcoming coastal areas of Karachi. {!! $readMoreLink !!}
+                            </p>
+                        @elseif(!$pcHasCards && $hasLongContent)
+                            {{-- Fallback: If no cards exist at all, display long content here --}}
+                            <div class="saimaDynamicContent" style="font-size: 16.5px; line-height: 1.8; color: #2b2b2b;">
+                                {!! $longContentHtml !!}
+                            </div>
+                        @endif
+
+                        {{-- Project Cards: If no short content, cards appear at the top; if short content provided, cards appear below it --}}
                         @if($pcHasCards)
-                            <div class="saimaInlineProjectsArea" id="saimaInlineProjectsArea" style="margin-top: 18px; margin-bottom: 10px;">
+                            <div class="saimaInlineProjectsArea" id="saimaInlineProjectsArea" style="margin-top: {{ $hasShortContent ? '18px' : '0px' }}; margin-bottom: 10px;">
                                 @if(!empty($pcHeading))
                                     <h2 style="font-size: 26px; font-weight: 700; color: #111827; margin: 0 0 10px 0; text-align: left;">{{ $pcHeading }}</h2>
                                     @if(!empty($pcSubtitle))
@@ -1443,7 +1444,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 6. Handle Direct URL Hash on Initial Page Load (e.g. /wadeem-gardens#about-the-developers)
     if (window.location.hash && window.location.hash.length > 1) {
         const initialHash = window.location.hash;
         setTimeout(function() {

@@ -7,6 +7,7 @@
     <title>Bashayer Villas | Hudayriyat Island Abu Dhabi</title>
     <!-- Header Schemas: Organization, Dynamic FAQPage & RealEstateAgent (JSON-LD) -->
     {!! render_header_schemas($page ?? null, null) !!}
+    @include('partials.seo-head-scripts')
 
     
     <!-- Google Fonts -->
