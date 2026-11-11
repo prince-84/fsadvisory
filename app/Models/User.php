@@ -6,11 +6,22 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Auditable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, \OwenIt\Auditing\Auditable;
+
+    /**
+     * Attributes to exclude from the Audit.
+     *
+     * @var array
+     */
+    protected $auditExclude = [
+        'password',
+        'remember_token',
+    ];
 
     protected $fillable = [
         'name',
@@ -43,6 +54,7 @@ class User extends Authenticatable
         'footer'  => 'Footer & Newsletter',
         'leads'   => 'Sales Leads & Inquiries',
         'users'   => 'Users & Permissions',
+        'audits'  => 'Audit Logs & Activity History',
     ];
 
     public const MODULES = [

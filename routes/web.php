@@ -229,6 +229,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::middleware('permission:users')->group(function () {
             Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         });
+
+        // Site Settings: Audit Logs & Activity History
+        Route::middleware('permission:audits')->group(function () {
+            Route::get('/audits', [\App\Http\Controllers\Admin\AuditController::class, 'index'])->name('audits.index');
+            Route::get('/audits/{id}', [\App\Http\Controllers\Admin\AuditController::class, 'show'])->name('audits.show');
+        });
     });
 });
 
@@ -314,13 +320,6 @@ Route::get('/project/{slug}', function ($slug) {
             return view($cleanSlug, compact('project'));
         }
         return view('dynamic-page', compact('project'));
-    }
-
-    // Check if cleanSlug is one of the static community templates
-    if (in_array($cleanSlug, \App\Models\Page::projectSlugs(), true)) {
-        if (view()->exists('communities.' . $cleanSlug)) {
-            return view('communities.' . $cleanSlug);
-        }
     }
 
     abort(404);

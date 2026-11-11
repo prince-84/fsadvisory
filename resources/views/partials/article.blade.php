@@ -3,11 +3,6 @@
     if ($articleSlug === '/' || empty($articleSlug)) {
         $articleSlug = '/';
     }
-    $originalCommunities = [
-        'wadeem-gardens', 'Saima-golf-estates', 'bashayer-villas', 'bashayer-residences',
-        'al-naseem-villas', 'nawayef-east-hills', 'masyaf-plots', 'nawayef-village',
-        'wadeem-plots', 'nawayef-park-views'
-    ];
     $cleanSlug = trim($articleSlug, '/');
     if ($cleanSlug === '' || $cleanSlug === '/') {
         $cleanSlug = 'home';

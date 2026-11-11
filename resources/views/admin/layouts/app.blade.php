@@ -178,7 +178,7 @@
 
 
         {{-- SITE SETTINGS (Matching Image 1) --}}
-        @if($adminUser->hasPermission('seo') || $adminUser->hasPermission('footer') || $adminUser->hasPermission('users'))
+        @if($adminUser->hasPermission('seo') || $adminUser->hasPermission('footer') || $adminUser->hasPermission('users') || $adminUser->hasPermission('audits'))
             <div class="site-settings-header">
                 <span>SITE SETTINGS</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
@@ -199,6 +199,12 @@
             @if($adminUser->hasPermission('users'))
                 <a href="{{ route('admin.users.index') }}" id="navUsers" class="adm-nav-link site-settings-link {{ request()->routeIs('admin.users.*') ? 'is-active' : '' }}">
                     @include('admin.partials.icon', ['name' => 'users', 'size' => 19]) Users & Permissions
+                </a>
+            @endif
+
+            @if($adminUser->hasPermission('audits'))
+                <a href="{{ route('admin.audits.index') }}" id="navAudits" class="adm-nav-link site-settings-link {{ request()->routeIs('admin.audits.*') ? 'is-active' : '' }}">
+                    @include('admin.partials.icon', ['name' => 'shield', 'size' => 19]) Audit Logs
                 </a>
             @endif
         @endif

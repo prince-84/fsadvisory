@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Page extends Model
+class Page extends Model implements Auditable
 {
-    use HasFactory;
+    use HasFactory, \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'title',
@@ -39,24 +40,10 @@ class Page extends Model
      */
     public static function projectSlugs(): array
     {
-        $static = [
-            'wadeem-gardens',
-            'saima-golf-estates',
-            'bashayer-residences',
-            'bashayer-villas',
-            'al-naseem-villas',
-            'nawayef-east-hills',
-            'masyaf-plots',
-            'nawayef-village',
-            'wadeem-plots',
-            'nawayef-park-views',
-        ];
-
         try {
-            $dbSlugs = Project::pluck('slug')->filter()->all();
-            return array_values(array_unique(array_merge($static, $dbSlugs)));
+            return Project::where('is_active', true)->pluck('slug')->filter()->values()->all();
         } catch (\Throwable $e) {
-            return $static;
+            return [];
         }
     }
 

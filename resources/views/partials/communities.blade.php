@@ -42,98 +42,6 @@ if (!empty($unselectedProjectIds) || !empty($selectedProjectIds)) {
 
 $hasDbProjects = $dbProjects->isNotEmpty();
 
-$communitiesData = [
-    [
-        'name' => 'Wadeem Gardens',
-        'image' => asset('images/communities/wadeem-gardens.png'),
-        'location' => 'Saima, Abu Dhabi',
-        'badges' => ['Off plan'],
-        'developer' => 'Modon Properties',
-        'paymentPlan' => 'Flexible Payment Plan',
-        'href' => '/project/wadeem-gardens',
-    ],
-    [
-        'name' => 'Saima Golf Estates',
-        'image' => asset('images/communities/golf-estates.jpg'),
-        'location' => 'Saima, Abu Dhabi',
-        'badges' => ['New'],
-        'developer' => 'Modon Properties',
-        'paymentPlan' => '5/35/60 Payment Plan',
-        'href' => '/project/Saima-golf-estates',
-    ],
-    [
-        'name' => 'Bashayer Residences',
-        'image' => asset('images/communities/bashayer-residences.jpg'),
-        'location' => 'Saima, Abu Dhabi',
-        'badges' => ['Off plan'],
-        'developer' => 'Modon Properties',
-        'paymentPlan' => '10/40/50 Payment Plan',
-        'href' => '/project/bashayer-residences',
-    ],
-    [
-        'name' => 'Nawayef East Hills',
-        'image' => asset('images/communities/nawayef-east.jpg'),
-        'location' => 'Saima, Abu Dhabi',
-        'badges' => ['Offer'],
-        'developer' => 'Modon Properties',
-        'paymentPlan' => '10/30/60 Payment Plan',
-        'href' => '/project/nawayef-east-hills',
-    ],
-    [
-        'name' => 'Bashayer Villas',
-        'image' => asset('images/communities/bashayer-villas.jpg'),
-        'location' => 'Saima, Abu Dhabi',
-        'badges' => ['Off plan'],
-        'developer' => 'Modon Properties',
-        'paymentPlan' => '20/30/50 Payment Plan',
-        'href' => '/project/bashayer-villas',
-    ],
-    [
-        'name' => 'Al Naseem Villas',
-        'image' => asset('images/communities/al-naseem.jpg'),
-        'location' => 'Saima, Abu Dhabi',
-        'badges' => ['Ready'],
-        'developer' => 'Modon Properties',
-        'paymentPlan' => '10/30/60 Payment Plan',
-        'href' => '/project/al-naseem-villas',
-    ],
-    [
-        'name' => 'Masyaf Plots',
-        'image' => asset('images/communities/masyaf-plots.jpg'),
-        'location' => 'Saima, Abu Dhabi',
-        'badges' => ['New'],
-        'developer' => 'Modon Properties',
-        'paymentPlan' => 'Payment Plan: Launch Soon',
-        'href' => '/project/masyaf-plots',
-    ],
-    [
-        'name' => 'Nawayef Village',
-        'image' => asset('images/communities/nawayef-village.jpg'),
-        'location' => 'Saima, Abu Dhabi',
-        'badges' => ['Off plan'],
-        'developer' => 'Modon Properties',
-        'paymentPlan' => '10/40/50 Payment Plan',
-        'href' => '/project/nawayef-village',
-    ],
-    [
-        'name' => 'Wadeem Plots',
-        'image' => asset('images/communities/wadeem-plots.jpg'),
-        'location' => 'Saima, Abu Dhabi',
-        'badges' => ['Off plan'],
-        'developer' => 'Modon Properties',
-        'paymentPlan' => '10/40/50 Payment Plan',
-        'href' => '/project/wadeem-plots',
-    ],
-    [
-        'name' => 'Nawayef Park Views',
-        'image' => asset('images/communities/nawayef-park-views.jpg'),
-        'location' => 'Saima, Abu Dhabi',
-        'badges' => ['Off plan'],
-        'developer' => 'Modon Properties',
-        'paymentPlan' => '10/40/50 Payment Plan',
-        'href' => '/project/nawayef-park-views',
-    ],
-];
 @endphp
 
 <section id="communities" aria-label="Featured Residential Projects and Communities" class="communitiesSection">
@@ -176,7 +84,7 @@ $communitiesData = [
                             <h3 class="cardTitle">{{ $item->title }}</h3>
 
                             <!-- Location -->
-                            <p class="cardLocation">{{ $item->location ?? 'Saima, Abu Dhabi' }}</p>
+                            <p class="cardLocation">{{ $item->location ?? 'Karachi, Pakistan' }}</p>
 
                             <!-- Big Green Rounded BOOK NOW Button -->
                             <div class="cardBookBtn">BOOK NOW</div>

@@ -200,6 +200,13 @@ Seamlessly renders dynamic page content from MySQL with zero-downtime fallbacks:
 
 ## 🌟 Key Architecture & Features
 
+> **Audit Logs & Activity History (`owen-it/laravel-auditing`) (2026-11-11)**:
+> - Package `owen-it/laravel-auditing` install kiya gaya hai aur migration `2026_11_11_091053_create_audits_table.php` ke zariye nayi `audits` table create ki gayi hai.
+> - Models (`Page`, `Project`, `City`, `Community`, `Amenity`, `Blog`, `SiteSetting`, `PageSection`, `User`) par auditing implement ki gayi hai taake har CRUD action (Created, Updated, Deleted) automatically log ho sake.
+> - Admin panel ke sidebar mein SITE SETTINGS ke andar **Audit Logs** (`/admin/audits`) add kiya gaya hai jismein stats cards, event/model/date filters, search, aur interactive Old vs New values comparison modal maujood hai.
+>
+> **Old Clone Communities Cleanup (2026-11-11)**: Purani clone website ke tamam 10 static Abu Dhabi/Hudayriyat community blade files (`resources/views/communities/`) delete kar diye gaye hain. `Page::projectSlugs()` ko dynamic banaya gaya hai jo ab sirf real active projects return karta hai. Blog sidebar aur communities partial se old hardcoded Abu Dhabi links hata kar dynamic database projects laga diye gaye hain.
+>
 > **Footer Logo**: `resources/views/partials/footer.blade.php` ab brand text ("Saima") ki jagah navbar wala `logo_saima.png` image dikhata hai. Koi DB/migration change nahi.
 
 ### 1. Database Integration (MySQL)
