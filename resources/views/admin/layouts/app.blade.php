@@ -293,6 +293,18 @@
     }), 6000);
 </script>
 
+<style>
+    /* Prevent Summernote modal backdrop from freezing or greying out the page */
+    .note-modal-backdrop {
+        display: none !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+</style>
+
 <!-- jQuery & Summernote Lite Scripts -->
 <script src="{{ asset('vendor/summernote/jquery-3.7.1.min.js') }}"></script>
 <script src="{{ asset('vendor/summernote/summernote-lite.min.js') }}?v={{ filemtime(public_path('vendor/summernote/summernote-lite.min.js')) }}"></script>
@@ -306,12 +318,87 @@
                 .replace(/\s+(?:id|class)=["']\s*["']/gi, '');
         }
 
+        function cleanupAllModalsAndBackdrops() {
+            $('.note-modal-backdrop, .modal-backdrop, .note-modal').remove();
+            $('body').removeClass('modal-open').css('overflow', '');
+        }
+
+        // Keep track of active Summernote editor and its saved range
+        window.currentActiveSummernote = null;
+
+        // Continuously save cursor range and track active editor on every click/typing
+        $(document).on('focus in keyup mouseup click', '.note-editable', function() {
+            const $ed = $(this).closest('.note-editor').prev('textarea.adm-summernote, textarea.summernote');
+            if ($ed.length) {
+                window.currentActiveSummernote = $ed;
+                $ed.summernote('saveRange');
+            }
+        });
+
+        // Global Image Upload Handler for Summernote WYSIWYG
+        window.uploadAndInsertSummernoteFile = function(file, $editor) {
+            if (!file) return;
+
+            // Target the designated editor, or last active, or first visible
+            let $target = ($editor && $editor.length) ? $editor : window.currentActiveSummernote;
+            if (!$target || !$target.length) {
+                $target = $('textarea.adm-summernote:visible:first');
+            }
+
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}');
+
+            const origCursor = document.body.style.cursor;
+            document.body.style.cursor = 'wait';
+
+            $.ajax({
+                url: '{{ route("admin.upload-content-image") }}',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                    document.body.style.cursor = origCursor;
+                    if (res && res.url) {
+                        // 1. Focus editor and restore exact saved cursor position
+                        $target.summernote('focus');
+                        $target.summernote('restoreRange');
+
+                        // 2. Insert image at exact cursor location
+                        $target.summernote('insertImage', res.url, function($img) {
+                            $img.css({
+                                'max-width': '100%',
+                                'height': 'auto',
+                                'border-radius': '8px',
+                                'margin': '15px 0',
+                                'display': 'block'
+                            });
+                        });
+
+                        // 3. Keep textarea synchronized
+                        const clean = stripAutoTagAttrs($target.summernote('code'));
+                        $target.val(clean);
+
+                        // 4. Clean up any open Summernote modal and backdrops
+                        cleanupAllModalsAndBackdrops();
+                    }
+                },
+                error: function(err) {
+                    document.body.style.cursor = origCursor;
+                    cleanupAllModalsAndBackdrops();
+                    alert('Image upload failed: ' + (err.responseJSON?.message || 'Please check file size and format (max 15MB).'));
+                }
+            });
+        };
+
         // Initialize Summernote on all textareas with .adm-summernote or .summernote
         function initSummernote(selector = '.adm-summernote, .summernote') {
             $(selector).each(function() {
                 if (!$(this).data('summernote-initialized')) {
                     const customHeight = $(this).data('height') || 200;
-                    $(this).summernote({
+                    const $thisTextarea = $(this);
+                    $thisTextarea.summernote({
                         height: customHeight,
                         minHeight: 120,
                         tabsize: 2,
@@ -334,28 +421,86 @@
                             'blockquote'
                         ],
                         callbacks: {
+                            onInit: function() {
+                                cleanupAllModalsAndBackdrops();
+                            },
+                            onFocus: function() {
+                                window.currentActiveSummernote = $thisTextarea;
+                                $thisTextarea.summernote('saveRange');
+                            },
+                            onImageUpload: function(files) {
+                                for (let i = 0; i < files.length; i++) {
+                                    window.uploadAndInsertSummernoteFile(files[i], $thisTextarea);
+                                }
+                            },
                             onChange: function(contents) {
-                                // Keep textarea value synchronized and stripped of auto IDs/classes
                                 const clean = stripAutoTagAttrs(contents);
-                                $(this).val(clean);
+                                $thisTextarea.val(clean);
                             },
                             onBlur: function() {
-                                $(this).summernote('saveRange');
+                                $thisTextarea.summernote('saveRange');
                             },
                             onKeyUp: function() {
-                                $(this).summernote('saveRange');
+                                $thisTextarea.summernote('saveRange');
                             },
                             onMouseUp: function() {
-                                $(this).summernote('saveRange');
+                                $thisTextarea.summernote('saveRange');
                             }
                         }
                     });
-                    $(this).data('summernote-initialized', true);
+                    $thisTextarea.data('summernote-initialized', true);
                 }
             });
         }
 
         initSummernote();
+
+        // Intercept Summernote toolbar picture button to save range and open OS File Picker directly
+        $(document).on('mousedown', '.note-btn[data-original-title="Picture"], .note-btn[aria-label="Picture"], button[data-name="picture"], button[data-event="showImageDialog"]', function() {
+            const $editor = $(this).closest('.note-editor').prev('textarea.adm-summernote, textarea.summernote');
+            if ($editor.length) {
+                window.currentActiveSummernote = $editor;
+                $editor.summernote('saveRange');
+            }
+        });
+
+        $(document).on('click', '.note-btn[data-original-title="Picture"], .note-btn[aria-label="Picture"], button[data-name="picture"], button[data-event="showImageDialog"]', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const $editor = $(this).closest('.note-editor').prev('textarea.adm-summernote, textarea.summernote');
+            if ($editor.length) {
+                window.currentActiveSummernote = $editor;
+                $editor.summernote('saveRange');
+            }
+            let $hiddenInput = $('#summernote_global_file_picker');
+            if (!$hiddenInput.length) {
+                $hiddenInput = $('<input type="file" id="summernote_global_file_picker" accept="image/*" style="display:none;">').appendTo('body');
+            }
+            $hiddenInput.off('change').on('change', function() {
+                if (this.files && this.files[0]) {
+                    window.uploadAndInsertSummernoteFile(this.files[0], window.currentActiveSummernote || $editor);
+                    this.value = '';
+                }
+            });
+            $hiddenInput.trigger('click');
+            cleanupAllModalsAndBackdrops();
+            return false;
+        });
+
+        // Fallback: If file is selected inside any Summernote modal, upload immediately to active editor
+        $(document).on('change', '.note-modal input[type="file"]', function() {
+            if (this.files && this.files[0]) {
+                window.uploadAndInsertSummernoteFile(this.files[0], window.currentActiveSummernote);
+                cleanupAllModalsAndBackdrops();
+            }
+        });
+
+        // Ensure backdrop is killed if any modal ever attempts to open
+        $(document).on('DOMNodeInserted', function(e) {
+            if ($(e.target).hasClass('note-modal-backdrop') || $(e.target).hasClass('modal-backdrop')) {
+                $(e.target).remove();
+            }
+        });
 
         // Ensure clean pure tags when toggling Code View
         $(document).on('click', '.note-btn[data-original-title="Code View"], .note-btn[aria-label="Code View"], .btn-codeview', function() {

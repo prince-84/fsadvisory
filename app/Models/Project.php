@@ -71,7 +71,7 @@ class Project extends Model implements Auditable
     public function getImageUrlAttribute(): string
     {
         if (empty($this->image)) {
-            return asset('images/communities/wadeem-gardens.png');
+            return '';
         }
 
         if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {

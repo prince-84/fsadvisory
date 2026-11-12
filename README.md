@@ -1664,3 +1664,162 @@ php artisan optimize:clear
   - `resources/views/communities/*.blade.php` (10 files)
   - `README.md`
 - **Database / Migrations**: Existing `site_settings` key updated. No new tables or migrations created.
+
+## Changelog — 2026-11-12 (City & Community CMS: Empty Add Fields, Strict Dynamic Data on Frontend, and Active Tab Persistence on Save)
+
+- **Requirement**:
+  1. **Empty Input Fields on Add**: When adding a new City (`/admin/cities`) or Community (`/admin/communities`), all section input fields (Hero badge, WYSIWYG Content, Project Cards headings, About narrative/video/poster, FAQ questions & answers, Contact headings & details) must start completely empty instead of pre-filled demo/placeholder values.
+  2. **No Hardcoded Data on Frontend**: When saving and viewing a City or Community page on the frontend (`/city/{slug}` or `/area/{slug}`), the page must only display data actually added via CMS. If a section or field is empty in the CMS, no hardcoded/fallback placeholder text or dummy content should appear.
+  3. **Stay on Current Section upon Save Changes**: When clicking save ("Save City Page", "Save Community", or "Save Changes"), administrators should remain on the same page and on the exact active section/tab they were editing rather than being redirected to the index listing.
+- **Changes Implemented**:
+  - **`app/Http/Controllers/Admin/CityController.php` & `app/Http/Controllers/Admin/CommunityController.php`**:
+    - `store()`: Removed all hardcoded string fallbacks (e.g. `"Explore Premier Properties..."`, `"Prime Investment Hub"`, `"Featured Projects in..."`). Empty inputs are stored cleanly as empty strings/nulls.
+    - `store()` redirect: Now passes `active_tab` and redirects directly to the newly created entity's edit route (`admin.cities.edit` or `admin.communities.edit`) with `?tab={activeTab}`, keeping the user directly on the section they just saved.
+    - `update()`: Removed restrictive `if ($request->filled(...))` blocks that prevented clearing content. Erasing or updating a field in CMS now properly updates and clears the database/JSON content. Preserves `?tab={activeTab}` on save.
+  - **`resources/views/admin/cities/index.blade.php` & `resources/views/admin/communities/index.blade.php`**:
+    - Removed all prefilled template text from Hero Badge, Summernote Content WYSIWYG editor, Project Cards headings, About Community headline/narrative/video/poster, FAQ items repeater, and Contact CTA details.
+    - Added hidden `<input type="hidden" name="active_tab" id="add_active_tab_input" value="general">` and synced `switchAddTab(tabId)` to track the active section when submitting the form.
+  - **`resources/views/admin/cities/edit.blade.php` & `resources/views/admin/communities/edit.blade.php`**:
+    - Removed hardcoded default FAQ questions injection (`$faqItems = is_array($faqItems) ? $faqItems : [];`).
+    - Removed hardcoded fallback strings from FAQ section title/subtitle inputs and About poster image.
+  - **`resources/views/dynamic-page.blade.php`, `resources/views/partials/page-about.blade.php`, `resources/views/partials/contact.blade.php`**:
+    - Contact Section: Gated with `$hasContactContent` check so it only renders if contact information was entered in CMS. Removed hardcoded marketing paragraphs from `partials/contact.blade.php`.
+    - About Section: Removed hardcoded `', Saima'` title suffix. Section only renders if description, poster, or video URL exists.
+    - FAQ Section: Confirmed strictly gated by `@if(!empty($dbFaqs))` so empty FAQs do not render.
+    - Content/TOC Section: Gated by `$hasContentSection` so empty WYSIWYG does not render empty blocks.
+- **Files Modified**:
+  - `app/Http/Controllers/Admin/CityController.php`
+  - `app/Http/Controllers/Admin/CommunityController.php`
+  - `resources/views/admin/cities/index.blade.php`
+  - `resources/views/admin/cities/edit.blade.php`
+  - `resources/views/admin/communities/index.blade.php`
+  - `resources/views/admin/communities/edit.blade.php`
+  - `resources/views/dynamic-page.blade.php`
+  - `resources/views/partials/page-about.blade.php`
+  - `resources/views/partials/contact.blade.php`
+  - `README.md`
+- **Database / Migrations**: No migrations created or table schemas altered.
+
+## Changelog — 2026-11-12 (Part 2: Karachi & Islamabad City Pages Section Data Reset & Clean Frontend Display)
+
+- **Requirement**:
+  1. Empty all section content for **Karachi** (`/city/karachi`) and **Islamabad** (`/city/islamabad`) city pages in the database while retaining their slugs and basic page records.
+  2. The page URL routes must continue to exist (HTTP 200), but appear completely empty on the frontend UI without dummy text or fallback hero sliders/forms.
+  3. Allow administrators to add data via CMS whenever desired, and ensure clearing fields in CMS correctly persists empty values.
+- **Changes Implemented**:
+  - **Database Records Reset**:
+    - Cleared all section data (`hero`, `content`, `communities`, `about`, `faq`, `contact`) in `page_sections` table for Karachi (`page_id: 65`) and Islamabad (`page_id: 86`).
+    - Cleared `body` on `pages` and `image` on `cities` table for both records.
+  - **`resources/views/dynamic-page.blade.php`**:
+    - Added `$hasHeroContent` gate before rendering `partials/page-hero`. If Hero title, subtitle, badge, and background image are not set in the CMS, the hero section is not rendered, preventing dummy fallback hero slides or forms from showing.
+  - **`app/Http/Controllers/Admin/CityController.php` & `app/Http/Controllers/Admin/CommunityController.php`**:
+    - Updated hero update handler to allow erasing background image (does not retain old image if text field is empty and no new file uploaded).
+    - Allowed clearing Hero H1 title without auto-forcing city/community name.
+  - **`resources/views/admin/cities/edit.blade.php` & `resources/views/admin/communities/edit.blade.php`**:
+    - Updated Hero Main Heading (H1) input to default to empty string (`value="{{ $heroContent['title'] ?? '' }}"`) with a placeholder, ensuring clean empty fields when editing pages with cleared hero data.
+- **Files Modified**:
+  - `app/Http/Controllers/Admin/CityController.php`
+  - `app/Http/Controllers/Admin/CommunityController.php`
+  - `resources/views/admin/cities/edit.blade.php`
+  - `resources/views/admin/communities/edit.blade.php`
+  - `resources/views/dynamic-page.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Data rows updated in `cities`, `pages`, and `page_sections` tables (Karachi and Islamabad records). Schema unchanged.
+
+## Changelog — 2026-11-12 (Part 3: Complete Removal of Dummy "Wadeem Gardens" Legacy Data Across CMS & Frontend)
+
+- **Bug Identification**:
+  - The card **"Wadeem Gardens"** (with location `"Hudayriyat Island, Abu Dhabi"`) was appearing on `/area/pidc` and multiple city/community pages even though it was never added to the CMS by the user and did not exist in the `projects` table.
+  - **Root Cause**:
+    1. Legacy database rows in `page_sections` table (`section_key = 'communities'`) contained a seeded fallback JSON `items` array: `[{"name":"Wadeem Gardens","location":"Hudayriyat Island, Abu Dhabi",...}]`.
+    2. In frontend Blade templates (`partials/page-communities.blade.php`, `partials/article.blade.php`, `dynamic-page.blade.php`), when no real projects were selected by the user (`selected_ids` is empty), the templates fell back to `@elseif(!empty($secCommunities))` or `@elseif(!empty($pcCustomItems))`, rendering the dummy Wadeem Gardens card.
+- **Changes Implemented**:
+  1. **Database Cleanup**:
+     - Scanned all database tables (`page_sections`, `pages`, `cities`, `communities`, `projects`).
+     - Removed the dummy `Wadeem Gardens` items array from all 12 affected `page_sections` rows (Sections 471, 495, 567, 595, 601, 618, 635, 669, 675, 692, 731, 770).
+     - Cleared default fallback headings where `selected_ids` was empty.
+     - Cleared legacy `og_image` on `pages` (ID 85) that pointed to `wadeem-gardens.png`.
+  2. **Template Hardening (No Dummy Fallbacks)**:
+     - `resources/views/partials/page-communities.blade.php`: Completely removed the `@elseif(!empty($secCommunities))` fallback loop. If `$hasDbProjects` is false (no real projects selected from the CMS `projects` table), the template returns immediately and renders nothing.
+     - `resources/views/dynamic-page.blade.php`: Removed `$hasCommItems` trigger; only renders the Project Cards section if `$hasSelProjects` is true.
+     - `resources/views/partials/article.blade.php`: Removed `@elseif(!empty($pcCustomItems))` fallback loop; only renders project cards if real database projects are selected.
+  3. **Model & Controller Cleanup**:
+     - `app/Models/Project.php`: Removed fallback image URL pointing to `/images/communities/wadeem-gardens.png`.
+     - `app/Http/Controllers/Admin/PageController.php`: Removed fallback image paths pointing to `/images/communities/wadeem-gardens.png`.
+- **Files Modified**:
+  - `app/Models/Project.php`
+  - `app/Http/Controllers/Admin/PageController.php`
+  - `resources/views/partials/page-communities.blade.php`
+  - `resources/views/partials/article.blade.php`
+  - `resources/views/dynamic-page.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Cleaned dummy data rows in `page_sections` and `pages` tables. Schema unchanged.
+
+## Changelog — 2026-11-12 (Part 4: Direct Image Upload / File Picker in Content WYSIWYG Editor)
+
+- **Requirement**:
+  - In the Content section of Project detail pages (`/admin/projects/{id}/edit`) and Dynamic pages (`/admin/pages/{id}/edit`), clicking the image button showed a confusing modal asking for an "Image URL" with a disabled "Insert Image" button instead of allowing the administrator to choose a file directly from their computer (`choose file kersakho`).
+  - Fix the Content section so administrators can directly select image files from their computer and have them uploaded and inserted into the article.
+- **Changes Implemented**:
+  1. **Backend Route & Controller Endpoint**:
+     - Added endpoint `POST /admin/upload-content-image` in `routes/web.php` mapped to `AdminPageController::uploadContentImage`.
+     - Validates incoming image files, stores them in `public/uploads/content/`, and returns `{ success: true, url: "/uploads/content/..." }`.
+  2. **Summernote Global Integration (`admin/layouts/app.blade.php`)**:
+     - Added `window.uploadAndInsertSummernoteFile(file, $editor)` function that sends selected files via AJAX and inserts clean, responsive `<img>` tags (`max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0;`).
+     - Added `callbacks.onImageUpload` in Summernote options.
+     - Intercepted Summernote toolbar Picture button to directly trigger the native OS File Chooser dialog, completely bypassing the confusing "Image URL" modal.
+     - Added fallback listener for file selection inside any open Summernote dialog.
+  3. **Direct UI "Choose File & Insert Image" Buttons**:
+     - Added explicit `[ 📷 Choose File & Insert Image ]` buttons above the Content WYSIWYG editors in:
+       - `resources/views/admin/pages/edit.blade.php` (Content & Short Content tabs for Projects and Dynamic Pages).
+       - `resources/views/admin/projects/index.blade.php` (Add Project Drawer Content tab).
+       - `resources/views/admin/pages/index.blade.php` (Add Page Drawer Content tabs).
+       - `resources/views/admin/cities/edit.blade.php` & `resources/views/admin/communities/edit.blade.php`.
+- **Files Modified**:
+  - `routes/web.php`
+  - `app/Http/Controllers/Admin/PageController.php`
+  - `resources/views/admin/layouts/app.blade.php`
+  - `resources/views/admin/pages/edit.blade.php`
+  - `resources/views/admin/projects/index.blade.php`
+  - `resources/views/admin/pages/index.blade.php`
+  - `resources/views/admin/cities/edit.blade.php`
+  - `resources/views/admin/communities/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged. Uploaded images are stored in `public/uploads/content/`.
+
+## Changelog — 2026-11-12 (Part 5: Fix Content Editor Cursor Range, Unfreeze Page Clicks, and Isolate Long vs Short Content)
+
+- **Issues Reported**:
+  1. **Page Unclickable / Frozen Overlay**: After inserting an image in the content editor, the entire admin page was unclickable and had a dark gray overlay.
+     - *Root Cause*: Summernote Lite's modal injected a `.note-modal-backdrop` fixed overlay covering the entire viewport with `z-index: 1040`.
+  2. **Image Inserted at Top Instead of Below Target Text**: When selecting an image, it was being placed at the very beginning of the editor (offset 0) instead of below the text where the user had clicked/placed their cursor.
+     - *Root Cause*: Summernote lost its range selection when clicking buttons or opening file pickers, and `restoreRange` was not being called before `insertImage`.
+  3. **Image Leaking into Short Content**: On dynamic pages with both Short Content and Long Content, inserting an image sometimes affected Short Content instead of Long Content.
+     - *Root Cause*: When focus was lost, the upload function fell back to the first visible textarea on the page (`$('textarea.adm-summernote:visible:first')`), which was Short Content.
+- **Changes Implemented**:
+  1. **Removed All Backdrops & Unfroze UI**:
+     - Added global CSS `.note-modal-backdrop { display: none !important; pointer-events: none !important; }` in `admin/layouts/app.blade.php`.
+     - Added automated backdrop cleanup (`cleanupAllModalsAndBackdrops()`) on upload success, upload error, and DOM mutations, permanently preventing frozen overlays.
+  2. **Exact Cursor Range Restoration**:
+     - Summernote now continuously saves cursor range (`saveRange`) on `focus`, `keyup`, `mouseup`, and `click`.
+     - When clicking any "Choose File & Insert Image" button or the toolbar Picture icon, `onmousedown` explicitly saves the cursor range on that specific editor.
+     - Before inserting the image, the exact saved range is restored (`$target.summernote('focus'); $target.summernote('restoreRange'); $target.summernote('insertImage', res.url)`), placing the image directly at the exact position/paragraph where the cursor was located.
+  3. **Strict Isolation Between Long & Short Content**:
+     - Each file upload button explicitly binds to its corresponding textarea element (`content_wysiwyg` for Long Content, `content_intro` for Short Content), ensuring images never cross-contaminate between editors.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `resources/views/admin/pages/edit.blade.php`
+  - `resources/views/admin/projects/index.blade.php`
+  - `resources/views/admin/pages/index.blade.php`
+  - `resources/views/admin/cities/edit.blade.php`
+  - `resources/views/admin/communities/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.

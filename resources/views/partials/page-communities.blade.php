@@ -34,14 +34,7 @@
         $hasDbProjects = $dbProjects->isNotEmpty();
     }
 
-    $rawSecCommunities = page_section('communities', 'items', null, $page->slug ?? null);
-    $secCommunities = is_array($rawSecCommunities) ? array_values(array_filter($rawSecCommunities, function($it) {
-        return is_array($it) && (!empty(trim($it['name'] ?? '')) || !empty(trim($it['title'] ?? '')));
-    })) : [];
-
-    $hasCardsToRender = $hasDbProjects || !empty($secCommunities);
-
-    if (!$hasCardsToRender) {
+    if (!$hasDbProjects) {
         return;
     }
 @endphp
@@ -89,31 +82,6 @@
                             <p class="cardLocation">{{ $item->location ?? 'Saima, Pakistan' }}</p>
 
                             <!-- Big Green Rounded BOOK NOW Button -->
-                            <div class="cardBookBtn">BOOK NOW</div>
-                        </div>
-                    </a>
-                @endforeach
-            @elseif(!empty($secCommunities))
-                @foreach($secCommunities as $index => $item)
-                    @php
-                        $imgSrc = $item['image'] ?? '/images/communities/wadeem-gardens.png';
-                        $cardHref = $item['href'] ?? ($item['link'] ?? '#');
-                        $isSoldOut = !empty($item['status']) && $item['status'] === 'sold_out';
-                        $badges = (array)($item['badges'] ?? []);
-                    @endphp
-                    <a href="{{ $cardHref }}" class="cardCustom" style="text-decoration: none; cursor: pointer;" aria-label="{{ $item['name'] ?? ($item['title'] ?? '') }}">
-                        <div class="topTags">
-                            @foreach($badges as $badge)
-                                <span class="badgeTag">{{ $badge }}</span>
-                            @endforeach
-                        </div>
-                        @if($isSoldOut)
-                            <span class="soldOutBadge">Sold out</span>
-                        @endif
-                        <img src="{{ $imgSrc }}" alt="{{ $item['name'] ?? ($item['title'] ?? '') }}" class="mainImage" loading="lazy">
-                        <div class="bottomContent">
-                            <h3 class="cardTitle">{{ $item['name'] ?? ($item['title'] ?? '') }}</h3>
-                            <p class="cardLocation">{{ $item['location'] ?? 'Saima, Pakistan' }}</p>
                             <div class="cardBookBtn">BOOK NOW</div>
                         </div>
                     </a>

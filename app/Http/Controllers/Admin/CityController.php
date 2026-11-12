@@ -53,7 +53,7 @@ class CityController extends Controller
         $isActive = ($status !== 'draft');
 
         // Hero Background Image Handling
-        $heroBgImage = '/images/hero/slide-1.jpg';
+        $heroBgImage = '';
         if ($request->hasFile('hero_image_file')) {
             $file = $request->file('hero_image_file');
             $uploadDir = public_path('images/cities');
@@ -83,10 +83,10 @@ class CityController extends Controller
             'navbar_order'     => ((int) Page::max('navbar_order')) + 1,
             'status'           => $status,
             'is_published'     => $isActive,
-            'meta_title'       => $request->input('meta_title') ?: ($name . ' Properties | Luxury Investment & Community Guide'),
-            'meta_description' => $request->input('meta_description') ?: ("Explore luxury waterfront homes, real estate, and investment projects in {$name}."),
-            'meta_keywords'    => $request->input('meta_keywords') ?: ("{$name}, real estate in {$name}, properties for sale in {$name}"),
-            'og_image'         => $heroBgImage,
+            'meta_title'       => $request->input('meta_title', ''),
+            'meta_description' => $request->input('meta_description', ''),
+            'meta_keywords'    => $request->input('meta_keywords', ''),
+            'og_image'         => $heroBgImage ?: null,
         ]);
 
         // 2. Attach only the requested 6 vertical sections in order:
@@ -125,8 +125,8 @@ class CityController extends Controller
             $hContent = $heroSec->content ?? [];
             $hContent['bg_image'] = $heroBgImage;
             $hContent['title'] = $request->input('sections.hero.title') ?: $name;
-            $hContent['subtitle'] = $request->input('sections.hero.subtitle') ?: "Explore Premier Properties & Real Estate Investment in {$name}";
-            $hContent['badge'] = $request->input('sections.hero.badge') ?: 'Prime Investment Hub';
+            $hContent['subtitle'] = $request->input('sections.hero.subtitle', '');
+            $hContent['badge'] = $request->input('sections.hero.badge', '');
             $heroSec->update(['content' => $hContent]);
         }
 
@@ -134,20 +134,13 @@ class CityController extends Controller
         $contentSec = $page->sections()->where('section_key', 'content')->first();
         if ($contentSec) {
             $cContent = $contentSec->content ?? [];
-            if ($request->filled('sections.content.title')) {
-                $cContent['title'] = $request->input('sections.content.title');
-            }
-            if ($request->filled('sections.content.intro')) {
-                $cContent['intro'] = $request->input('sections.content.intro');
-            }
-            if ($request->filled('sections.content.html')) {
-                $cContent['html'] = $request->input('sections.content.html');
-                $cContent['body'] = $request->input('sections.content.html');
-                $page->update(['body' => $request->input('sections.content.html')]);
-            }
-            if ($request->filled('sections.content.appt_title')) {
-                $cContent['appt_title'] = $request->input('sections.content.appt_title');
-            }
+            $cContent['title'] = $request->input('sections.content.title', '');
+            $cContent['intro'] = $request->input('sections.content.intro', '');
+            $html = $request->input('sections.content.html', '');
+            $cContent['html'] = $html;
+            $cContent['body'] = $html;
+            $cContent['appt_title'] = $request->input('sections.content.appt_title', '');
+            $page->update(['body' => $html ?: null]);
             $contentSec->update(['content' => $cContent]);
         }
 
@@ -155,8 +148,8 @@ class CityController extends Controller
         $commSec = $page->sections()->where('section_key', 'communities')->first();
         if ($commSec) {
             $commContent = $commSec->content ?? [];
-            $commContent['heading'] = $request->input('sections.communities.heading') ?: ("Featured Projects in " . $name);
-            $commContent['subtitle'] = $request->input('sections.communities.subtitle') ?: ("Explore premier residential developments and waterfront master communities in " . $name);
+            $commContent['heading'] = $request->input('sections.communities.heading', '');
+            $commContent['subtitle'] = $request->input('sections.communities.subtitle', '');
             
             $selectedCardIds = $request->input('selected_project_ids', []);
             $cleanSelectedIds = array_values(array_filter(array_map('intval', (array)$selectedCardIds)));
@@ -169,16 +162,12 @@ class CityController extends Controller
         $aboutSec = $page->sections()->where('section_key', 'about')->first();
         if ($aboutSec) {
             $aContent = $aboutSec->content ?? [];
-            if ($request->filled('sections.about.heading')) {
-                $aContent['heading'] = $request->input('sections.about.heading');
-                $aContent['title'] = $request->input('sections.about.heading');
-            }
-            if ($request->filled('sections.about.description')) {
-                $aContent['description'] = $request->input('sections.about.description');
-            }
-            if ($request->filled('sections.about.video_url')) {
-                $aContent['video_url'] = $request->input('sections.about.video_url');
-            }
+            $aHeading = $request->input('sections.about.heading') ?? $request->input('sections.about.title', '');
+            $aContent['heading'] = $aHeading;
+            $aContent['title'] = $aHeading;
+            $aContent['description'] = $request->input('sections.about.description', '');
+            $aContent['video_url'] = $request->input('sections.about.video_url', '');
+            $aPoster = $request->input('sections.about.poster_image', '');
             if ($request->hasFile('about_poster_file')) {
                 $file = $request->file('about_poster_file');
                 $uploadDir = public_path('images/cities');
@@ -187,12 +176,10 @@ class CityController extends Controller
                 }
                 $safeName = time() . '_about_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
                 $file->move($uploadDir, $safeName);
-                $aContent['poster_image'] = '/images/cities/' . $safeName;
-                $aContent['video_poster'] = '/images/cities/' . $safeName;
-            } elseif ($request->filled('sections.about.poster_image')) {
-                $aContent['poster_image'] = $request->input('sections.about.poster_image');
-                $aContent['video_poster'] = $request->input('sections.about.poster_image');
+                $aPoster = '/images/cities/' . $safeName;
             }
+            $aContent['poster_image'] = $aPoster;
+            $aContent['video_poster'] = $aPoster;
             $aboutSec->update(['content' => $aContent]);
         }
 
@@ -200,16 +187,10 @@ class CityController extends Controller
         $faqSec = $page->sections()->where('section_key', 'faq')->first();
         if ($faqSec) {
             $fContent = $faqSec->content ?? [];
-            if ($request->filled('sections.faq.title')) {
-                $fContent['title'] = $request->input('sections.faq.title');
-                $fContent['heading'] = $request->input('sections.faq.title');
-            } elseif ($request->filled('sections.faq.heading')) {
-                $fContent['heading'] = $request->input('sections.faq.heading');
-                $fContent['title'] = $request->input('sections.faq.heading');
-            }
-            if ($request->filled('sections.faq.subtitle')) {
-                $fContent['subtitle'] = $request->input('sections.faq.subtitle');
-            }
+            $fTitle = $request->input('sections.faq.title') ?? $request->input('sections.faq.heading', '');
+            $fContent['title'] = $fTitle;
+            $fContent['heading'] = $fTitle;
+            $fContent['subtitle'] = $request->input('sections.faq.subtitle', '');
 
             if ($request->has('faq_q') && is_array($request->input('faq_q'))) {
                 $qs = (array) $request->input('faq_q');
@@ -225,6 +206,8 @@ class CityController extends Controller
                 $fContent['items'] = $items;
             } elseif (!empty($submittedSections['faq']['items']) && is_array($submittedSections['faq']['items'])) {
                 $fContent['items'] = array_values(array_filter($submittedSections['faq']['items'], fn($item) => !empty(trim($item['q'] ?? ($item['question'] ?? '')))));
+            } else {
+                $fContent['items'] = [];
             }
             $faqSec->update(['content' => $fContent]);
         }
@@ -233,26 +216,21 @@ class CityController extends Controller
         $contactSec = $page->sections()->where('section_key', 'contact')->first();
         if ($contactSec) {
             $ctContent = $contactSec->content ?? [];
-            if (!empty($submittedSections['contact']['title'])) {
-                $ctContent['title'] = $submittedSections['contact']['title'];
-            }
-            if (!empty($submittedSections['contact']['subtitle'])) {
-                $ctContent['subtitle'] = $submittedSections['contact']['subtitle'];
-            }
-            if (!empty($submittedSections['contact']['button_text'])) {
-                $ctContent['button_text'] = $submittedSections['contact']['button_text'];
-            }
-            if (!empty($submittedSections['contact']['phone'])) {
-                $ctContent['phone'] = $submittedSections['contact']['phone'];
-            }
-            if (!empty($submittedSections['contact']['email'])) {
-                $ctContent['email'] = $submittedSections['contact']['email'];
-            }
+            $cHeading = $request->input('sections.contact.heading') ?? ($request->input('sections.contact.title') ?? ($submittedSections['contact']['heading'] ?? ($submittedSections['contact']['title'] ?? '')));
+            $ctContent['heading'] = $cHeading;
+            $ctContent['title'] = $cHeading;
+            $ctContent['subtitle'] = $request->input('sections.contact.subtitle') ?? ($submittedSections['contact']['subtitle'] ?? '');
+            $cBtnText = $request->input('sections.contact.btn_text') ?? ($request->input('sections.contact.button_text') ?? ($submittedSections['contact']['btn_text'] ?? ($submittedSections['contact']['button_text'] ?? '')));
+            $ctContent['btn_text'] = $cBtnText;
+            $ctContent['button_text'] = $cBtnText;
+            $ctContent['submit_button'] = $cBtnText;
+            $ctContent['phone'] = $request->input('sections.contact.phone') ?? ($submittedSections['contact']['phone'] ?? '');
+            $ctContent['email'] = $request->input('sections.contact.email') ?? ($submittedSections['contact']['email'] ?? '');
             $contactSec->update(['content' => $ctContent]);
         }
 
         // 4. Create City record
-        City::create([
+        $city = City::create([
             'name'      => $name,
             'slug'      => $uniqueSlug,
             'page_id'   => $page->id,
@@ -262,7 +240,9 @@ class CityController extends Controller
             'is_active' => $isActive,
         ]);
 
-        return redirect()->route('admin.cities.index')->with('success', "City '{$name}' created successfully!");
+        $activeTab = $request->input('active_tab', 'general');
+        return redirect()->route('admin.cities.edit', ['city' => $city->id, 'tab' => $activeTab])
+            ->with('success', "City '{$name}' created successfully! Changes are saved.");
     }
 
     /**
@@ -340,13 +320,14 @@ class CityController extends Controller
                     $file->move(public_path('images/cities'), $filename);
                     $hContent['bg_image'] = '/images/cities/' . $filename;
                     $city->update(['image' => '/images/cities/' . $filename]);
-                } elseif ($request->filled('sections.hero.bg_image')) {
-                    $hContent['bg_image'] = $request->input('sections.hero.bg_image');
-                    $city->update(['image' => $request->input('sections.hero.bg_image')]);
+                } else {
+                    $bgImg = $request->input('sections.hero.bg_image', '');
+                    $hContent['bg_image'] = $bgImg;
+                    $city->update(['image' => $bgImg ?: null]);
                 }
-                $hContent['title'] = $request->input('sections.hero.title') ?: $name;
-                $hContent['subtitle'] = $request->input('sections.hero.subtitle') ?: "Explore Premier Properties & Real Estate Investment in {$name}";
-                $hContent['badge'] = $request->input('sections.hero.badge') ?: 'Prime Investment Hub';
+                $hContent['title'] = $request->input('sections.hero.title', '');
+                $hContent['subtitle'] = $request->input('sections.hero.subtitle', '');
+                $hContent['badge'] = $request->input('sections.hero.badge', '');
                 $heroSec->update(['content' => $hContent]);
             }
 
@@ -354,14 +335,13 @@ class CityController extends Controller
             $contentSec = $page->sections()->where('section_key', 'content')->first();
             if ($contentSec) {
                 $cContent = $contentSec->content ?? [];
-                if ($request->filled('sections.content.title')) $cContent['title'] = $request->input('sections.content.title');
-                if ($request->filled('sections.content.intro')) $cContent['intro'] = $request->input('sections.content.intro');
-                if ($request->filled('sections.content.html')) {
-                    $cContent['html'] = $request->input('sections.content.html');
-                    $cContent['body'] = $request->input('sections.content.html');
-                    $page->update(['body' => $request->input('sections.content.html')]);
-                }
-                if ($request->filled('sections.content.appt_title')) $cContent['appt_title'] = $request->input('sections.content.appt_title');
+                $cContent['title'] = $request->input('sections.content.title', '');
+                $cContent['intro'] = $request->input('sections.content.intro', '');
+                $html = $request->input('sections.content.html', '');
+                $cContent['html'] = $html;
+                $cContent['body'] = $html;
+                $cContent['appt_title'] = $request->input('sections.content.appt_title', '');
+                $page->update(['body' => $html ?: null]);
                 $contentSec->update(['content' => $cContent]);
             }
 
@@ -369,8 +349,8 @@ class CityController extends Controller
             $commSec = $page->sections()->where('section_key', 'communities')->first();
             if ($commSec) {
                 $commContent = $commSec->content ?? [];
-                if ($request->filled('sections.communities.heading')) $commContent['heading'] = $request->input('sections.communities.heading');
-                if ($request->filled('sections.communities.subtitle')) $commContent['subtitle'] = $request->input('sections.communities.subtitle');
+                $commContent['heading'] = $request->input('sections.communities.heading', '');
+                $commContent['subtitle'] = $request->input('sections.communities.subtitle', '');
                 if ($request->has('selected_project_ids')) {
                     $cleanSelectedIds = array_values(array_filter(array_map('intval', (array)$request->input('selected_project_ids'))));
                     $commContent['selected_ids'] = $cleanSelectedIds;
@@ -386,24 +366,21 @@ class CityController extends Controller
             $aboutSec = $page->sections()->where('section_key', 'about')->first();
             if ($aboutSec) {
                 $aContent = $aboutSec->content ?? [];
-                if ($request->filled('sections.about.title')) $aContent['title'] = $request->input('sections.about.title');
-                if ($request->filled('sections.about.heading')) {
-                    $aContent['heading'] = $request->input('sections.about.heading');
-                    $aContent['title'] = $request->input('sections.about.heading');
-                }
-                if ($request->filled('sections.about.description')) $aContent['description'] = $request->input('sections.about.description');
-                if ($request->filled('sections.about.video_url')) $aContent['video_url'] = $request->input('sections.about.video_url');
-                if ($request->filled('sections.about.video_poster')) $aContent['video_poster'] = $request->input('sections.about.video_poster');
-                if ($request->filled('sections.about.poster_image')) {
-                    $aContent['poster_image'] = $request->input('sections.about.poster_image');
-                    $aContent['video_poster'] = $request->input('sections.about.poster_image');
-                }
+                $aHeading = $request->input('sections.about.heading') ?? $request->input('sections.about.title', '');
+                $aContent['heading'] = $aHeading;
+                $aContent['title'] = $aHeading;
+                $aContent['description'] = $request->input('sections.about.description', '');
+                $aContent['video_url'] = $request->input('sections.about.video_url', '');
                 if ($request->hasFile('about_poster_file')) {
                     $file = $request->file('about_poster_file');
                     $safeName = time() . '_about_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
                     $file->move(public_path('images/cities'), $safeName);
                     $aContent['video_poster'] = '/images/cities/' . $safeName;
                     $aContent['poster_image'] = '/images/cities/' . $safeName;
+                } elseif ($request->has('sections.about.poster_image')) {
+                    $aPoster = $request->input('sections.about.poster_image', '');
+                    $aContent['poster_image'] = $aPoster;
+                    $aContent['video_poster'] = $aPoster;
                 }
                 $aboutSec->update(['content' => $aContent]);
             }
@@ -412,14 +389,10 @@ class CityController extends Controller
             $faqSec = $page->sections()->where('section_key', 'faq')->first();
             if ($faqSec) {
                 $fContent = $faqSec->content ?? [];
-                if ($request->filled('sections.faq.title')) {
-                    $fContent['title'] = $request->input('sections.faq.title');
-                    $fContent['heading'] = $request->input('sections.faq.title');
-                } elseif ($request->filled('sections.faq.heading')) {
-                    $fContent['heading'] = $request->input('sections.faq.heading');
-                    $fContent['title'] = $request->input('sections.faq.heading');
-                }
-                if ($request->filled('sections.faq.subtitle')) $fContent['subtitle'] = $request->input('sections.faq.subtitle');
+                $fTitle = $request->input('sections.faq.title') ?? $request->input('sections.faq.heading', '');
+                $fContent['title'] = $fTitle;
+                $fContent['heading'] = $fTitle;
+                $fContent['subtitle'] = $request->input('sections.faq.subtitle', '');
 
                 if ($request->has('faq_q') && is_array($request->input('faq_q'))) {
                     $qs = (array) $request->input('faq_q');
@@ -435,6 +408,8 @@ class CityController extends Controller
                     $fContent['items'] = $items;
                 } elseif ($request->has('sections.faq.items') && is_array($request->input('sections.faq.items'))) {
                     $fContent['items'] = array_values(array_filter($request->input('sections.faq.items'), fn($i) => !empty(trim($i['q'] ?? ($i['question'] ?? '')))));
+                } else {
+                    $fContent['items'] = [];
                 }
                 $faqSec->update(['content' => $fContent]);
             }
@@ -443,11 +418,16 @@ class CityController extends Controller
             $contactSec = $page->sections()->where('section_key', 'contact')->first();
             if ($contactSec) {
                 $ctContent = $contactSec->content ?? [];
-                if ($request->filled('sections.contact.title')) $ctContent['title'] = $request->input('sections.contact.title');
-                if ($request->filled('sections.contact.subtitle')) $ctContent['subtitle'] = $request->input('sections.contact.subtitle');
-                if ($request->filled('sections.contact.button_text')) $ctContent['button_text'] = $request->input('sections.contact.button_text');
-                if ($request->filled('sections.contact.phone')) $ctContent['phone'] = $request->input('sections.contact.phone');
-                if ($request->filled('sections.contact.email')) $ctContent['email'] = $request->input('sections.contact.email');
+                $cHeading = $request->input('sections.contact.heading') ?? $request->input('sections.contact.title', '');
+                $ctContent['heading'] = $cHeading;
+                $ctContent['title'] = $cHeading;
+                $ctContent['subtitle'] = $request->input('sections.contact.subtitle', '');
+                $cBtnText = $request->input('sections.contact.btn_text') ?? $request->input('sections.contact.button_text', '');
+                $ctContent['btn_text'] = $cBtnText;
+                $ctContent['button_text'] = $cBtnText;
+                $ctContent['submit_button'] = $cBtnText;
+                $ctContent['phone'] = $request->input('sections.contact.phone', '');
+                $ctContent['email'] = $request->input('sections.contact.email', '');
                 $contactSec->update(['content' => $ctContent]);
             }
         }

@@ -343,7 +343,7 @@ class PageController extends Controller
                     $itemName = trim($raw['name'] ?? '');
                     $itemHref = trim($raw['href'] ?? '');
                     if (!empty($itemName) || !empty($itemHref)) {
-                        $img = trim($raw['image'] ?? '/images/communities/wadeem-gardens.png');
+                        $img = trim($raw['image'] ?? '');
 
                         if ($request->hasFile("communities_items.{$idx}.image_file")) {
                             $file = $request->file("communities_items.{$idx}.image_file");
@@ -560,7 +560,7 @@ class PageController extends Controller
                 'developer'   => $proj->developer ?: 'Saima Group',
                 'paymentPlan' => $proj->payment_plan ?: 'Flexible Payment Plan',
                 'href'        => $href,
-                'image'       => $proj->image ?: '/images/communities/wadeem-gardens.png',
+                'image'       => $proj->image ?: '',
             ];
         }
         return $items;
@@ -1228,5 +1228,32 @@ class PageController extends Controller
         $html = preg_replace('/\s*(?:class|id)\s*=\s*["\']\s*["\']/i', '', $html);
 
         return $html;
+    }
+
+    /**
+     * Upload an image inserted via Content Section (Summernote WYSIWYG).
+     */
+    public function uploadContentImage(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'image' => ['required', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif,svg', 'max:15360'],
+        ]);
+
+        $file = $request->file('image');
+        $uploadDir = public_path('uploads/content');
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $safeName = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+        $file->move($uploadDir, $safeName);
+
+        $url = '/uploads/content/' . $safeName;
+
+        return response()->json([
+            'success' => true,
+            'url'     => $url,
+            'full_url'=> asset($url),
+        ]);
     }
 }

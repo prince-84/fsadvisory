@@ -276,7 +276,19 @@
 @endphp
 @foreach($orderedSections as $sec)
     @if($sec->section_key === 'hero')
-        @include('partials.page-hero')
+        @php
+            $rawHeroTitle = page_section('hero', 'title', null, $page->slug);
+            $rawHeroSub = page_section('hero', 'subtitle', null, $page->slug);
+            $rawHeroBg = page_section('hero', 'bg_image', null, $page->slug);
+            $rawHeroBadge = page_section('hero', 'badge', null, $page->slug);
+            $hasHeroContent = !empty(trim((string)$rawHeroTitle)) 
+                || !empty(trim((string)$rawHeroSub)) 
+                || (!empty(trim((string)$rawHeroBg)) && $rawHeroBg !== '/hero.png')
+                || !empty(trim((string)$rawHeroBadge));
+        @endphp
+        @if($hasHeroContent)
+            @include('partials.page-hero')
+        @endif
     @elseif($sec->section_key === 'highlights')
         @include('partials.page-highlights')
     @elseif($sec->section_key === 'about')
@@ -512,15 +524,22 @@
         </section>
         @endif
     @elseif($sec->section_key === 'contact')
-        @include('partials.contact')
+        @php
+            $hasContactContent = !empty(trim((string)page_section('contact', 'heading', page_section('contact', 'title', '', $page->slug), $page->slug)))
+                || !empty(trim((string)page_section('contact', 'subtitle', '', $page->slug)))
+                || !empty(trim((string)page_section('contact', 'phone', '', $page->slug)))
+                || !empty(trim((string)page_section('contact', 'email', '', $page->slug)))
+                || !empty(trim((string)page_section('contact', 'pretitle', '', $page->slug)));
+        @endphp
+        @if($hasContactContent)
+            @include('partials.contact')
+        @endif
     @elseif($sec->section_key === 'communities' && !$communitiesRendered && empty($GLOBALS['communitiesRenderedGlobal']))
         @php
             $rawSelCommIds = page_section('communities', 'selected_ids', [], $page->slug) ?: page_section('communities', 'project_ids', [], $page->slug);
             $hasSelProjects = !empty(array_filter((array)$rawSelCommIds));
-            $rawCommItems = page_section('communities', 'items', [], $page->slug);
-            $hasCommItems = is_array($rawCommItems) && !empty(array_filter($rawCommItems, fn($it) => is_array($it) && (!empty(trim($it['name'] ?? '')) || !empty(trim($it['title'] ?? '')))));
         @endphp
-        @if($hasSelProjects || $hasCommItems)
+        @if($hasSelProjects)
             @php $communitiesRendered = true; @endphp
             @include('partials.page-communities')
         @endif

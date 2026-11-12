@@ -1029,9 +1029,16 @@
                         @if(!$isProjectOrCommunity)
                             <!-- 1. Short Content (Summernote) - Only for Dynamic Custom Pages -->
                             <div class="adm-field" style="margin-bottom: 24px;">
-                                <label class="adm-label" for="content_intro_{{ $sec->id }}" style="font-weight: 700; font-size: 13px; color: #111827; margin-bottom: 6px; display: block;">
-                                    Short Content
-                                </label>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                                    <label class="adm-label" for="content_intro_{{ $sec->id }}" style="font-weight: 700; font-size: 13px; color: #111827; margin-bottom: 0; display: block;">
+                                        Short Content
+                                    </label>
+                                    <label for="content_intro_file_{{ $sec->id }}" class="adm-btn" onmousedown="$('#content_intro_{{ $sec->id }}').summernote('saveRange'); window.currentActiveSummernote = $('#content_intro_{{ $sec->id }}');" style="background: #1a4731; color: #ffffff; padding: 5px 12px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                        Choose File &amp; Insert Image
+                                    </label>
+                                    <input type="file" id="content_intro_file_{{ $sec->id }}" accept="image/*" style="display: none;" onchange="if(this.files && this.files[0]){ window.uploadAndInsertSummernoteFile(this.files[0], $('#content_intro_{{ $sec->id }}')); this.value=''; }">
+                                </div>
                                 <textarea id="content_intro_{{ $sec->id }}"
                                           name="sections[{{ $sec->section_key }}][intro]"
                                           class="adm-textarea adm-summernote"
@@ -1044,16 +1051,23 @@
 
                         <!-- Main / Long Content (Summernote) -->
                         <div class="adm-field">
-                            @if(!$isProjectOrCommunity)
-                                <label class="adm-label" for="content_wysiwyg_{{ $sec->id }}" style="font-weight: 700; font-size: 13px; color: #111827; margin-bottom: 6px; display: block;">
-                                    Long Content
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                                @if(!$isProjectOrCommunity)
+                                    <label class="adm-label" for="content_wysiwyg_{{ $sec->id }}" style="font-weight: 700; font-size: 13px; color: #111827; margin-bottom: 0;">
+                                        Long Content
+                                    </label>
+                                @else
+                                    <label class="adm-label" for="content_wysiwyg_{{ $sec->id }}" style="margin-bottom: 0;">
+                                        <span>{{ $sec->section_name ?: 'Content' }} (Summernote Editor)</span>
+                                        <span class="adm-chip">html / wysiwyg</span>
+                                    </label>
+                                @endif
+                                <label for="content_img_file_{{ $sec->id }}" class="adm-btn" onmousedown="$('#content_wysiwyg_{{ $sec->id }}').summernote('saveRange'); window.currentActiveSummernote = $('#content_wysiwyg_{{ $sec->id }}');" style="background: #1a4731; color: #ffffff; padding: 6px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                    Choose File &amp; Insert Image
                                 </label>
-                            @else
-                                <label class="adm-label" for="content_wysiwyg_{{ $sec->id }}">
-                                    <span>{{ $sec->section_name ?: 'Content' }} (Summernote Editor)</span>
-                                    <span class="adm-chip">html / wysiwyg</span>
-                                </label>
-                            @endif
+                                <input type="file" id="content_img_file_{{ $sec->id }}" accept="image/*" style="display: none;" onchange="if(this.files && this.files[0]){ window.uploadAndInsertSummernoteFile(this.files[0], $('#content_wysiwyg_{{ $sec->id }}')); this.value=''; }">
+                            </div>
                             <textarea id="content_wysiwyg_{{ $sec->id }}"
                                       name="sections[{{ $sec->section_key }}][html]"
                                       class="adm-textarea adm-summernote"

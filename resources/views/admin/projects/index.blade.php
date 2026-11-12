@@ -785,7 +785,14 @@
                         </div>
 
                         <div class="adm-field">
-                            <label class="adm-label">Page Article &amp; Community Body (Headings, Paragraphs, Images)</label>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                                <label class="adm-label" style="margin-bottom: 0;">Page Article &amp; Community Body (Headings, Paragraphs, Images)</label>
+                                <label for="proj_add_content_file_btn" class="adm-btn" onmousedown="$('#add_content_wysiwyg').summernote('saveRange'); window.currentActiveSummernote = $('#add_content_wysiwyg');" style="background: #1a4731; color: #ffffff; padding: 6px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                    Choose File &amp; Insert Image
+                                </label>
+                                <input type="file" id="proj_add_content_file_btn" accept="image/*" style="display: none;" onchange="if(this.files && this.files[0]){ window.uploadAndInsertSummernoteFile(this.files[0], $('#add_content_wysiwyg')); this.value=''; }">
+                            </div>
                             <textarea name="sections[content][html]" id="add_content_wysiwyg" class="adm-textarea adm-summernote" data-height="500" rows="22" placeholder="Write or paste your custom article content, headings, and images here..."></textarea>
                         </div>
                     </div>

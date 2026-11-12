@@ -862,17 +862,31 @@
                                 </div>
                                     <!-- 1. Short Content (Summernote) -->
                                     <div style="margin-bottom:18px;">
-                                        <label class="adm-label" for="articleShortSummernote" style="font-weight:700; font-size:13px; color:#111827; margin-bottom:6px; display:block;">
-                                            Short Content
-                                        </label>
+                                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                                            <label class="adm-label" for="articleShortSummernote" style="font-weight:700; font-size:13px; color:#111827; margin-bottom:0; display:block;">
+                                                Short Content
+                                            </label>
+                                            <label for="page_add_short_file_btn" class="adm-btn" onmousedown="$('#articleShortSummernote').summernote('saveRange'); window.currentActiveSummernote = $('#articleShortSummernote');" style="background: #1a4731; color: #ffffff; padding: 5px 12px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                                Choose File &amp; Insert Image
+                                            </label>
+                                            <input type="file" id="page_add_short_file_btn" accept="image/*" style="display: none;" onchange="if(this.files && this.files[0]){ window.uploadAndInsertSummernoteFile(this.files[0], $('#articleShortSummernote')); this.value=''; }">
+                                        </div>
                                         <textarea id="articleShortSummernote" name="article_intro" class="adm-summernote" placeholder="Enter short content..." style="min-height:160px;"></textarea>
                                     </div>
 
                                     <!-- 2. Long Content (Summernote) -->
                                     <div style="margin-bottom:14px;">
-                                        <label class="adm-label" for="articleLongSummernote" style="font-weight:700; font-size:13px; color:#111827; margin-bottom:6px; display:block;">
-                                            Long Content
-                                        </label>
+                                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                                            <label class="adm-label" for="articleLongSummernote" style="font-weight:700; font-size:13px; color:#111827; margin-bottom:0; display:block;">
+                                                Long Content
+                                            </label>
+                                            <label for="page_add_long_file_btn" class="adm-btn" onmousedown="$('#articleLongSummernote').summernote('saveRange'); window.currentActiveSummernote = $('#articleLongSummernote');" style="background: #1a4731; color: #ffffff; padding: 5px 12px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                                Choose File &amp; Insert Image
+                                            </label>
+                                            <input type="file" id="page_add_long_file_btn" accept="image/*" style="display: none;" onchange="if(this.files && this.files[0]){ window.uploadAndInsertSummernoteFile(this.files[0], $('#articleLongSummernote')); this.value=''; }">
+                                        </div>
                                         <textarea id="articleLongSummernote" name="article_summernote" class="adm-summernote" placeholder="Enter long content..." style="min-height:220px;"></textarea>
                                     </div>
                                 </div>

@@ -197,11 +197,8 @@
                 $selectedProjectIds = [];
             }
             $faqItems = $faqItems ?? ($faqContent['items'] ?? []);
-            if (!is_array($faqItems) || empty($faqItems)) {
-                $faqItems = [
-                    ['q' => 'Are properties in this city freehold for foreign and overseas investors?', 'a' => 'Yes, designated luxury master developments offer 100% freehold ownership for local and international buyers with complete title deed registration.'],
-                    ['q' => 'What are the typical payment plans available?', 'a' => 'Flexible installment plans are offered typically linked to construction milestones, with down payments starting from 5% to 10%.'],
-                ];
+            if (!is_array($faqItems)) {
+                $faqItems = [];
             }
         @endphp
 
@@ -337,7 +334,7 @@
                     </div>
                     <div class="adm-field">
                         <label class="adm-label">Hero Main Heading (H1)</label>
-                        <input type="text" name="sections[hero][title]" value="{{ $heroContent['title'] ?? $community->name }}" class="adm-input">
+                        <input type="text" name="sections[hero][title]" value="{{ $heroContent['title'] ?? '' }}" placeholder="e.g. {{ $community->name }}" class="adm-input">
                     </div>
                     <div class="adm-field">
                         <label class="adm-label">Hero Subtitle</label>
@@ -365,7 +362,14 @@
                     </div>
 
                     <div class="adm-field">
-                        <label class="adm-label">Page Article &amp; Community Body (Headings, Paragraphs, Images)</label>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                            <label class="adm-label" style="margin-bottom: 0;">Page Article &amp; Community Body (Headings, Paragraphs, Images)</label>
+                            <label for="comm_edit_content_file_btn" class="adm-btn" onmousedown="$('#edit_content_wysiwyg').summernote('saveRange'); window.currentActiveSummernote = $('#edit_content_wysiwyg');" style="background: #1a4731; color: #ffffff; padding: 6px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                Choose File &amp; Insert Image
+                            </label>
+                            <input type="file" id="comm_edit_content_file_btn" accept="image/*" style="display: none;" onchange="if(this.files && this.files[0]){ window.uploadAndInsertSummernoteFile(this.files[0], $('#edit_content_wysiwyg')); this.value=''; }">
+                        </div>
                         <textarea name="sections[content][html]" id="edit_content_wysiwyg" class="adm-textarea adm-summernote" data-height="500" rows="22">{{ $tocContent['html'] ?? ($tocContent['body'] ?? '') }}</textarea>
                     </div>
                 </div>
@@ -498,12 +502,13 @@
                     <div class="adm-field">
                         <label class="adm-label">Video Poster / Cover Image</label>
                         <div class="adm-img-box" style="display: flex; gap: 14px; align-items: center; background: #faf8f5; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px;">
-                            <img id="preview_edit_about_poster" src="{{ $aboutContent['poster_image'] ?? ($aboutContent['video_poster'] ?? '/images/projects/poster.jpg') }}" style="width: 100px; height: 62px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff;" alt="Poster">
+                            @php $aboutPosterVal = $aboutContent['poster_image'] ?? ($aboutContent['video_poster'] ?? ''); @endphp
+                            <img id="preview_edit_about_poster" src="{{ $aboutPosterVal }}" style="width: 100px; height: 62px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; {{ empty($aboutPosterVal) ? 'display: none;' : '' }}" alt="Poster">
                             <div style="flex: 1;">
                                 <div style="margin-bottom: 8px;">
-                                    <input type="file" name="about_poster_file" accept="image/*" class="adm-input" style="padding: 6px 10px;" onchange="if(this.files && this.files[0]){const r=new FileReader();r.onload=e=>document.getElementById('preview_edit_about_poster').src=e.target.result;r.readAsDataURL(this.files[0]);}">
+                                    <input type="file" name="about_poster_file" accept="image/*" class="adm-input" style="padding: 6px 10px;" onchange="if(this.files && this.files[0]){const r=new FileReader();r.onload=e=>{const img=document.getElementById('preview_edit_about_poster'); img.src=e.target.result; img.style.display='block';};r.readAsDataURL(this.files[0]);}">
                                 </div>
-                                <input type="text" id="edit_about_poster" name="sections[about][poster_image]" value="{{ $aboutContent['poster_image'] ?? ($aboutContent['video_poster'] ?? '/images/projects/poster.jpg') }}" class="adm-input" oninput="document.getElementById('preview_edit_about_poster').src = this.value">
+                                <input type="text" id="edit_about_poster" name="sections[about][poster_image]" value="{{ $aboutPosterVal }}" placeholder="/images/projects/poster.jpg" class="adm-input" oninput="const img=document.getElementById('preview_edit_about_poster'); if(this.value){img.src=this.value; img.style.display='block';}else{img.style.display='none';}">
                             </div>
                         </div>
                     </div>
@@ -521,12 +526,12 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
                         <div class="adm-field" style="margin-bottom: 0;">
                             <label class="adm-label">FAQ Section Title</label>
-                            <input type="text" name="sections[faq][title]" value="{{ $faqContent['title'] ?? 'Frequently Asked Questions' }}" class="adm-input">
+                            <input type="text" name="sections[faq][title]" value="{{ $faqContent['title'] ?? '' }}" placeholder="e.g. Frequently Asked Questions" class="adm-input">
                         </div>
 
                         <div class="adm-field" style="margin-bottom: 0;">
                             <label class="adm-label">FAQ Subtitle</label>
-                            <input type="text" name="sections[faq][subtitle]" value="{{ $faqContent['subtitle'] ?? 'Find answers to common questions about properties, buying process, and payment plans.' }}" class="adm-input">
+                            <input type="text" name="sections[faq][subtitle]" value="{{ $faqContent['subtitle'] ?? '' }}" placeholder="e.g. Find answers to common questions..." class="adm-input">
                         </div>
                     </div>
 

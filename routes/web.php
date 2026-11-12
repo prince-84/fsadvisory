@@ -148,6 +148,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::patch('/pages/{page}/toggle-published', [AdminPageController::class, 'togglePublished'])->name('pages.toggle-published');
             Route::patch('/pages/{page}/status', [AdminPageController::class, 'updateStatus'])->name('pages.status');
             Route::post('/pages/{page}/reorder-sections', [AdminPageController::class, 'reorderSections'])->name('pages.reorder-sections');
+            Route::post('/upload-content-image', [AdminPageController::class, 'uploadContentImage'])->name('upload-content-image');
 
             // Projects CMS (Dedicated Property Cards Manager)
             Route::get('/projects', [AdminProjectController::class, 'index'])->name('projects.index');

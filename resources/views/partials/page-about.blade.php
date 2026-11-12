@@ -1,10 +1,10 @@
 @php
-    $aboutTitle = page_section('about', 'title', $page->title . ', Saima', $page->slug);
+    $aboutTitle = page_section('about', 'heading', page_section('about', 'title', $page->title, $page->slug), $page->slug);
     $aboutDesc = page_section('about', 'description', '', $page->slug);
-    $aboutPoster = page_section('about', 'video_poster', '', $page->slug);
-    $aboutVideo = page_section('about', 'video_src', '', $page->slug);
+    $aboutPoster = page_section('about', 'poster_image', page_section('about', 'video_poster', '', $page->slug), $page->slug);
+    $aboutVideo = page_section('about', 'video_url', page_section('about', 'video_src', '', $page->slug), $page->slug);
 @endphp
-@if(!empty(trim(strip_tags((string)$aboutDesc))) || !empty($aboutPoster))
+@if(!empty(trim(strip_tags((string)$aboutDesc))) || !empty($aboutPoster) || !empty($aboutVideo))
 <style>
 .GolfAboutVideo-module__mC9tiq__description p {
     margin-top: 0 !important;

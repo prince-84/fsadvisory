@@ -49,12 +49,7 @@
     $rawCommSelectedIds = (array)(page_section('communities', 'selected_ids', [], $articleSlug) ?: page_section('communities', 'project_ids', [], $articleSlug));
     $commSelectedIds = array_values(array_filter($rawCommSelectedIds));
 
-    $rawCommCustomItems = (array)page_section('communities', 'items', [], $articleSlug);
-    $commCustomItems = array_values(array_filter($rawCommCustomItems, function($it) {
-        return is_array($it) && (!empty(trim($it['name'] ?? '')) || !empty(trim($it['title'] ?? '')));
-    }));
-
-    $hasProjectCards = $pageHasCommunitiesSec && (!empty($commSelectedIds) || !empty($commCustomItems));
+    $hasProjectCards = $pageHasCommunitiesSec && !empty($commSelectedIds);
 
     $hasContentSection = $hasLongContent || $hasShortContent || $hasProjectCards;
 @endphp
@@ -917,30 +912,6 @@
                                                 <div class="bottomContent">
                                                     <h3 class="cardTitle">{{ $pcItem->title }}</h3>
                                                     <p class="cardLocation">{{ $pcItem->location ?? 'Saima, Pakistan' }}</p>
-                                                    <div class="cardBookBtn">BOOK NOW</div>
-                                                </div>
-                                            </a>
-                                        @endforeach
-                                    @elseif(!empty($pcCustomItems))
-                                        @foreach($pcCustomItems as $pcItem)
-                                            @php
-                                                $pcImgSrc  = $pcItem['image'] ?? '/images/communities/wadeem-gardens.png';
-                                                $pcHref    = $pcItem['href'] ?? ($pcItem['link'] ?? '#');
-                                                $pcSoldOut = !empty($pcItem['sold_out']);
-                                                $pcTitle   = $pcItem['name'] ?? ($pcItem['title'] ?? '');
-                                                $pcLoc     = $pcItem['location'] ?? ($pcItem['subtitle'] ?? 'Saima, Pakistan');
-                                            @endphp
-                                            <a href="{{ $pcHref }}" class="cardCustom" style="text-decoration: none; cursor: pointer;" aria-label="{{ $pcTitle }}">
-                                                <div class="topTags">
-                                                    @if(!empty($pcItem['badges']) && is_array($pcItem['badges']))
-                                                        @foreach($pcItem['badges'] as $badge)<span class="badgeTag">{{ $badge }}</span>@endforeach
-                                                    @endif
-                                                </div>
-                                                @if($pcSoldOut)<span class="soldOutBadge">Sold out</span>@endif
-                                                <img src="{{ $pcImgSrc }}" alt="{{ $pcTitle }} luxury property" class="mainImage" loading="lazy">
-                                                <div class="bottomContent">
-                                                    <h3 class="cardTitle">{{ $pcTitle }}</h3>
-                                                    <p class="cardLocation">{{ $pcLoc }}</p>
                                                     <div class="cardBookBtn">BOOK NOW</div>
                                                 </div>
                                             </a>

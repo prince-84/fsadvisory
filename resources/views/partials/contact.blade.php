@@ -15,11 +15,20 @@
         <div class="contactGrid">
             <!-- Left: Text Info -->
             <div class="contactTextCol">
-                <span class="contactPreTitle">{{ page_section('contact', 'pretitle', "LET'S CONNECT") }}</span>
-                <h2 class="contactMainTitle">{{ page_section('contact', 'heading', 'Invest in Your Future') }}</h2>
-                <p class="contactMainSubtitle">
-                    {{ page_section('contact', 'subtitle', 'Discover exceptional residential villas, waterfront mansions, and prime plots across Saima. Connect with our dedicated property advisory team for personalized guidance and private viewings.') }}
-                </p>
+                @php
+                    $contactPre = page_section('contact', 'pretitle', '', $page->slug ?? null);
+                    $contactHeading = page_section('contact', 'heading', page_section('contact', 'title', '', $page->slug ?? null), $page->slug ?? null);
+                    $contactSub = page_section('contact', 'subtitle', '', $page->slug ?? null);
+                @endphp
+                @if(!empty(trim((string)$contactPre)))
+                    <span class="contactPreTitle">{{ $contactPre }}</span>
+                @endif
+                @if(!empty(trim((string)$contactHeading)))
+                    <h2 class="contactMainTitle">{{ $contactHeading }}</h2>
+                @endif
+                @if(!empty(trim((string)$contactSub)))
+                    <p class="contactMainSubtitle">{{ $contactSub }}</p>
+                @endif
             </div>
 
             <!-- Right: Form Card -->

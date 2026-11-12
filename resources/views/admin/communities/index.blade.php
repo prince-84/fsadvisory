@@ -306,6 +306,7 @@
     <div id="addCommFormContainer" style="display: none; margin-bottom: 30px;">
         <form method="POST" action="{{ route('admin.communities.store') }}" enctype="multipart/form-data" id="addCommForm">
             @csrf
+            <input type="hidden" name="active_tab" id="add_active_tab_input" value="general">
 
             <!-- Live URL Preview Bar -->
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
@@ -452,14 +453,14 @@
 
                         <div class="adm-field">
                             <label class="adm-label" for="add_hero_badge">Badge / Pill Text</label>
-                            <input type="text" id="add_hero_badge" name="sections[hero][badge]" value="Prime Real Estate Destination" class="adm-input">
+                            <input type="text" id="add_hero_badge" name="sections[hero][badge]" value="" placeholder="e.g. Prime Community" class="adm-input">
                         </div>
 
                         <div class="adm-field">
                             <label class="adm-label">Hero Background Image</label>
                             <input type="file" name="hero_image_file" accept="image/*" class="adm-input" style="padding: 7px 10px;">
                             <div style="margin-top: 6px; font-size: 12px; color: #64748b;">Or provide an image URL:</div>
-                            <input type="text" name="sections[hero][bg_image]" placeholder="/images/hero/slide-1.jpg" class="adm-input" style="margin-top: 4px;">
+                            <input type="text" name="sections[hero][bg_image]" placeholder="/images/communities/hero.jpg" class="adm-input" style="margin-top: 4px;">
                         </div>
                     </div>
 
@@ -475,45 +476,7 @@
 
                         <div class="adm-field">
                             <label class="adm-label">Page Article &amp; Community Body (Headings, Paragraphs, Images)</label>
-                            <textarea name="sections[content][html]" id="add_content_wysiwyg" class="adm-textarea adm-summernote" data-height="500" rows="22"><p class="saimaIntroP">A premier benchmark for luxury waterfront living, seamlessly blending contemporary architectural elegance with a tranquil coastal sanctuary. Residents enjoy fresh sea breezes, private beach access, and immediate connectivity to key metropolitan hubs.</p>
-<p class="saimaIntroP">Located along prestigious shoreline corridors, the community offers an inspired lifestyle for professionals, investors, and families seeking refined island elegance away from urban congestion.</p>
-<p class="saimaIntroP">Every residence offers a harmonious blend of sophistication, security, and long-term capital appreciation, presenting an extraordinary investment opportunity in one of the most coveted coastal addresses.</p>
-
-<h2 id="about-the-developers">About the Developers</h2>
-<p>Crafted by premier developers renowned for shaping iconic waterfront communities across the region for decades. Buyers and international investors benefit from a celebrated track record of timely delivery, construction excellence, and sustainable urban design.</p>
-<p>Working alongside leading international architectural consultants and market advisory firms, every aspect of the project is engineered to global standards of prestige and durability.</p>
-
-<h2 id="project-approvals-noc">Approvals &amp; Clearances</h2>
-<p>The project holds full regulatory clearance and title approvals from all relevant municipal and developmental authorities. Complying strictly with environmental and structural guidelines, purchasers can invest with absolute peace of mind and secure freehold ownership.</p>
-
-<h2 id="prime-location-connectivity">Prime Location &amp; Seamless Connectivity</h2>
-<p>Set within a scenic coastal landscape, the project offers rapid access to international airports, commercial business districts, premier private schools, and luxury retail destinations.</p>
-<p><img src="/TOC1.png" alt="Strategic Location &amp; Connectivity Map" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); width: 100%; margin: 15px 0;"></p>
-<p>Surrounded by protected green reserves and pristine waters, residents wake up to panoramic coastal vistas and unpolluted air throughout the year.</p>
-
-<h2 id="architectural-excellence-floor-plans">Architectural Excellence &amp; Floor Plans</h2>
-<p>The layouts focus on space efficiency, panoramic natural lighting, and seamless indoor-outdoor living with spacious private terraces and balconies.</p>
-
-<h3 id="contemporary-luxury-layouts">Curated Residences &amp; Layout Types</h3>
-<p><img src="/TOC2.png" alt="Luxury Layout Plan - Type C" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); margin: 10px 0;"></p>
-<p>Featuring open-plan living rooms, floor-to-ceiling double-glazed windows, designer show kitchens, and lavish en-suite master bedrooms designed for modern family living.</p>
-
-<p><img src="/TOC3.png" alt="Executive Layout Plan - Type B" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); margin: 10px 0;"></p>
-<p>Expansive terraces provide seamless entertaining spaces overlooking lush landscaped courtyards and the sparkling coastline.</p>
-
-<p><img src="/TOC4.png" alt="Presidential Villa Layout Plan - Type A" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); margin: 10px 0;"></p>
-<p>Generous multi-level accommodations including private elevators, maid's quarters, private swimming pools, and dedicated family lounges.</p>
-
-<h2 id="master-plan-community-lifestyle">Master Plan &amp; Community Lifestyle</h2>
-<p>The community master plan establishes a secure, private, and walkable residential haven. Dedicated subterranean parking ensures pedestrian safety across surface walkways, cycling trails, and waterfront boardwalks.</p>
-<p><img src="/TOC8.png" alt="Community Master Plan Overview" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); margin: 10px 0;"></p>
-
-<h2 id="flexible-payment-plan">Flexible Investment &amp; Payment Plan</h2>
-<p>A buyer-friendly, construction-linked payment structure is offered with flexible milestones, making property acquisition straightforward and stress-free.</p>
-<p><img src="/TOC12.png" alt="Milestone Payment Structure" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); margin: 10px 0;"></p>
-
-<h2 id="world-class-amenities">World-Class Facilities &amp; Amenities</h2>
-<p>Enjoy infinity swimming pools, state-of-the-art fitness centres, private beach cabanas, children's play areas, multi-sport courts, and fine-dining waterfront restaurants just steps from your front door.</p></textarea>
+                            <textarea name="sections[content][html]" id="add_content_wysiwyg" class="adm-textarea adm-summernote" data-height="500" rows="22"></textarea>
                         </div>
                     </div>
 
@@ -522,18 +485,18 @@
                         <div class="adm-card-head">
                             <div>
                                 <h2>Project Card (Featured Properties)</h2>
-                                <p>Select which property cards appear in this city's featured projects section.</p>
+                                <p>Select which property cards appear in this community's featured projects section.</p>
                             </div>
                         </div>
 
                         <div class="adm-field">
                             <label class="adm-label" for="add_comm_heading">Section Heading</label>
-                            <input type="text" id="add_comm_heading" name="sections[communities][heading]" value="Featured Projects" class="adm-input">
+                            <input type="text" id="add_comm_heading" name="sections[communities][heading]" value="" placeholder="e.g. Featured Projects" class="adm-input">
                         </div>
 
                         <div class="adm-field">
                             <label class="adm-label" for="add_comm_subtitle">Section Subtitle</label>
-                            <input type="text" id="add_comm_subtitle" name="sections[communities][subtitle]" value="Explore premium residential and commercial developments" class="adm-input">
+                            <input type="text" id="add_comm_subtitle" name="sections[communities][subtitle]" value="" placeholder="e.g. Explore premier residential and commercial developments" class="adm-input">
                         </div>
 
                         <div style="margin-top: 20px;">
@@ -623,28 +586,28 @@
 
                         <div class="adm-field">
                             <label class="adm-label" for="add_about_heading">Headline</label>
-                            <input type="text" id="add_about_heading" name="sections[about][heading]" value="About the Community" class="adm-input">
+                            <input type="text" id="add_about_heading" name="sections[about][heading]" value="" placeholder="e.g. About the Community" class="adm-input">
                         </div>
 
                         <div class="adm-field">
                             <label class="adm-label" for="add_about_desc">City Narrative &amp; Story</label>
-                            <textarea id="add_about_desc" name="sections[about][description]" rows="5" class="adm-textarea" placeholder="Detailed story about this city's master infrastructure, waterfront, and lifestyle...">A meticulously planned coastal sanctuary seamlessly integrating contemporary luxury living with untouched nature. Spanning scenic waterfronts, lush mangroves, and cycling corridors, the master community offers an unmatched urban lifestyle for residents and high-yield potential for global real estate investors.</textarea>
+                            <textarea id="add_about_desc" name="sections[about][description]" rows="5" class="adm-textarea" placeholder="Detailed story about this community's master infrastructure, waterfront, and lifestyle..."></textarea>
                         </div>
 
                         <div class="adm-field">
                             <label class="adm-label" for="add_about_video">Video URL (HLS / MP4)</label>
-                            <input type="text" id="add_about_video" name="sections[about][video_url]" value="https://stream.mux.com/A3200aZtT5Wq7VlYwQv3wP9W2hX8.m3u8" placeholder="https://stream.mux.com/... or https://..." class="adm-input">
+                            <input type="text" id="add_about_video" name="sections[about][video_url]" value="" placeholder="https://stream.mux.com/... or https://..." class="adm-input">
                         </div>
 
                         <div class="adm-field">
                             <label class="adm-label" for="add_about_poster">Video Poster / Cover Image</label>
                             <div class="adm-img-box" style="display: flex; gap: 14px; align-items: center; background: #faf8f5; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px;">
-                                <img id="preview_add_about_poster" src="/images/projects/poster.jpg" style="width: 100px; height: 62px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff;" alt="Poster">
+                                <img id="preview_add_about_poster" src="" style="width: 100px; height: 62px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; display: none;" alt="Poster">
                                 <div style="flex: 1;">
                                     <div style="margin-bottom: 8px;">
-                                        <input type="file" name="about_poster_file" accept="image/*" class="adm-input" style="padding: 6px 10px;" onchange="if(this.files && this.files[0]){const r=new FileReader();r.onload=e=>document.getElementById('preview_add_about_poster').src=e.target.result;r.readAsDataURL(this.files[0]);}">
+                                        <input type="file" name="about_poster_file" accept="image/*" class="adm-input" style="padding: 6px 10px;" onchange="if(this.files && this.files[0]){const r=new FileReader();r.onload=e=>{const img=document.getElementById('preview_add_about_poster'); img.src=e.target.result; img.style.display='block';};r.readAsDataURL(this.files[0]);}">
                                     </div>
-                                    <input type="text" id="add_about_poster" name="sections[about][poster_image]" value="/images/projects/poster.jpg" placeholder="/images/projects/poster.jpg" class="adm-input" oninput="document.getElementById('preview_add_about_poster').src = this.value">
+                                    <input type="text" id="add_about_poster" name="sections[about][poster_image]" value="" placeholder="/images/projects/poster.jpg" class="adm-input" oninput="const img=document.getElementById('preview_add_about_poster'); if(this.value){img.src=this.value; img.style.display='block';}else{img.style.display='none';}">
                                 </div>
                             </div>
                         </div>
@@ -662,12 +625,12 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
                             <div class="adm-field" style="margin-bottom: 0;">
                                 <label class="adm-label" for="add_faq_title">FAQ Section Title</label>
-                                <input type="text" id="add_faq_title" name="sections[faq][title]" value="Frequently Asked Questions" class="adm-input">
+                                <input type="text" id="add_faq_title" name="sections[faq][title]" value="" placeholder="e.g. Frequently Asked Questions" class="adm-input">
                             </div>
 
                             <div class="adm-field" style="margin-bottom: 0;">
                                 <label class="adm-label" for="add_faq_subtitle">FAQ Subtitle</label>
-                                <input type="text" id="add_faq_subtitle" name="sections[faq][subtitle]" value="Find answers to common questions about properties, buying process, and payment plans." class="adm-input">
+                                <input type="text" id="add_faq_subtitle" name="sections[faq][subtitle]" value="" placeholder="e.g. Find answers to common questions about properties..." class="adm-input">
                             </div>
                         </div>
 
@@ -683,27 +646,7 @@
                             <span></span><span>Question</span><span>Answer</span><span></span>
                         </div>
 
-                        <div id="faqItemsContainer" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
-                            <!-- Default FAQ Item 1 -->
-                            <div class="faq-repeater-row" style="display: grid; grid-template-columns: 34px minmax(0, 1fr) minmax(0, 1.5fr) 34px; gap: 10px; align-items: center; background: #faf8f5; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px 10px;">
-                                <div class="faq-drag-handle" draggable="true" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 36px; border: 1px solid #d1d5db; background: #ffffff; border-radius: 6px; color: #1a4731; cursor: grab; user-select: none;" title="Drag ⇅ to reorder">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 20V4m0 0L3 8m4-4l4 4"/><path d="M17 4v16m0 0l4-4m-4 4l-4-4"/></svg>
-                                </div>
-                                <input type="text" name="faq_q[]" value="Are properties in this city freehold for foreign and overseas investors?" class="adm-input" placeholder="Question" style="margin: 0; min-height: 36px; font-size: 13px;">
-                                <textarea name="faq_a[]" class="adm-textarea" rows="1" placeholder="Answer" style="margin: 0; min-height: 36px; font-size: 13px; resize: vertical; line-height: 1.4;">Yes, designated luxury master developments offer 100% freehold ownership for local and international buyers with complete title deed registration.</textarea>
-                                <button type="button" onclick="this.closest('.faq-repeater-row').remove()" title="Delete row" style="width: 34px; height: 36px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c; border-radius: 6px; cursor: pointer; font-size: 14px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease;">&#10005;</button>
-                            </div>
-
-                            <!-- Default FAQ Item 2 -->
-                            <div class="faq-repeater-row" style="display: grid; grid-template-columns: 34px minmax(0, 1fr) minmax(0, 1.5fr) 34px; gap: 10px; align-items: center; background: #faf8f5; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px 10px;">
-                                <div class="faq-drag-handle" draggable="true" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 36px; border: 1px solid #d1d5db; background: #ffffff; border-radius: 6px; color: #1a4731; cursor: grab; user-select: none;" title="Drag ⇅ to reorder">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 20V4m0 0L3 8m4-4l4 4"/><path d="M17 4v16m0 0l4-4m-4 4l-4-4"/></svg>
-                                </div>
-                                <input type="text" name="faq_q[]" value="What are the typical payment plans available?" class="adm-input" placeholder="Question" style="margin: 0; min-height: 36px; font-size: 13px;">
-                                <textarea name="faq_a[]" class="adm-textarea" rows="1" placeholder="Answer" style="margin: 0; min-height: 36px; font-size: 13px; resize: vertical; line-height: 1.4;">Flexible installment plans are offered typically linked to construction milestones, with down payments starting from 5% to 10%.</textarea>
-                                <button type="button" onclick="this.closest('.faq-repeater-row').remove()" title="Delete row" style="width: 34px; height: 36px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c; border-radius: 6px; cursor: pointer; font-size: 14px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease;">&#10005;</button>
-                            </div>
-                        </div>
+                        <div id="faqItemsContainer" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;"></div>
 
                         <!-- Add Row Button matching Image 2 -->
                         <button type="button" onclick="addFaqRow()" style="padding: 6px 14px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1.5px dashed #1a4731; color: #1a4731; background: #faf8f5; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s ease;">
@@ -722,29 +665,30 @@
 
                         <div class="adm-field">
                             <label class="adm-label" for="add_contact_heading">Heading</label>
-                            <input type="text" id="add_contact_heading" name="sections[contact][heading]" value="Ready to Find Your Dream Property?" class="adm-input">
+                            <input type="text" id="add_contact_heading" name="sections[contact][heading]" value="" placeholder="e.g. Ready to Find Your Dream Property?" class="adm-input">
                         </div>
 
                         <div class="adm-field">
                             <label class="adm-label" for="add_contact_sub">Subtitle</label>
-                            <textarea id="add_contact_sub" name="sections[contact][subtitle]" rows="2" class="adm-textarea">Connect with our dedicated city property advisors for personalized availability, floor plans, and VIP access.</textarea>
+                            <textarea id="add_contact_sub" name="sections[contact][subtitle]" rows="2" class="adm-textarea" placeholder="e.g. Connect with our dedicated property advisors..."></textarea>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
                             <div class="adm-field">
                                 <label class="adm-label" for="add_contact_phone">Phone / WhatsApp</label>
-                                <input type="text" id="add_contact_phone" name="sections[contact][phone]" value="+971 2 000 0000" class="adm-input">
+                                <input type="text" id="add_contact_phone" name="sections[contact][phone]" value="" placeholder="e.g. +971 2 000 0000" class="adm-input">
                             </div>
                             <div class="adm-field">
                                 <label class="adm-label" for="add_contact_email">Email Address</label>
-                                <input type="email" id="add_contact_email" name="sections[contact][email]" value="info@saimaprojects.com" class="adm-input">
+                                <input type="email" id="add_contact_email" name="sections[contact][email]" value="" placeholder="e.g. info@example.com" class="adm-input">
                             </div>
                         </div>
 
                         <div class="adm-field">
                             <label class="adm-label" for="add_contact_btn">Button Text</label>
-                            <input type="text" id="add_contact_btn" name="sections[contact][btn_text]" value="Schedule a Private Viewing" class="adm-input">
+                            <input type="text" id="add_contact_btn" name="sections[contact][btn_text]" value="" placeholder="e.g. Schedule a Private Viewing" class="adm-input">
                         </div>
+                    </div>
                     </div>
 
                     <!-- 8. SEO & META -->
@@ -907,6 +851,9 @@
 <script>
     // Tab switching in Add Neighbourhood/Community Drawer
     function switchAddTab(tabId) {
+        const activeTabInput = document.getElementById('add_active_tab_input');
+        if (activeTabInput) activeTabInput.value = tabId;
+
         document.querySelectorAll('#addCommFormContainer .adm-tab').forEach(btn => {
             btn.classList.toggle('is-active', btn.getAttribute('data-tab-id') === tabId);
         });
