@@ -48,7 +48,7 @@ class FooterSection extends Model
                         ],
                         'columns' => static::defaultColumns(),
                         'disclaimer_text' => 'Disclaimer: Its not official website. We inform that all property information provided on this website is for general guidance only and does not constitute a formal offer. Prices, availability, and property details may change at any time without prior notice. Images are for illustrative purposes and may not reflect actual properties. For the most accurate and up-to-date information, please contact us directly through the details provided on the website.',
-                        'copyright_text' => '© 2026 saimaprojects.com All Rights Reserved.',
+                        'copyright_text' => '© 2026 fsadvisory.pk All Rights Reserved.',
                     ]);
                 }
                 return $record;
@@ -63,7 +63,7 @@ class FooterSection extends Model
                 'social_links' => [],
                 'columns' => static::defaultColumns(),
                 'disclaimer_text' => 'Disclaimer: Its not official website. We inform that all property information provided on this website is for general guidance only and does not constitute a formal offer.',
-                'copyright_text' => '© 2026 saimaprojects.com All Rights Reserved.',
+                'copyright_text' => '© 2026 fsadvisory.pk All Rights Reserved.',
             ]);
             return $fallback;
         }

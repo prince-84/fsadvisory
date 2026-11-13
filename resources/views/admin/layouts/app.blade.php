@@ -30,7 +30,7 @@
         .note-editor.note-frame {
             border: 1px solid #d1d5db !important;
             border-radius: 8px !important;
-            overflow: hidden;
+            overflow: visible !important;
             background: #ffffff;
             font-family: inherit;
         }
@@ -44,6 +44,27 @@
             background: #faf8f5 !important;
             border-bottom: 1px solid #e5e7eb !important;
             padding: 6px 10px !important;
+            position: relative !important;
+            z-index: 25 !important;
+            overflow: visible !important;
+        }
+        .note-dropdown-menu, .note-editor .dropdown-menu {
+            max-height: 380px !important;
+            overflow-y: auto !important;
+            z-index: 99999 !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+            background: #ffffff !important;
+        }
+        .note-dropdown-menu .dropdown-item, .note-dropdown-menu a {
+            padding: 8px 14px !important;
+            font-size: 13px !important;
+            color: #1e293b !important;
+            display: block !important;
+            text-decoration: none !important;
+        }
+        .note-dropdown-menu .dropdown-item:hover, .note-dropdown-menu a:hover {
+            background-color: #f1f5f9 !important;
+            color: #0284c7 !important;
         }
         .note-btn {
             border: 1px solid #e5e7eb !important;
@@ -66,10 +87,93 @@
             padding: 14px !important;
             background: #ffffff !important;
         }
-        .note-editable h1, .note-editable h2, .note-editable h3 {
+        .note-editable h1, .note-editable h2, .note-editable h3, .note-editable h4, .note-editable h5, .note-editable h6 {
             color: #111827;
             margin-top: 0.5em;
             margin-bottom: 0.3em;
+        }
+        .note-editable h1 {
+            font-size: 28px !important;
+            font-weight: 800 !important;
+            color: #0f172a !important;
+            margin-top: 20px !important;
+            margin-bottom: 12px !important;
+            line-height: 1.25 !important;
+        }
+        .note-editable h2 {
+            font-size: 24px !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            margin-top: 18px !important;
+            margin-bottom: 10px !important;
+            line-height: 1.3 !important;
+        }
+        .note-editable h3 {
+            font-size: 20px !important;
+            font-weight: 600 !important;
+            color: #1e293b !important;
+            margin-top: 14px !important;
+            margin-bottom: 8px !important;
+            line-height: 1.35 !important;
+        }
+        .note-editable h4 {
+            font-size: 17px !important;
+            font-weight: 600 !important;
+            color: #334155 !important;
+            margin-top: 12px !important;
+            margin-bottom: 6px !important;
+            line-height: 1.4 !important;
+        }
+        .note-editable h5 {
+            font-size: 15px !important;
+            font-weight: 600 !important;
+            color: #475569 !important;
+            margin-top: 10px !important;
+            margin-bottom: 5px !important;
+            line-height: 1.4 !important;
+        }
+        .note-editable h6 {
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            color: #64748b !important;
+            text-transform: uppercase !important;
+            margin-top: 8px !important;
+            margin-bottom: 4px !important;
+            line-height: 1.4 !important;
+        }
+        .note-editable table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin: 12px 0 !important;
+        }
+        .note-editable table th,
+        .note-editable table td {
+            border: 1px solid #cbd5e1 !important;
+            padding: 8px 12px !important;
+            text-align: left !important;
+        }
+        .note-editable ul {
+            list-style-type: disc !important;
+            padding-left: 24px !important;
+            margin: 10px 0 !important;
+        }
+        .note-editable ol {
+            list-style-type: decimal !important;
+            padding-left: 24px !important;
+            margin: 10px 0 !important;
+        }
+        .note-editable li {
+            margin-bottom: 4px !important;
+        }
+        .note-editable a {
+            color: #0284c7 !important;
+            text-decoration: underline !important;
+        }
+        .note-editable img {
+            max-width: 100% !important;
+            height: auto !important;
+            border-radius: 6px !important;
+            margin: 10px 0 !important;
         }
         .note-editable p {
             margin-bottom: 0.75em;
@@ -153,6 +257,7 @@
                 $isProjectsActive = request()->routeIs('admin.projects.*');
                 $isCitiesActive = request()->routeIs('admin.cities.*');
                 $isCommunitiesActive = request()->routeIs('admin.communities.*');
+                $isDevelopersActive = request()->routeIs('admin.developers.*');
                 $isAmenitiesActive = request()->routeIs('admin.amenities.*');
                 $isBlogsActive = request()->routeIs('admin.blogs.*');
             @endphp
@@ -167,6 +272,9 @@
             </a>
             <a href="{{ route('admin.communities.index') }}" id="navCommunities" class="adm-nav-link {{ $isCommunitiesActive ? 'is-active' : '' }}">
                 @include('admin.partials.icon', ['name' => 'compass']) Neighbourhood/Community
+            </a>
+            <a href="{{ route('admin.developers.index') }}" id="navDevelopers" class="adm-nav-link {{ $isDevelopersActive ? 'is-active' : '' }}">
+                @include('admin.partials.icon', ['name' => 'developer']) Developer
             </a>
             <a href="{{ route('admin.amenities.index') }}" id="navAmenities" class="adm-nav-link {{ $isAmenitiesActive ? 'is-active' : '' }}">
                 @include('admin.partials.icon', ['name' => 'amenities', 'size' => 16]) Amenities
@@ -303,6 +411,154 @@
         width: 0 !important;
         height: 0 !important;
     }
+
+    /* Elevate active editor and its toolbar so dropdowns float on top of subsequent editors */
+    .note-editor {
+        position: relative !important;
+        z-index: 10 !important;
+    }
+    .note-editor:focus-within,
+    .note-editor:has(.note-btn-group.open),
+    .note-editor:has(.note-btn-group.show),
+    .note-editor:has(.note-dropdown-menu.show),
+    .note-editor:has(.note-dropdown-menu[style*="display: block"]) {
+        z-index: 9999 !important;
+    }
+    .note-toolbar {
+        position: relative !important;
+        z-index: 20 !important;
+    }
+    .note-btn-group.open,
+    .note-btn-group.show {
+        position: relative !important;
+        z-index: 99999 !important;
+    }
+
+    /* Summernote Style Dropdown - compact, clean list matching user's reference (Image 1) */
+    .note-dropdown-menu.note-check,
+    .note-dropdown-menu {
+        z-index: 999999 !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        min-width: 135px !important;
+        width: auto !important;
+        padding: 4px 3px !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.06) !important;
+        background: #ffffff !important;
+    }
+
+    .note-dropdown-menu .dropdown-item,
+    .note-dropdown-menu a {
+        display: block !important;
+        padding: 2px 10px !important;
+        margin: 0 !important;
+        text-decoration: none !important;
+        color: #1e293b !important;
+        border-radius: 4px !important;
+        line-height: 1.2 !important;
+        background: transparent !important;
+        transition: background-color 0.15s ease !important;
+    }
+
+    .note-dropdown-menu .dropdown-item:hover,
+    .note-dropdown-menu a:hover {
+        background-color: #f1f5f9 !important;
+    }
+
+    .note-dropdown-menu p,
+    .note-dropdown-menu .dropdown-item p {
+        font-size: 14px !important;
+        font-weight: 400 !important;
+        margin: 0 !important;
+        padding: 1px 0 !important;
+        line-height: 1.25 !important;
+        color: #1e293b !important;
+    }
+
+    .note-dropdown-menu blockquote,
+    .note-dropdown-menu .dropdown-item blockquote {
+        font-size: 13px !important;
+        font-style: italic !important;
+        margin: 0 !important;
+        padding: 1px 0 1px 6px !important;
+        border-left: 2px solid #cbd5e1 !important;
+        line-height: 1.25 !important;
+        color: #475569 !important;
+    }
+
+    .note-dropdown-menu pre,
+    .note-dropdown-menu .dropdown-item pre {
+        font-size: 12px !important;
+        font-family: monospace !important;
+        margin: 0 !important;
+        padding: 1px 0 !important;
+        line-height: 1.25 !important;
+        color: #0f172a !important;
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .note-dropdown-menu h1,
+    .note-dropdown-menu .dropdown-item h1 {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        margin: 0 !important;
+        padding: 1px 0 !important;
+        line-height: 1.2 !important;
+        color: #1e293b !important;
+    }
+
+    .note-dropdown-menu h2,
+    .note-dropdown-menu .dropdown-item h2 {
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        margin: 0 !important;
+        padding: 1px 0 !important;
+        line-height: 1.2 !important;
+        color: #1e293b !important;
+    }
+
+    .note-dropdown-menu h3,
+    .note-dropdown-menu .dropdown-item h3 {
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        margin: 0 !important;
+        padding: 1px 0 !important;
+        line-height: 1.2 !important;
+        color: #1e293b !important;
+    }
+
+    .note-dropdown-menu h4,
+    .note-dropdown-menu .dropdown-item h4 {
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        margin: 0 !important;
+        padding: 1px 0 !important;
+        line-height: 1.2 !important;
+        color: #1e293b !important;
+    }
+
+    .note-dropdown-menu h5,
+    .note-dropdown-menu .dropdown-item h5 {
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        margin: 0 !important;
+        padding: 1px 0 !important;
+        line-height: 1.2 !important;
+        color: #1e293b !important;
+    }
+
+    .note-dropdown-menu h6,
+    .note-dropdown-menu .dropdown-item h6 {
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        margin: 0 !important;
+        padding: 1px 0 !important;
+        line-height: 1.2 !important;
+        color: #1e293b !important;
+    }
 </style>
 
 <!-- jQuery & Summernote Lite Scripts -->
@@ -325,6 +581,12 @@
 
         // Keep track of active Summernote editor and its saved range
         window.currentActiveSummernote = null;
+
+        // Ensure active editor and its dropdowns always sit on top of neighboring editors
+        $(document).on('click focusin mousedown', '.note-editor', function() {
+            $('.note-editor').css('z-index', '10');
+            $(this).css('z-index', '9999');
+        });
 
         // Continuously save cursor range and track active editor on every click/typing
         $(document).on('focus in keyup mouseup click', '.note-editable', function() {
@@ -398,6 +660,18 @@
                 if (!$(this).data('summernote-initialized')) {
                     const customHeight = $(this).data('height') || 200;
                     const $thisTextarea = $(this);
+                    let defaultStyleTags = [
+                        { title: 'Normal', tag: 'p', className: '', value: 'p' },
+                        { title: 'Quote', tag: 'blockquote', className: 'blockquote', value: 'blockquote' },
+                        { title: 'Code', tag: 'pre', className: '', value: 'pre' },
+                        { title: 'Header 1', tag: 'h1', className: '', value: 'h1' },
+                        { title: 'Header 2', tag: 'h2', className: '', value: 'h2' },
+                        { title: 'Header 3', tag: 'h3', className: '', value: 'h3' },
+                        { title: 'Header 4', tag: 'h4', className: '', value: 'h4' },
+                        { title: 'Header 5', tag: 'h5', className: '', value: 'h5' },
+                        { title: 'Header 6', tag: 'h6', className: '', value: 'h6' }
+                    ];
+
                     $thisTextarea.summernote({
                         height: customHeight,
                         minHeight: 120,
@@ -412,17 +686,79 @@
                             ['insert', ['link', 'picture', 'hr']],
                             ['view', ['fullscreen', 'codeview', 'help']]
                         ],
-                        styleTags: [
-                            'p',
-                            { title: 'Heading 1', tag: 'h1', className: '', value: 'h1' },
-                            { title: 'Heading 2', tag: 'h2', className: '', value: 'h2' },
-                            { title: 'Heading 3', tag: 'h3', className: '', value: 'h3' },
-                            { title: 'Heading 4', tag: 'h4', className: '', value: 'h4' },
-                            'blockquote'
-                        ],
+                        styleTags: defaultStyleTags,
                         callbacks: {
                             onInit: function() {
                                 cleanupAllModalsAndBackdrops();
+                                const ctx = $thisTextarea.data('summernote');
+                                if (ctx && ctx.modules && ctx.modules.editor) {
+                                    const origFormatBlock = ctx.modules.editor.formatBlock.bind(ctx.modules.editor);
+                                    ctx.modules.editor.formatBlock = function(tagName, $target) {
+                                        const range = ctx.modules.editor.createRange ? ctx.modules.editor.createRange() : null;
+                                        if (!range || range.isCollapsed()) {
+                                            return origFormatBlock(tagName, $target);
+                                        }
+
+                                        const sel = window.getSelection();
+                                        if (!sel || !sel.rangeCount) {
+                                            return origFormatBlock(tagName, $target);
+                                        }
+
+                                        const nativeRange = sel.getRangeAt(0);
+                                        const selectedText = (sel.toString() || '').trim();
+                                        if (!selectedText) {
+                                            return origFormatBlock(tagName, $target);
+                                        }
+
+                                        const tag = (tagName || 'p').toLowerCase();
+
+                                        const headingStyles = {
+                                            'h1': { fontSize: '28px', fontWeight: '800', lineHeight: '1.2' },
+                                            'h2': { fontSize: '24px', fontWeight: '700', lineHeight: '1.25' },
+                                            'h3': { fontSize: '20px', fontWeight: '700', lineHeight: '1.3' },
+                                            'h4': { fontSize: '17px', fontWeight: '700', lineHeight: '1.35' },
+                                            'h5': { fontSize: '15px', fontWeight: '600', lineHeight: '1.4' },
+                                            'h6': { fontSize: '13px', fontWeight: '600', lineHeight: '1.4', textTransform: 'uppercase' },
+                                            'p':  { fontSize: 'inherit', fontWeight: 'normal', lineHeight: 'inherit', fontStyle: 'normal', textTransform: 'none' },
+                                            'blockquote': { fontStyle: 'italic', color: '#475569' },
+                                            'pre': { fontFamily: 'monospace', backgroundColor: '#f1f5f9', padding: '2px 4px', borderRadius: '4px' }
+                                        };
+
+                                        const conf = headingStyles[tag] || headingStyles['p'];
+                                        const span = document.createElement('span');
+                                        span.className = 'heading-inline heading-' + tag;
+                                        span.style.display = 'inline';
+                                        if (conf.fontSize) span.style.fontSize = conf.fontSize;
+                                        if (conf.fontWeight) span.style.fontWeight = conf.fontWeight;
+                                        if (conf.lineHeight) span.style.lineHeight = conf.lineHeight;
+                                        if (conf.textTransform) span.style.textTransform = conf.textTransform;
+                                        if (conf.fontStyle) span.style.fontStyle = conf.fontStyle;
+                                        if (conf.fontFamily) span.style.fontFamily = conf.fontFamily;
+                                        if (conf.backgroundColor) span.style.backgroundColor = conf.backgroundColor;
+                                        if (conf.padding) span.style.padding = conf.padding;
+                                        if (conf.borderRadius) span.style.borderRadius = conf.borderRadius;
+                                        if (conf.color) span.style.color = conf.color;
+
+                                        const extracted = nativeRange.extractContents();
+                                        span.appendChild(extracted);
+
+                                        // Unwrap any duplicate nested heading-inline spans
+                                        $(span).find('.heading-inline').contents().unwrap();
+
+                                        nativeRange.insertNode(span);
+
+                                        // Keep selection on the newly styled text
+                                        const newRange = document.createRange();
+                                        newRange.selectNodeContents(span);
+                                        sel.removeAllRanges();
+                                        sel.addRange(newRange);
+
+                                        ctx.modules.editor.saveRange();
+                                        ctx.invoke('editor.afterCommand');
+                                        const clean = stripAutoTagAttrs($thisTextarea.summernote('code'));
+                                        $thisTextarea.val(clean);
+                                    };
+                                }
                             },
                             onFocus: function() {
                                 window.currentActiveSummernote = $thisTextarea;

@@ -18,6 +18,7 @@ class Project extends Model implements Auditable
         'price',
         'delivery_date',
         'developer',
+        'developer_id',
         'payment_plan',
         'image',
         'badges',
@@ -49,6 +50,14 @@ class Project extends Model implements Auditable
     public function page()
     {
         return $this->belongsTo(Page::class, 'page_id');
+    }
+
+    /**
+     * The Developer linked to this property.
+     */
+    public function developerRel()
+    {
+        return $this->belongsTo(Developer::class, 'developer_id');
     }
 
     /**

@@ -1791,7 +1791,262 @@ php artisan optimize:clear
   - `README.md`
 - **Database / Migrations**:
   - Migrations: None created or modified.
-  - Database Tables: Schema unchanged. Uploaded images are stored in `public/uploads/content/`.
+  - Database Tables: Schema unchanged.
+
+
+
+## Changelog — 2026-11-13 (Part 8: Dual-Box Featured Projects Layout & Custom Heading Range Formatter)
+
+- **Requirements Completed**:
+  1. **Dual-Box Featured Projects System (Matching Image 2)**:
+     - Replaced the tabbed view with the familiar 2-column dual box system:
+       - **Box 1 (Left)**: `Available Property Cards ( [count] )` with `+ Select All`, drag-and-drop, and `+ Add` button.
+       - **Box 2 (Right)**: `Selected Cards for This Page ( [count] )` with `Clear All`, drag-and-drop, and `✕ Remove` button.
+     - **Strict Developer Filtering**: Box 1 contains **strictly only** projects where the project's developer matches this developer (via the project card developer dropdown). Projects from other developers do not appear.
+     - Automatically updates hidden inputs `featured_projects[]` on add/remove/drag for seamless form saving.
+  2. **Summernote Headings H1 to H6 & Selective Text Formatting**:
+     - Added full H1, H2, H3, H4, H5, H6, and Normal (p) options to the Summernote Style dropdown.
+     - Removed `data-no-h1="true"` restrictions from Developer short and full content editors.
+     - **Selection-Specific Heading Application**: Solved the issue where selecting a few words turned the entire paragraph into a heading. Now, when a text range is highlighted inside a paragraph, choosing a heading splits the block cleanly so **only the selected text becomes that heading**, while surrounding text remains untouched.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+
+## Changelog — 2026-11-13 (Part 6: Project-Developer Association & Two-Tab Featured Projects System)
+
+- **Requirements Completed**:
+  1. **Developer Dropdown in Project Card Settings**:
+     - Added `Developer (Select Developer)` dropdown directly below `Neighbourhood/Community` in both the Project Edit Page (`admin/pages/edit.blade.php`), the Projects Add Drawer (`admin/projects/index.blade.php`), and the Projects Edit Modal (`admin/projects/index.blade.php`).
+     - Selecting a developer associates the project with that developer (`developer_id` foreign key & `developer` name sync).
+  2. **Removed Specified Helper Texts**:
+     - Removed `"Jo community sidebar se add ki hai wo yahan dropdown me ayegi (Community, City format me card par show hogi)."` from `admin/pages/edit.blade.php` and `admin/projects/index.blade.php`.
+     - Removed `"Abhi koi developer add nahi kiya hai. Jab aap create karenge tab yahan list show hogi."` from empty state in `admin/developers/index.blade.php`.
+  3. **Two-Tab Featured Projects System (Selected & Unselected)**:
+     - Eliminated the global project checkbox grid.
+     - Implemented two sub-tabs: **Selected** and **Unselected**.
+     - In **Unselected**: Only projects that have this developer selected from their project page dropdown appear (unrelated projects from other developers do not appear).
+     - Added dropdown selector `Select Project From Dropdown` and `+ Add to Selected` button, as well as direct `Select` and `Unselect` buttons on cards with real-time badges.
+- **Files Created**:
+  - `database/migrations/2026_11_13_163000_add_developer_id_to_projects_table.php`
+- **Files Modified**:
+  - `app/Models/Project.php`
+  - `app/Models/Developer.php`
+  - `app/Http/Controllers/Admin/PageController.php`
+  - `app/Http/Controllers/Admin/ProjectController.php`
+  - `app/Http/Controllers/Admin/DeveloperController.php`
+  - `resources/views/admin/pages/edit.blade.php`
+  - `resources/views/admin/projects/index.blade.php`
+  - `resources/views/admin/developers/index.blade.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migration created and executed: `2026_11_13_163000_add_developer_id_to_projects_table.php`.
+  - Database Table `projects` updated with nullable foreign key column: `developer_id` referencing `developers(id)` on delete set null.
+
+
+## Changelog — 2026-11-13 (Part 7: Fix Developer Dropdown in Project Card Editor)
+
+- **Issue Reported**:
+  - In project card settings dropdown, developers were not showing ("No developers found. Please add a developer from sidebar first.") even though 2 developers were created in the database.
+- **Root Cause**:
+  - When editing a project via `/admin/projects/{project}/edit`, the route is handled by `ProjectController@edit` which renders `admin.pages.edit`.
+  - `ProjectController@edit` had not passed `$developers` to the view data.
+- **Changes Implemented**:
+  1. Updated `ProjectController@edit` to fetch `$developers = \App\Models\Developer::orderBy('order', 'asc')->orderBy('name', 'asc')->get();` and include it in `compact(...)`.
+  2. Added fallback query in `admin/pages/edit.blade.php` and `admin/projects/index.blade.php` so the dropdown always has access to the developers list even if omitted by a controller method.
+- **Files Modified**:
+  - `app/Http/Controllers/Admin/ProjectController.php`
+  - `resources/views/admin/pages/edit.blade.php`
+  - `resources/views/admin/projects/index.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+
+## Changelog — 2026-11-13 (Part 8: Dual-Box Featured Projects Layout & Custom Heading Range Formatter)
+
+- **Requirements Completed**:
+  1. **Dual-Box Featured Projects System (Matching Image 2)**:
+     - Replaced the tabbed view with the familiar 2-column dual box system:
+       - **Box 1 (Left)**: `Available Property Cards ( [count] )` with `+ Select All`, drag-and-drop, and `+ Add` button.
+       - **Box 2 (Right)**: `Selected Cards for This Page ( [count] )` with `Clear All`, drag-and-drop, and `✕ Remove` button.
+     - **Strict Developer Filtering**: Box 1 contains **strictly only** projects where the project's developer matches this developer (via the project card developer dropdown). Projects from other developers do not appear.
+     - Automatically updates hidden inputs `featured_projects[]` on add/remove/drag for seamless form saving.
+  2. **Summernote Headings H1 to H6 & Selective Text Formatting**:
+     - Added full H1, H2, H3, H4, H5, H6, and Normal (p) options to the Summernote Style dropdown.
+     - Removed `data-no-h1="true"` restrictions from Developer short and full content editors.
+     - **Selection-Specific Heading Application**: Solved the issue where selecting a few words turned the entire paragraph into a heading. Now, when a text range is highlighted inside a paragraph, choosing a heading splits the block cleanly so **only the selected text becomes that heading**, while surrounding text remains untouched.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 9: Site-Wide H1-H6 Style Dropdown & Range-Specific Heading Replacement)
+
+- **Requirements Completed**:
+  1. **All Site-Wide Editors Standardized with H1 to H6**:
+     - Configured `defaultStyleTags` across all Summernote editors (`.adm-summernote, .summernote`) to explicitly provide:
+       `Normal (P)`, `Heading 1 (H1)`, `Heading 2 (H2)`, `Heading 3 (H3)`, `Heading 4 (H4)`, `Heading 5 (H5)`, and `Heading 6 (H6)`.
+     - Removed restrictive conditions (`data-no-h1`) so every editor has access to all headings.
+     - Fixed CSS overflow clipping: Set `.note-editor.note-frame { overflow: visible !important; }` and `.note-dropdown-menu { max-height: 380px !important; overflow-y: auto !important; z-index: 99999 !important; }` so all headings (H1 through H6) are fully visible and never cut off.
+  2. **Selective Text Range Heading Replacement**:
+     - Hooked directly into Summernote's core editor module (`context.modules.editor.formatBlock`).
+     - When any text is highlighted/selected, choosing any heading (H1 to H6) splits the enclosing paragraph block cleanly around the selection and transforms **strictly only the selected text into that heading**, leaving preceding and succeeding text completely intact as paragraphs.
+     - If no text is selected (cursor collapsed), standard block-level formatBlock runs smoothly.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 10: Compact Style Dropdown Matching Image 1 & In-Place Same-Line Heading Replacement)
+
+- **Requirements Completed**:
+  1. **Compact Style Dropdown Matching User Reference (Image 1)**:
+     - Replaced oversized, scrolled dropdown preview items with a clean, compact dropdown menu.
+     - Updated options to exact clean titles: `Normal`, `Quote`, `Code`, `Header 1`, `Header 2`, `Header 3`, `Header 4`, `Header 5`, and `Header 6`.
+     - Overrode `.note-dropdown-menu` CSS rules to eliminate excessive line-height, eliminate vertical scrollbars (`max-height: none !important`, `overflow-y: visible !important`), and set balanced, compact font sizes for each option (`18px` to `13px`) matching Image 1.
+  2. **In-Place Same-Line Selected Text Formatting (No Line Break / Jump)**:
+     - Fixed the issue where applying a heading to selected text split the paragraph and pushed the word onto a separate new line.
+     - Implemented inline formatting (`<span class="heading-inline heading-hX" style="display: inline; font-size: ...; font-weight: ...;">`) for selected text ranges.
+     - When a word or phrase is highlighted (e.g. "make" in a paragraph) and any Header or Style is clicked, it remains on the **exact same line in-place** while immediately updating its font size and font weight according to Header 1 through Header 6, Normal, Quote, or Code.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 11: Z-Index Elevation for Style Dropdown & H5/H6 Visibility)
+
+- **Requirements Completed**:
+  1. **Style Dropdown Z-Index Stacking Context Fix**:
+     - Resolved the issue where the Style dropdown of the top editor (`Short Content`) was dipping underneath the toolbar of the next editor (`Full Content`), hiding `Header 5` and `Header 6`.
+     - Elevated the active `.note-editor` stacking context (`z-index: 9999 !important; position: relative !important;`) on focus, open state, and click events.
+     - Elevated `.note-toolbar` (`z-index: 20`), `.note-btn-group.open` (`z-index: 99999`), and `.note-dropdown-menu` (`z-index: 999999 !important;`).
+     - Tightened item padding and margins inside the dropdown for a sleeker profile so all items (Normal, Quote, Code, Header 1–Header 6) render completely on top and are fully visible.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 12: Developer Public Detail Page 100% Dynamic Page UI Parity)
+
+- **Requirements Completed**:
+  1. **Dynamic Page UI Replication for Developer Public Detail Page (`/developer/{slug}`)**:
+     - Upgraded `developers/show.blade.php` to match the exact frontend design system, stylesheets, fonts, and layout structure of `dynamic-page.blade.php` without modifying `dynamic-page.blade.php`.
+  2. **Identical Section Ordering & Aesthetic**:
+     - **Header & Navbar**: Full sticky header with Projects & Commercial dropdown menus, mobile navigation drawer, and "LIST YOUR PROPERTY" modal trigger.
+     - **Hero Section**: `GolfHero` banner featuring the developer cover image, dark gradient overlay, developer SVG logo (with drop shadow), H1 (`$developer->h1 ?: $developer->name`), tagline (`$developer->tagline`), red "BOOK NOW" button, and the "REQUEST A CALL BACK" card with international phone selector.
+     - **Short Content**: Rendered in a clean container directly beneath the Hero.
+     - **Featured Property Cards**: Rendered with the exact same 460px luxury card design from `partials/page-communities.blade.php` (tags/badges, sold-out status, luxury preview thumbnail, title, location, and green "BOOK NOW" button) for all projects assigned to this developer in `featured_projects`.
+     - **Long Content**: Rendered with identical typography and layout (`saimaContentCol`, `saimaDynamicContent`, `saimaLongContentBody`).
+     - **Brand Green Headings (`#1a4731`)**: Configured all headings (H1 through H6) inside content blocks to display in the site-wide signature brand green (`#1a4731`).
+     - **FAQs**: Rendered in the exact interactive accordion style matching `dynamic-page.blade.php` with brand green active state and animated chevron indicator.
+     - **Footer & Interactions**: Full site footer with scroll-to-top button and client interaction scripts.
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 13: Dedicated Developer Page Custom Layout with Sticky Sidebar & Centered Hero)
+
+- **Requirements Completed**:
+  1. **Centered Minimalist Hero (Developer Page Only)**:
+     - Configured the Hero section to show **strictly only** the Developer H1 title and Tagline beneath it, centered horizontally and vertically.
+     - Removed all buttons, forms, and logos from the Hero section.
+  2. **Two-Column Top Layout with Sticky Sidebar (Short Content + Cards on Left, Sidebar on Right)**:
+     - **Left Column**:
+       - Developer **Short Content** with an automatic **Read More ↓** link at the end that smoothly scrolls down to the Long Content section (`#longContent`).
+       - Developer **Featured Project Cards** grid matching the luxury cards design.
+     - **Right Column (Sticky Sidebar)**:
+       - Developer **SVG Logo** placed directly on top of the form.
+       - **Request A Call Back** form card with fields for name, email, and phone.
+       - **Latest Projects** card beneath the form displaying the latest active projects with thumbnail, title, and location.
+       - Sticky positioning (`position: sticky; top: 90px;`): stays in view while browsing short content and project cards, and naturally scrolls away as soon as cards end and long content begins.
+  3. **Full-Width Long Content & FAQs**:
+     - Full-width Long Content section beneath the two-column cards section with brand green (`#1a4731`) headings.
+     - FAQs accordion section beneath long content with brand green active states.
+     - Site footer and interaction scripts.
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 14: Inline Read More, Original Hero Image Colors & Dynamic Sticky Sidebar with Scrollbar)
+
+- **Requirements Completed**:
+  1. **Inline Read More Placement**:
+     - Moved the `Read More ↓` link from a separate newline container to sit directly **inline at the end of the short content text** (inside the ending paragraph tag).
+     - Does not break onto a new line, keeping the reading flow natural and seamless.
+  2. **Original Hero Image Color (No Green Tint)**:
+     - Replaced the green-tinted overlay (`rgba(10, 26, 17, ...)`) with a neutral photographic gradient (`rgba(0, 0, 0, 0.40)` to `rgba(0, 0, 0, 0.60)`).
+     - The hero cover image now preserves its authentic original colors with zero color alteration or green cast.
+  3. **Dynamic Page Sticky Sidebar Parity**:
+     - Upgraded the developer page right sidebar to match `partials/article.blade.php`:
+       - `position: sticky; top: 90px; max-height: calc(100vh - 110px);`
+       - Integrated custom slim vertical scrollbar (`::-webkit-scrollbar` with `#cbd5e1` thumb) allowing independent internal scrolling.
+       - Full `BOOK AN APPOINTMENT` card with name, phone, email, and comments textarea with AJAX form submission.
+       - Developer SVG logo placed above the form card, and Latest Projects list below the form.
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 15: CMS-Managed FAQ Heading & Subtitle for Developers)
+
+- **Requirements Completed**:
+  1. **CMS Fields for FAQ Heading & Subtitle**:
+     - Added new fields `FAQ Heading` and `FAQ Subtitle` to the Developer FAQs tab in both `create.blade.php` and `edit.blade.php`.
+     - Admins can now customize the main heading (e.g. `Frequently Asked Questions`) and explanatory subtitle (e.g. `Got questions about [Developer Name]? Find helpful answers below.`) directly from the CMS.
+  2. **Backend Controller & Model Updates**:
+     - Added `faq_heading` (string, nullable) and `faq_subtitle` (text, nullable) columns to the `developers` table via database migration `2026_11_13_134516_add_faq_heading_and_subtitle_to_developers_table`.
+     - Updated `Developer` Eloquent model `$fillable` array.
+     - Updated `DeveloperController@store` and `DeveloperController@update` to capture and persist both fields.
+  3. **Frontend Dynamic Rendering**:
+     - Updated `developers/show.blade.php` to dynamically display `$developer->faq_heading` and `$developer->faq_subtitle` on the public developer detail page.
+     - Clean fallback support: If left blank in the CMS, defaults smoothly to `Frequently Asked Questions` and the standard developer-specific help text.
+- **Files Modified**:
+  - `database/migrations/2026_11_13_134516_add_faq_heading_and_subtitle_to_developers_table.php` (New)
+  - `app/Models/Developer.php`
+  - `app/Http/Controllers/Admin/DeveloperController.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: Created and executed `2026_11_13_134516_add_faq_heading_and_subtitle_to_developers_table`.
+  - Database Tables: Added `faq_heading` and `faq_subtitle` to `developers` table. Uploaded images are stored in `public/uploads/content/`.
 
 ## Changelog — 2026-11-12 (Part 5: Fix Content Editor Cursor Range, Unfreeze Page Clicks, and Isolate Long vs Short Content)
 
@@ -1819,6 +2074,991 @@ php artisan optimize:clear
   - `resources/views/admin/pages/index.blade.php`
   - `resources/views/admin/cities/edit.blade.php`
   - `resources/views/admin/communities/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+
+## Changelog — 2026-11-13 (Part 8: Dual-Box Featured Projects Layout & Custom Heading Range Formatter)
+
+- **Requirements Completed**:
+  1. **Dual-Box Featured Projects System (Matching Image 2)**:
+     - Replaced the tabbed view with the familiar 2-column dual box system:
+       - **Box 1 (Left)**: `Available Property Cards ( [count] )` with `+ Select All`, drag-and-drop, and `+ Add` button.
+       - **Box 2 (Right)**: `Selected Cards for This Page ( [count] )` with `Clear All`, drag-and-drop, and `✕ Remove` button.
+     - **Strict Developer Filtering**: Box 1 contains **strictly only** projects where the project's developer matches this developer (via the project card developer dropdown). Projects from other developers do not appear.
+     - Automatically updates hidden inputs `featured_projects[]` on add/remove/drag for seamless form saving.
+  2. **Summernote Headings H1 to H6 & Selective Text Formatting**:
+     - Added full H1, H2, H3, H4, H5, H6, and Normal (p) options to the Summernote Style dropdown.
+     - Removed `data-no-h1="true"` restrictions from Developer short and full content editors.
+     - **Selection-Specific Heading Application**: Solved the issue where selecting a few words turned the entire paragraph into a heading. Now, when a text range is highlighted inside a paragraph, choosing a heading splits the block cleanly so **only the selected text becomes that heading**, while surrounding text remains untouched.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+
+## Changelog — 2026-11-13 (Part 6: Project-Developer Association & Two-Tab Featured Projects System)
+
+- **Requirements Completed**:
+  1. **Developer Dropdown in Project Card Settings**:
+     - Added `Developer (Select Developer)` dropdown directly below `Neighbourhood/Community` in both the Project Edit Page (`admin/pages/edit.blade.php`), the Projects Add Drawer (`admin/projects/index.blade.php`), and the Projects Edit Modal (`admin/projects/index.blade.php`).
+     - Selecting a developer associates the project with that developer (`developer_id` foreign key & `developer` name sync).
+  2. **Removed Specified Helper Texts**:
+     - Removed `"Jo community sidebar se add ki hai wo yahan dropdown me ayegi (Community, City format me card par show hogi)."` from `admin/pages/edit.blade.php` and `admin/projects/index.blade.php`.
+     - Removed `"Abhi koi developer add nahi kiya hai. Jab aap create karenge tab yahan list show hogi."` from empty state in `admin/developers/index.blade.php`.
+  3. **Two-Tab Featured Projects System (Selected & Unselected)**:
+     - Eliminated the global project checkbox grid.
+     - Implemented two sub-tabs: **Selected** and **Unselected**.
+     - In **Unselected**: Only projects that have this developer selected from their project page dropdown appear (unrelated projects from other developers do not appear).
+     - Added dropdown selector `Select Project From Dropdown` and `+ Add to Selected` button, as well as direct `Select` and `Unselect` buttons on cards with real-time badges.
+- **Files Created**:
+  - `database/migrations/2026_11_13_163000_add_developer_id_to_projects_table.php`
+- **Files Modified**:
+  - `app/Models/Project.php`
+  - `app/Models/Developer.php`
+  - `app/Http/Controllers/Admin/PageController.php`
+  - `app/Http/Controllers/Admin/ProjectController.php`
+  - `app/Http/Controllers/Admin/DeveloperController.php`
+  - `resources/views/admin/pages/edit.blade.php`
+  - `resources/views/admin/projects/index.blade.php`
+  - `resources/views/admin/developers/index.blade.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migration created and executed: `2026_11_13_163000_add_developer_id_to_projects_table.php`.
+  - Database Table `projects` updated with nullable foreign key column: `developer_id` referencing `developers(id)` on delete set null.
+
+
+## Changelog — 2026-11-13 (Part 7: Fix Developer Dropdown in Project Card Editor)
+
+- **Issue Reported**:
+  - In project card settings dropdown, developers were not showing ("No developers found. Please add a developer from sidebar first.") even though 2 developers were created in the database.
+- **Root Cause**:
+  - When editing a project via `/admin/projects/{project}/edit`, the route is handled by `ProjectController@edit` which renders `admin.pages.edit`.
+  - `ProjectController@edit` had not passed `$developers` to the view data.
+- **Changes Implemented**:
+  1. Updated `ProjectController@edit` to fetch `$developers = \App\Models\Developer::orderBy('order', 'asc')->orderBy('name', 'asc')->get();` and include it in `compact(...)`.
+  2. Added fallback query in `admin/pages/edit.blade.php` and `admin/projects/index.blade.php` so the dropdown always has access to the developers list even if omitted by a controller method.
+- **Files Modified**:
+  - `app/Http/Controllers/Admin/ProjectController.php`
+  - `resources/views/admin/pages/edit.blade.php`
+  - `resources/views/admin/projects/index.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+
+## Changelog — 2026-11-13 (Part 8: Dual-Box Featured Projects Layout & Custom Heading Range Formatter)
+
+- **Requirements Completed**:
+  1. **Dual-Box Featured Projects System (Matching Image 2)**:
+     - Replaced the tabbed view with the familiar 2-column dual box system:
+       - **Box 1 (Left)**: `Available Property Cards ( [count] )` with `+ Select All`, drag-and-drop, and `+ Add` button.
+       - **Box 2 (Right)**: `Selected Cards for This Page ( [count] )` with `Clear All`, drag-and-drop, and `✕ Remove` button.
+     - **Strict Developer Filtering**: Box 1 contains **strictly only** projects where the project's developer matches this developer (via the project card developer dropdown). Projects from other developers do not appear.
+     - Automatically updates hidden inputs `featured_projects[]` on add/remove/drag for seamless form saving.
+  2. **Summernote Headings H1 to H6 & Selective Text Formatting**:
+     - Added full H1, H2, H3, H4, H5, H6, and Normal (p) options to the Summernote Style dropdown.
+     - Removed `data-no-h1="true"` restrictions from Developer short and full content editors.
+     - **Selection-Specific Heading Application**: Solved the issue where selecting a few words turned the entire paragraph into a heading. Now, when a text range is highlighted inside a paragraph, choosing a heading splits the block cleanly so **only the selected text becomes that heading**, while surrounding text remains untouched.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 9: Site-Wide H1-H6 Style Dropdown & Range-Specific Heading Replacement)
+
+- **Requirements Completed**:
+  1. **All Site-Wide Editors Standardized with H1 to H6**:
+     - Configured `defaultStyleTags` across all Summernote editors (`.adm-summernote, .summernote`) to explicitly provide:
+       `Normal (P)`, `Heading 1 (H1)`, `Heading 2 (H2)`, `Heading 3 (H3)`, `Heading 4 (H4)`, `Heading 5 (H5)`, and `Heading 6 (H6)`.
+     - Removed restrictive conditions (`data-no-h1`) so every editor has access to all headings.
+     - Fixed CSS overflow clipping: Set `.note-editor.note-frame { overflow: visible !important; }` and `.note-dropdown-menu { max-height: 380px !important; overflow-y: auto !important; z-index: 99999 !important; }` so all headings (H1 through H6) are fully visible and never cut off.
+  2. **Selective Text Range Heading Replacement**:
+     - Hooked directly into Summernote's core editor module (`context.modules.editor.formatBlock`).
+     - When any text is highlighted/selected, choosing any heading (H1 to H6) splits the enclosing paragraph block cleanly around the selection and transforms **strictly only the selected text into that heading**, leaving preceding and succeeding text completely intact as paragraphs.
+     - If no text is selected (cursor collapsed), standard block-level formatBlock runs smoothly.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 10: Compact Style Dropdown Matching Image 1 & In-Place Same-Line Heading Replacement)
+
+- **Requirements Completed**:
+  1. **Compact Style Dropdown Matching User Reference (Image 1)**:
+     - Replaced oversized, scrolled dropdown preview items with a clean, compact dropdown menu.
+     - Updated options to exact clean titles: `Normal`, `Quote`, `Code`, `Header 1`, `Header 2`, `Header 3`, `Header 4`, `Header 5`, and `Header 6`.
+     - Overrode `.note-dropdown-menu` CSS rules to eliminate excessive line-height, eliminate vertical scrollbars (`max-height: none !important`, `overflow-y: visible !important`), and set balanced, compact font sizes for each option (`18px` to `13px`) matching Image 1.
+  2. **In-Place Same-Line Selected Text Formatting (No Line Break / Jump)**:
+     - Fixed the issue where applying a heading to selected text split the paragraph and pushed the word onto a separate new line.
+     - Implemented inline formatting (`<span class="heading-inline heading-hX" style="display: inline; font-size: ...; font-weight: ...;">`) for selected text ranges.
+     - When a word or phrase is highlighted (e.g. "make" in a paragraph) and any Header or Style is clicked, it remains on the **exact same line in-place** while immediately updating its font size and font weight according to Header 1 through Header 6, Normal, Quote, or Code.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 11: Z-Index Elevation for Style Dropdown & H5/H6 Visibility)
+
+- **Requirements Completed**:
+  1. **Style Dropdown Z-Index Stacking Context Fix**:
+     - Resolved the issue where the Style dropdown of the top editor (`Short Content`) was dipping underneath the toolbar of the next editor (`Full Content`), hiding `Header 5` and `Header 6`.
+     - Elevated the active `.note-editor` stacking context (`z-index: 9999 !important; position: relative !important;`) on focus, open state, and click events.
+     - Elevated `.note-toolbar` (`z-index: 20`), `.note-btn-group.open` (`z-index: 99999`), and `.note-dropdown-menu` (`z-index: 999999 !important;`).
+     - Tightened item padding and margins inside the dropdown for a sleeker profile so all items (Normal, Quote, Code, Header 1–Header 6) render completely on top and are fully visible.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 12: Developer Public Detail Page 100% Dynamic Page UI Parity)
+
+- **Requirements Completed**:
+  1. **Dynamic Page UI Replication for Developer Public Detail Page (`/developer/{slug}`)**:
+     - Upgraded `developers/show.blade.php` to match the exact frontend design system, stylesheets, fonts, and layout structure of `dynamic-page.blade.php` without modifying `dynamic-page.blade.php`.
+  2. **Identical Section Ordering & Aesthetic**:
+     - **Header & Navbar**: Full sticky header with Projects & Commercial dropdown menus, mobile navigation drawer, and "LIST YOUR PROPERTY" modal trigger.
+     - **Hero Section**: `GolfHero` banner featuring the developer cover image, dark gradient overlay, developer SVG logo (with drop shadow), H1 (`$developer->h1 ?: $developer->name`), tagline (`$developer->tagline`), red "BOOK NOW" button, and the "REQUEST A CALL BACK" card with international phone selector.
+     - **Short Content**: Rendered in a clean container directly beneath the Hero.
+     - **Featured Property Cards**: Rendered with the exact same 460px luxury card design from `partials/page-communities.blade.php` (tags/badges, sold-out status, luxury preview thumbnail, title, location, and green "BOOK NOW" button) for all projects assigned to this developer in `featured_projects`.
+     - **Long Content**: Rendered with identical typography and layout (`saimaContentCol`, `saimaDynamicContent`, `saimaLongContentBody`).
+     - **Brand Green Headings (`#1a4731`)**: Configured all headings (H1 through H6) inside content blocks to display in the site-wide signature brand green (`#1a4731`).
+     - **FAQs**: Rendered in the exact interactive accordion style matching `dynamic-page.blade.php` with brand green active state and animated chevron indicator.
+     - **Footer & Interactions**: Full site footer with scroll-to-top button and client interaction scripts.
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 13: Dedicated Developer Page Custom Layout with Sticky Sidebar & Centered Hero)
+
+- **Requirements Completed**:
+  1. **Centered Minimalist Hero (Developer Page Only)**:
+     - Configured the Hero section to show **strictly only** the Developer H1 title and Tagline beneath it, centered horizontally and vertically.
+     - Removed all buttons, forms, and logos from the Hero section.
+  2. **Two-Column Top Layout with Sticky Sidebar (Short Content + Cards on Left, Sidebar on Right)**:
+     - **Left Column**:
+       - Developer **Short Content** with an automatic **Read More ↓** link at the end that smoothly scrolls down to the Long Content section (`#longContent`).
+       - Developer **Featured Project Cards** grid matching the luxury cards design.
+     - **Right Column (Sticky Sidebar)**:
+       - Developer **SVG Logo** placed directly on top of the form.
+       - **Request A Call Back** form card with fields for name, email, and phone.
+       - **Latest Projects** card beneath the form displaying the latest active projects with thumbnail, title, and location.
+       - Sticky positioning (`position: sticky; top: 90px;`): stays in view while browsing short content and project cards, and naturally scrolls away as soon as cards end and long content begins.
+  3. **Full-Width Long Content & FAQs**:
+     - Full-width Long Content section beneath the two-column cards section with brand green (`#1a4731`) headings.
+     - FAQs accordion section beneath long content with brand green active states.
+     - Site footer and interaction scripts.
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 14: Inline Read More, Original Hero Image Colors & Dynamic Sticky Sidebar with Scrollbar)
+
+- **Requirements Completed**:
+  1. **Inline Read More Placement**:
+     - Moved the `Read More ↓` link from a separate newline container to sit directly **inline at the end of the short content text** (inside the ending paragraph tag).
+     - Does not break onto a new line, keeping the reading flow natural and seamless.
+  2. **Original Hero Image Color (No Green Tint)**:
+     - Replaced the green-tinted overlay (`rgba(10, 26, 17, ...)`) with a neutral photographic gradient (`rgba(0, 0, 0, 0.40)` to `rgba(0, 0, 0, 0.60)`).
+     - The hero cover image now preserves its authentic original colors with zero color alteration or green cast.
+  3. **Dynamic Page Sticky Sidebar Parity**:
+     - Upgraded the developer page right sidebar to match `partials/article.blade.php`:
+       - `position: sticky; top: 90px; max-height: calc(100vh - 110px);`
+       - Integrated custom slim vertical scrollbar (`::-webkit-scrollbar` with `#cbd5e1` thumb) allowing independent internal scrolling.
+       - Full `BOOK AN APPOINTMENT` card with name, phone, email, and comments textarea with AJAX form submission.
+       - Developer SVG logo placed above the form card, and Latest Projects list below the form.
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 15: CMS-Managed FAQ Heading & Subtitle for Developers)
+
+- **Requirements Completed**:
+  1. **CMS Fields for FAQ Heading & Subtitle**:
+     - Added new fields `FAQ Heading` and `FAQ Subtitle` to the Developer FAQs tab in both `create.blade.php` and `edit.blade.php`.
+     - Admins can now customize the main heading (e.g. `Frequently Asked Questions`) and explanatory subtitle (e.g. `Got questions about [Developer Name]? Find helpful answers below.`) directly from the CMS.
+  2. **Backend Controller & Model Updates**:
+     - Added `faq_heading` (string, nullable) and `faq_subtitle` (text, nullable) columns to the `developers` table via database migration `2026_11_13_134516_add_faq_heading_and_subtitle_to_developers_table`.
+     - Updated `Developer` Eloquent model `$fillable` array.
+     - Updated `DeveloperController@store` and `DeveloperController@update` to capture and persist both fields.
+  3. **Frontend Dynamic Rendering**:
+     - Updated `developers/show.blade.php` to dynamically display `$developer->faq_heading` and `$developer->faq_subtitle` on the public developer detail page.
+     - Clean fallback support: If left blank in the CMS, defaults smoothly to `Frequently Asked Questions` and the standard developer-specific help text.
+- **Files Modified**:
+  - `database/migrations/2026_11_13_134516_add_faq_heading_and_subtitle_to_developers_table.php` (New)
+  - `app/Models/Developer.php`
+  - `app/Http/Controllers/Admin/DeveloperController.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: Created and executed `2026_11_13_134516_add_faq_heading_and_subtitle_to_developers_table`.
+  - Database Tables: Added `faq_heading` and `faq_subtitle` to `developers` table.
+
+
+## Changelog — 2026-11-13 (Developer CMS Module Implementation)
+
+- **Requirements**:
+  1. Add **Developer** menu item in CMS sidebar directly below **Neighbourhood/Community**.
+  2. When clicked, display the **Add Developer** page replicating the user-specified layout:
+     - Header: "Add Developer", breadcrumb "Home - Manage - Developer", and "Developers List" top-right button.
+     - Left sidebar tab: "Basic Details" with active indicator.
+     - Right section: "Developer Details" form.
+     - Field: **Developer Name***.
+     - Field: **Slug*** placed directly below Developer Name (with real-time automatic slug generation).
+     - Field: **H1** (renamed from "Total No. of Projects").
+     - Field: **Tagline** (renamed from "Established On").
+     - Field: **Short Content** textarea with placeholder "Please Enter information here...".
+     - Field: **Full Content** WYSIWYG editor (integrated with Summernote).
+- **Files Created**:
+  - `database/migrations/2026_11_13_140000_create_developers_table.php`
+  - `app/Models/Developer.php`
+  - `app/Http/Controllers/Admin/DeveloperController.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/index.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+- **Files Modified**:
+  - `routes/web.php`
+  - `resources/views/admin/layouts/app.blade.php`
+  - `resources/views/admin/partials/icon.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migration created and executed: `2026_11_13_140000_create_developers_table.php`.
+  - Database Table created: `developers` table with columns `id`, `name`, `slug`, `h1`, `tagline`, `short_content`, `full_content`, `image`, `status`, `is_active`, `order`, `created_at`, `updated_at`.
+
+
+## Changelog — 2026-11-13 (Part 2: Developer Cover Auto-OG, Logo SVG & Summernote Enhancements)
+
+- **Requirements**:
+  1. **Cover Image & Auto OpenGraph (OG)**: Added Cover Image upload/path in Developer CMS. When set, it automatically populates the `og:image` and `twitter:image` meta tags so sharing developer links (WhatsApp, social media) displays the developer cover thumbnail.
+  2. **Developer Logo (SVG)**: Added dedicated SVG/image logo upload field and URL input with live preview.
+  3. **Summernote for Short Content**: Converted Short Content to a rich Summernote WYSIWYG editor.
+  4. **Both Editors 5 Core Capabilities**:
+     - **Image**: Photo insertion with drag-and-drop / upload inside content.
+     - **Table**: Table creation and styling.
+     - **Bullets**: Ordered and unordered list points.
+     - **Headings (H2, H3)**: Strictly restricted styleTags to H2 and H3 only (removed H1 to maintain strict semantic single-H1 hierarchy per page). Styled H2 and H3 with distinct visual font sizes.
+     - **Link**: Text hyperlinking on any selected text.
+  5. **Public Developer Show Page**: Created public route `/developer/{slug}` and view `developers.show` rendering H1, Tagline, Logo, Cover Hero with auto-OG integration, Short Content, and Full Content.
+- **Files Created**:
+  - `database/migrations/2026_11_13_150000_add_cover_and_logo_to_developers_table.php`
+  - `resources/views/developers/show.blade.php`
+- **Files Modified**:
+  - `app/Models/Developer.php`
+  - `app/Http/Controllers/Admin/DeveloperController.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `resources/views/admin/developers/index.blade.php`
+  - `resources/views/admin/layouts/app.blade.php`
+  - `resources/views/layouts/app.blade.php`
+  - `routes/web.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migration created and executed: `2026_11_13_150000_add_cover_and_logo_to_developers_table.php`.
+  - Database Table `developers` columns added: `logo` (nullable), `cover_image` (nullable), `og_image` (nullable).
+
+
+## Changelog — 2026-11-13 (Part 3: Developer List View, Status Dropdown, 4 Sidebar Tabs & Clean Image Uploads)
+
+- **Requirements**:
+  1. **Clean Image Upload Controls**: Removed manual text inputs ("Or provide Image path:" and "Or provide SVG image path:"), leaving pure, clean file choosers.
+  2. **Strict SVG Validation for Developer Logo**: Enforced SVG-only validation (`.svg`, `image/svg+xml`) on Developer Logo upload.
+  3. **Field Layout Sequence**: Arranged fields in exact requested sequence:
+     - Developer Name *
+     - Slug *
+     - H1
+     - Tagline
+     - Short Content (Summernote)
+     - Long Content / Full Content (Summernote)
+     - Cover Image (auto og:image)
+     - Developer Logo (SVG)
+  4. **Sidebar Navigation to List**: Clicking "Developer" in CMS sidebar now directly opens the Developers List page (`admin.developers.index`).
+  5. **3-Column List View**: Developers list table now contains strictly 3 columns as requested:
+     - `#` (Number)
+     - `DEVELOPER NAME`
+     - `ACTIONS` (Edit, View Public Page, Delete)
+     - Search filter bar and empty state when no developers exist yet.
+  6. **4 Vertical Tabs (Matching Image 3)**:
+     - `Basic Details`
+     - `SEO` (Meta Title, Meta Description, Meta Keywords, Canonical URL)
+     - `Featured Projects` (Project select/checkboxes from projects table)
+     - `FAQs` (Renamed from "Developer Detail L2" with dynamic Add/Remove FAQ repeater items)
+  7. **Status Dropdown Next to Developers List**: Added `Draft` / `Publish` dropdown at top right next to "Developers List" button, defaulting to `Draft`. All fields default empty when adding a new developer.
+- **Files Created**:
+  - `database/migrations/2026_11_13_154500_add_seo_projects_faqs_to_developers_table.php`
+- **Files Modified**:
+  - `app/Models/Developer.php`
+  - `app/Http/Controllers/Admin/DeveloperController.php`
+  - `resources/views/admin/layouts/app.blade.php`
+  - `resources/views/admin/developers/index.blade.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migration created and executed: `2026_11_13_154500_add_seo_projects_faqs_to_developers_table.php`.
+  - Database Table `developers` columns added: `meta_title` (nullable), `meta_description` (nullable), `meta_keywords` (nullable), `canonical_url` (nullable), `featured_projects` (json, nullable), `faqs` (json, nullable), with `status` default set to `'draft'`.
+
+
+## Changelog — 2026-11-13 (Part 4: Fix Projects Column Name in DeveloperController)
+
+- **Issues Reported**:
+  - `Illuminate\Database\QueryException: Column not found: 1054 Unknown column 'name' in 'order clause' (SQL: select * from projects order by name asc)` when loading `/admin/developers/create`.
+- **Root Cause**:
+  - The `projects` database table uses the `title` column instead of `name`.
+- **Changes Implemented**:
+  - Updated `DeveloperController.php` (`create` and `edit` methods) to sort projects by `order asc, title asc` instead of nonexistent `name`.
+  - Updated `create.blade.php` and `edit.blade.php` to render `$proj->title ?: ($proj->name ?? ...)`.
+- **Files Modified**:
+  - `app/Http/Controllers/Admin/DeveloperController.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+
+## Changelog — 2026-11-13 (Part 5: UI Cleanups & FAQ Layout Refinements)
+
+- **Requirements**:
+  1. **Removed Default Topbar ("Menu" & "Saima")**: Added `.adm-topbar { display: none !important; }` across all developer views (`index`, `create`, `edit`) to permanently eliminate unwanted topbar elements.
+  2. **Relocated "+ Add FAQ Item" Button**: Moved the button from the header down directly below the FAQ items container.
+  3. **Removed Canonical URL Field**: Removed the `Canonical URL` field from the SEO tab.
+  4. **Removed Redundant Helper Texts from Basic Details**:
+     - Removed `"Cover Image automatically becomes og:image (link share karne par yahi image thumbnail preview me show hogi)."`
+     - Removed `"Full detail for the main developer page. Supports: Images, Tables, Bullets, Headings (H2, H3), and Links."`
+- **Files Modified**:
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `resources/views/admin/developers/index.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+
+## Changelog — 2026-11-13 (Part 8: Dual-Box Featured Projects Layout & Custom Heading Range Formatter)
+
+- **Requirements Completed**:
+  1. **Dual-Box Featured Projects System (Matching Image 2)**:
+     - Replaced the tabbed view with the familiar 2-column dual box system:
+       - **Box 1 (Left)**: `Available Property Cards ( [count] )` with `+ Select All`, drag-and-drop, and `+ Add` button.
+       - **Box 2 (Right)**: `Selected Cards for This Page ( [count] )` with `Clear All`, drag-and-drop, and `✕ Remove` button.
+     - **Strict Developer Filtering**: Box 1 contains **strictly only** projects where the project's developer matches this developer (via the project card developer dropdown). Projects from other developers do not appear.
+     - Automatically updates hidden inputs `featured_projects[]` on add/remove/drag for seamless form saving.
+  2. **Summernote Headings H1 to H6 & Selective Text Formatting**:
+     - Added full H1, H2, H3, H4, H5, H6, and Normal (p) options to the Summernote Style dropdown.
+     - Removed `data-no-h1="true"` restrictions from Developer short and full content editors.
+     - **Selection-Specific Heading Application**: Solved the issue where selecting a few words turned the entire paragraph into a heading. Now, when a text range is highlighted inside a paragraph, choosing a heading splits the block cleanly so **only the selected text becomes that heading**, while surrounding text remains untouched.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+
+## Changelog — 2026-11-13 (Part 6: Project-Developer Association & Two-Tab Featured Projects System)
+
+- **Requirements Completed**:
+  1. **Developer Dropdown in Project Card Settings**:
+     - Added `Developer (Select Developer)` dropdown directly below `Neighbourhood/Community` in both the Project Edit Page (`admin/pages/edit.blade.php`), the Projects Add Drawer (`admin/projects/index.blade.php`), and the Projects Edit Modal (`admin/projects/index.blade.php`).
+     - Selecting a developer associates the project with that developer (`developer_id` foreign key & `developer` name sync).
+  2. **Removed Specified Helper Texts**:
+     - Removed `"Jo community sidebar se add ki hai wo yahan dropdown me ayegi (Community, City format me card par show hogi)."` from `admin/pages/edit.blade.php` and `admin/projects/index.blade.php`.
+     - Removed `"Abhi koi developer add nahi kiya hai. Jab aap create karenge tab yahan list show hogi."` from empty state in `admin/developers/index.blade.php`.
+  3. **Two-Tab Featured Projects System (Selected & Unselected)**:
+     - Eliminated the global project checkbox grid.
+     - Implemented two sub-tabs: **Selected** and **Unselected**.
+     - In **Unselected**: Only projects that have this developer selected from their project page dropdown appear (unrelated projects from other developers do not appear).
+     - Added dropdown selector `Select Project From Dropdown` and `+ Add to Selected` button, as well as direct `Select` and `Unselect` buttons on cards with real-time badges.
+- **Files Created**:
+  - `database/migrations/2026_11_13_163000_add_developer_id_to_projects_table.php`
+- **Files Modified**:
+  - `app/Models/Project.php`
+  - `app/Models/Developer.php`
+  - `app/Http/Controllers/Admin/PageController.php`
+  - `app/Http/Controllers/Admin/ProjectController.php`
+  - `app/Http/Controllers/Admin/DeveloperController.php`
+  - `resources/views/admin/pages/edit.blade.php`
+  - `resources/views/admin/projects/index.blade.php`
+  - `resources/views/admin/developers/index.blade.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migration created and executed: `2026_11_13_163000_add_developer_id_to_projects_table.php`.
+  - Database Table `projects` updated with nullable foreign key column: `developer_id` referencing `developers(id)` on delete set null.
+
+
+## Changelog — 2026-11-13 (Part 7: Fix Developer Dropdown in Project Card Editor)
+
+- **Issue Reported**:
+  - In project card settings dropdown, developers were not showing ("No developers found. Please add a developer from sidebar first.") even though 2 developers were created in the database.
+- **Root Cause**:
+  - When editing a project via `/admin/projects/{project}/edit`, the route is handled by `ProjectController@edit` which renders `admin.pages.edit`.
+  - `ProjectController@edit` had not passed `$developers` to the view data.
+- **Changes Implemented**:
+  1. Updated `ProjectController@edit` to fetch `$developers = \App\Models\Developer::orderBy('order', 'asc')->orderBy('name', 'asc')->get();` and include it in `compact(...)`.
+  2. Added fallback query in `admin/pages/edit.blade.php` and `admin/projects/index.blade.php` so the dropdown always has access to the developers list even if omitted by a controller method.
+- **Files Modified**:
+  - `app/Http/Controllers/Admin/ProjectController.php`
+  - `resources/views/admin/pages/edit.blade.php`
+  - `resources/views/admin/projects/index.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+
+## Changelog — 2026-11-13 (Part 8: Dual-Box Featured Projects Layout & Custom Heading Range Formatter)
+
+- **Requirements Completed**:
+  1. **Dual-Box Featured Projects System (Matching Image 2)**:
+     - Replaced the tabbed view with the familiar 2-column dual box system:
+       - **Box 1 (Left)**: `Available Property Cards ( [count] )` with `+ Select All`, drag-and-drop, and `+ Add` button.
+       - **Box 2 (Right)**: `Selected Cards for This Page ( [count] )` with `Clear All`, drag-and-drop, and `✕ Remove` button.
+     - **Strict Developer Filtering**: Box 1 contains **strictly only** projects where the project's developer matches this developer (via the project card developer dropdown). Projects from other developers do not appear.
+     - Automatically updates hidden inputs `featured_projects[]` on add/remove/drag for seamless form saving.
+  2. **Summernote Headings H1 to H6 & Selective Text Formatting**:
+     - Added full H1, H2, H3, H4, H5, H6, and Normal (p) options to the Summernote Style dropdown.
+     - Removed `data-no-h1="true"` restrictions from Developer short and full content editors.
+     - **Selection-Specific Heading Application**: Solved the issue where selecting a few words turned the entire paragraph into a heading. Now, when a text range is highlighted inside a paragraph, choosing a heading splits the block cleanly so **only the selected text becomes that heading**, while surrounding text remains untouched.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 9: Site-Wide H1-H6 Style Dropdown & Range-Specific Heading Replacement)
+
+- **Requirements Completed**:
+  1. **All Site-Wide Editors Standardized with H1 to H6**:
+     - Configured `defaultStyleTags` across all Summernote editors (`.adm-summernote, .summernote`) to explicitly provide:
+       `Normal (P)`, `Heading 1 (H1)`, `Heading 2 (H2)`, `Heading 3 (H3)`, `Heading 4 (H4)`, `Heading 5 (H5)`, and `Heading 6 (H6)`.
+     - Removed restrictive conditions (`data-no-h1`) so every editor has access to all headings.
+     - Fixed CSS overflow clipping: Set `.note-editor.note-frame { overflow: visible !important; }` and `.note-dropdown-menu { max-height: 380px !important; overflow-y: auto !important; z-index: 99999 !important; }` so all headings (H1 through H6) are fully visible and never cut off.
+  2. **Selective Text Range Heading Replacement**:
+     - Hooked directly into Summernote's core editor module (`context.modules.editor.formatBlock`).
+     - When any text is highlighted/selected, choosing any heading (H1 to H6) splits the enclosing paragraph block cleanly around the selection and transforms **strictly only the selected text into that heading**, leaving preceding and succeeding text completely intact as paragraphs.
+     - If no text is selected (cursor collapsed), standard block-level formatBlock runs smoothly.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 10: Compact Style Dropdown Matching Image 1 & In-Place Same-Line Heading Replacement)
+
+- **Requirements Completed**:
+  1. **Compact Style Dropdown Matching User Reference (Image 1)**:
+     - Replaced oversized, scrolled dropdown preview items with a clean, compact dropdown menu.
+     - Updated options to exact clean titles: `Normal`, `Quote`, `Code`, `Header 1`, `Header 2`, `Header 3`, `Header 4`, `Header 5`, and `Header 6`.
+     - Overrode `.note-dropdown-menu` CSS rules to eliminate excessive line-height, eliminate vertical scrollbars (`max-height: none !important`, `overflow-y: visible !important`), and set balanced, compact font sizes for each option (`18px` to `13px`) matching Image 1.
+  2. **In-Place Same-Line Selected Text Formatting (No Line Break / Jump)**:
+     - Fixed the issue where applying a heading to selected text split the paragraph and pushed the word onto a separate new line.
+     - Implemented inline formatting (`<span class="heading-inline heading-hX" style="display: inline; font-size: ...; font-weight: ...;">`) for selected text ranges.
+     - When a word or phrase is highlighted (e.g. "make" in a paragraph) and any Header or Style is clicked, it remains on the **exact same line in-place** while immediately updating its font size and font weight according to Header 1 through Header 6, Normal, Quote, or Code.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 11: Z-Index Elevation for Style Dropdown & H5/H6 Visibility)
+
+- **Requirements Completed**:
+  1. **Style Dropdown Z-Index Stacking Context Fix**:
+     - Resolved the issue where the Style dropdown of the top editor (`Short Content`) was dipping underneath the toolbar of the next editor (`Full Content`), hiding `Header 5` and `Header 6`.
+     - Elevated the active `.note-editor` stacking context (`z-index: 9999 !important; position: relative !important;`) on focus, open state, and click events.
+     - Elevated `.note-toolbar` (`z-index: 20`), `.note-btn-group.open` (`z-index: 99999`), and `.note-dropdown-menu` (`z-index: 999999 !important;`).
+     - Tightened item padding and margins inside the dropdown for a sleeker profile so all items (Normal, Quote, Code, Header 1–Header 6) render completely on top and are fully visible.
+- **Files Modified**:
+  - `resources/views/admin/layouts/app.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 12: Developer Public Detail Page 100% Dynamic Page UI Parity)
+
+- **Requirements Completed**:
+  1. **Dynamic Page UI Replication for Developer Public Detail Page (`/developer/{slug}`)**:
+     - Upgraded `developers/show.blade.php` to match the exact frontend design system, stylesheets, fonts, and layout structure of `dynamic-page.blade.php` without modifying `dynamic-page.blade.php`.
+  2. **Identical Section Ordering & Aesthetic**:
+     - **Header & Navbar**: Full sticky header with Projects & Commercial dropdown menus, mobile navigation drawer, and "LIST YOUR PROPERTY" modal trigger.
+     - **Hero Section**: `GolfHero` banner featuring the developer cover image, dark gradient overlay, developer SVG logo (with drop shadow), H1 (`$developer->h1 ?: $developer->name`), tagline (`$developer->tagline`), red "BOOK NOW" button, and the "REQUEST A CALL BACK" card with international phone selector.
+     - **Short Content**: Rendered in a clean container directly beneath the Hero.
+     - **Featured Property Cards**: Rendered with the exact same 460px luxury card design from `partials/page-communities.blade.php` (tags/badges, sold-out status, luxury preview thumbnail, title, location, and green "BOOK NOW" button) for all projects assigned to this developer in `featured_projects`.
+     - **Long Content**: Rendered with identical typography and layout (`saimaContentCol`, `saimaDynamicContent`, `saimaLongContentBody`).
+     - **Brand Green Headings (`#1a4731`)**: Configured all headings (H1 through H6) inside content blocks to display in the site-wide signature brand green (`#1a4731`).
+     - **FAQs**: Rendered in the exact interactive accordion style matching `dynamic-page.blade.php` with brand green active state and animated chevron indicator.
+     - **Footer & Interactions**: Full site footer with scroll-to-top button and client interaction scripts.
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 13: Dedicated Developer Page Custom Layout with Sticky Sidebar & Centered Hero)
+
+- **Requirements Completed**:
+  1. **Centered Minimalist Hero (Developer Page Only)**:
+     - Configured the Hero section to show **strictly only** the Developer H1 title and Tagline beneath it, centered horizontally and vertically.
+     - Removed all buttons, forms, and logos from the Hero section.
+  2. **Two-Column Top Layout with Sticky Sidebar (Short Content + Cards on Left, Sidebar on Right)**:
+     - **Left Column**:
+       - Developer **Short Content** with an automatic **Read More ↓** link at the end that smoothly scrolls down to the Long Content section (`#longContent`).
+       - Developer **Featured Project Cards** grid matching the luxury cards design.
+     - **Right Column (Sticky Sidebar)**:
+       - Developer **SVG Logo** placed directly on top of the form.
+       - **Request A Call Back** form card with fields for name, email, and phone.
+       - **Latest Projects** card beneath the form displaying the latest active projects with thumbnail, title, and location.
+       - Sticky positioning (`position: sticky; top: 90px;`): stays in view while browsing short content and project cards, and naturally scrolls away as soon as cards end and long content begins.
+  3. **Full-Width Long Content & FAQs**:
+     - Full-width Long Content section beneath the two-column cards section with brand green (`#1a4731`) headings.
+     - FAQs accordion section beneath long content with brand green active states.
+     - Site footer and interaction scripts.
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 14: Inline Read More, Original Hero Image Colors & Dynamic Sticky Sidebar with Scrollbar)
+
+- **Requirements Completed**:
+  1. **Inline Read More Placement**:
+     - Moved the `Read More ↓` link from a separate newline container to sit directly **inline at the end of the short content text** (inside the ending paragraph tag).
+     - Does not break onto a new line, keeping the reading flow natural and seamless.
+  2. **Original Hero Image Color (No Green Tint)**:
+     - Replaced the green-tinted overlay (`rgba(10, 26, 17, ...)`) with a neutral photographic gradient (`rgba(0, 0, 0, 0.40)` to `rgba(0, 0, 0, 0.60)`).
+     - The hero cover image now preserves its authentic original colors with zero color alteration or green cast.
+  3. **Dynamic Page Sticky Sidebar Parity**:
+     - Upgraded the developer page right sidebar to match `partials/article.blade.php`:
+       - `position: sticky; top: 90px; max-height: calc(100vh - 110px);`
+       - Integrated custom slim vertical scrollbar (`::-webkit-scrollbar` with `#cbd5e1` thumb) allowing independent internal scrolling.
+       - Full `BOOK AN APPOINTMENT` card with name, phone, email, and comments textarea with AJAX form submission.
+       - Developer SVG logo placed above the form card, and Latest Projects list below the form.
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 15: CMS-Managed FAQ Heading & Subtitle for Developers)
+
+- **Requirements Completed**:
+  1. **CMS Fields for FAQ Heading & Subtitle**:
+     - Added new fields `FAQ Heading` and `FAQ Subtitle` to the Developer FAQs tab in both `create.blade.php` and `edit.blade.php`.
+     - Admins can now customize the main heading (e.g. `Frequently Asked Questions`) and explanatory subtitle (e.g. `Got questions about [Developer Name]? Find helpful answers below.`) directly from the CMS.
+  2. **Backend Controller & Model Updates**:
+     - Added `faq_heading` (string, nullable) and `faq_subtitle` (text, nullable) columns to the `developers` table via database migration `2026_11_13_134516_add_faq_heading_and_subtitle_to_developers_table`.
+     - Updated `Developer` Eloquent model `$fillable` array.
+     - Updated `DeveloperController@store` and `DeveloperController@update` to capture and persist both fields.
+  3. **Frontend Dynamic Rendering**:
+     - Updated `developers/show.blade.php` to dynamically display `$developer->faq_heading` and `$developer->faq_subtitle` on the public developer detail page.
+     - Clean fallback support: If left blank in the CMS, defaults smoothly to `Frequently Asked Questions` and the standard developer-specific help text.
+- **Files Modified**:
+  - `database/migrations/2026_11_13_134516_add_faq_heading_and_subtitle_to_developers_table.php` (New)
+  - `app/Models/Developer.php`
+  - `app/Http/Controllers/Admin/DeveloperController.php`
+  - `resources/views/admin/developers/create.blade.php`
+  - `resources/views/admin/developers/edit.blade.php`
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: Created and executed `2026_11_13_134516_add_faq_heading_and_subtitle_to_developers_table`.
+  - Database Tables: Added `faq_heading` and `faq_subtitle` to `developers` table.
+
+
+## Changelog — 2026-11-13 (Part 16: Navbar DEVELOPER Link & Dedicated Static Developers Main Page)
+
+- **Requirements Completed**:
+  1. **Navbar Integration (`DEVELOPERS` Link)**:
+     - Added `DEVELOPERS` navigation link right beside `COMMERCIAL` in the desktop navbar and mobile drawer across:
+       - `resources/views/partials/header.blade.php`
+       - `resources/views/dynamic-page.blade.php`
+       - `resources/views/developers/show.blade.php`
+     - Added dedicated route `/developers` in `routes/web.php` with 301 redirection from legacy `/developer`.
+  2. **Dedicated Static Public Developers Main Page (`/developers`)**:
+     - Created `resources/views/developers/index.blade.php` inheriting the standard layout (`layouts.app`).
+     - **Static Hero Section**:
+       - Background image: `develoepr_main_hero_image.jpeg` from `public/` directory.
+       - Centered Heading: `Real Estate Developers in Pakistan`
+       - Centered Paragraph: `Discover the Developers Shaping Pakistan's Real Estate Landscape`
+       - Preserved original photographic tones with a neutral dark overlay (no green cast).
+       - Only the heading and paragraph are displayed in the hero section.
+     - **Stats Bar Beneath Hero** (matching uploaded reference):
+       - Full-width white section with 3 counter items:
+         1. **566** `Property Developers`
+         2. **Verified** `Listed Development Projects`
+         3. **Regularly** `Updated Developer Profiles`
+       - Styled with prominent bold numbers/status and clean muted grey descriptions, with responsive stacking for mobile devices.
+- **Files Modified**:
+  - `routes/web.php`
+  - `resources/views/developers/index.blade.php` (New)
+  - `resources/views/partials/header.blade.php`
+  - `resources/views/dynamic-page.blade.php`
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 17: Featured Developers Cards Section on Developers Main Page)
+
+- **Requirements Completed**:
+  1. **Dynamic Database Fetching for Developers Main Page**:
+     - Updated route `/developers` in `routes/web.php` to query all active developers (`status != 'draft'`).
+     - Ordered by `id desc` (`orderBy('id', 'desc')`) so any newly created developer detail page immediately surfaces on top.
+  2. **Featured Developers Section Design & Parity**:
+     - Section Header:
+       - Heading: `Featured Developers` in black (`#000000`).
+       - Subtitle: `Discover some of Pakistan's recognised real estate developers and development companies Cards` in black (`#000000`).
+     - Developer Cards (matching reference image `media_1794579971457_2e1e6347.jpg`):
+       - **Left Column**: Developer cover image with rounded corners (`border-radius: 14px`) and an overlaid white floating badge at the bottom-left holding the developer's SVG/image logo.
+       - **Right Column**:
+         - H1 Developer title linking to `/developer/{slug}`.
+         - Short content excerpt rendered cleanly.
+         - Omitted the `218 Live projects` counter as explicitly requested.
+         - Thin horizontal divider.
+         - `View Developer ↗` blue button on the right navigating to the developer detail page.
+       - Smooth hover elevations and mobile-friendly responsive layout.
+- **Files Modified**:
+  - `routes/web.php`
+  - `resources/views/developers/index.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 18: Editorial Long Content Section on Developers Main Page)
+
+- **Requirements Completed**:
+  1. **Comprehensive Editorial Content Integration**:
+     - Added the complete structured editorial content directly beneath the Featured Developers cards section on `resources/views/developers/index.blade.php`.
+     - Structured with semantic HTML (`article`, `h2`, `h3`, `h4`, `p`, `ul`, `li`):
+       - **Section 1**: Real Estate Development in Pakistan & Developer Categories list (with bullet circles/discs).
+       - **Section 2**: Why Choose the Right Property Developer in Pakistan? (Key factors 1 to 6).
+       - **Section 3**: How to Choose a Property Developer in Pakistan (Step-by-step guide Steps 01 to 05).
+       - **Section 4**: Residential vs. Commercial Property Developers (Segment breakdowns).
+       - **Section 5**: Popular Real Estate Markets in Pakistan (Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad, Multan, Peshawar, Gwadar).
+       - **Section 6**: Leading Real Estate Developers in Pakistan (Bahria Town, DHA, Habib Rafiq Group, Zameen Developments, FDHL, Royal Developers, Lake City).
+  2. **Strict Site-Wide Styling Parity**:
+     - Heading colors styled with signature `#1a4731` green matching all pages.
+     - Heading hierarchy: H2 (`26px`, bold), H3 (`20px`, bold), H4 (`17.5px`, bold).
+     - Paragraphs: `16px` font size, `1.85` line-height, `#374151` dark neutral color.
+     - Unordered lists: Custom disc and nested circle bullet markers with clean indentations and spacing.
+- **Files Modified**:
+  - `resources/views/developers/index.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 19: Site-Wide Accordion FAQs Section on Developers Main Page)
+
+- **Requirements Completed**:
+  1. **FAQ Section Integration on Developers Main Page (`/developers`)**:
+     - Added the complete 11 interactive FAQs directly beneath the editorial long content section in `resources/views/developers/index.blade.php`.
+     - Target section anchor `#faq` matches the navigation link in the site header.
+     - Section Header:
+       - Heading: `Frequently Asked Questions` styled in `#1a4731` green (`32px`, bold).
+       - Subtitle: `Frequently Asked Questions About Real Estate Developers in Pakistan` (`#666`, `15px`).
+  2. **11 Verified FAQs Structured**:
+     - Q1: What is a real estate developer?
+     - Q2: Who are the leading property developers in Pakistan?
+     - Q3: How can I find property developers in Pakistan?
+     - Q4: How can I verify a property developer?
+     - Q5: What is the difference between a developer and a housing society?
+     - Q6: Are all housing societies in Pakistan approved?
+     - Q7: What information should I check before choosing a developer?
+     - Q8: Can I compare different property developers online?
+     - Q9: Do property developers offer instalment plans?
+     - Q10: Can overseas Pakistanis explore property developers in Pakistan?
+     - Q11: How do I choose between residential and commercial developers?
+  3. **Accordion Mechanism & Site-Wide Parity**:
+     - Utilizes site component classes (`.faqSection`, `.faqContainer`, `.faqList`, `.faqItem`, `.faqQuestion`, `.faqIcon`, `.faqAnswer`).
+     - Animated toggle with rotating icon (`+` to `x`), first item open by default, smooth animated expanding/collapsing.
+- **Files Modified**:
+  - `resources/views/developers/index.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 20: Reduced Paragraph Gaps & Line Height Optimization)
+
+- **Requirements Completed**:
+  1. **Paragraph Spacing & Line Height Adjustment**:
+     - Reduced paragraph bottom margin from `16px` down to `8px - 10px` across editorial long content and developer detail pages.
+     - Adjusted line-height from `1.85` to `1.62` for clean, tight reading ergonomics without excessive empty vertical gaps.
+     - Headings margins optimized (H2: `30px 0 10px 0`, H3: `20px 0 8px 0`, H4: `16px 0 6px 0`) to maintain compact, balanced flow.
+     - Unordered list item margin reduced to `5px` and list vertical margins to `10px 0 16px 0`.
+  2. **Consistency Across Views**:
+     - Synchronized paragraph spacing in both `resources/views/developers/index.blade.php` and `resources/views/developers/show.blade.php`.
+- **Files Modified**:
+  - `resources/views/developers/index.blade.php`
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 21: Paragraph Sentence Consolidation & Natural Flow)
+
+- **Requirements Completed**:
+  1. **Consolidated Sentence Flow (Eliminated Single-Line Paragraph Breaks)**:
+     - Merged disjointed 1-sentence paragraph tags into natural, cohesive editorial paragraphs across all 6 long content sections in `resources/views/developers/index.blade.php`:
+       - Combined city descriptions (Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad, Multan, Peshawar, Gwadar) from two broken `<p>` tags into unified paragraphs.
+       - Consolidated development factors, evaluation steps, and property segments into clean narrative blocks.
+     - Completely eliminated the unwanted empty gaps between single lines.
+  2. **Fine-Tuned Heading-to-Paragraph Spacing**:
+     - Added adjacent sibling margin overrides (`h2 + h3 { margin-top: 4px; }`, `h3 + p { margin-top: 4px; }`, `h4 + p { margin-top: 4px; }`).
+     - Balanced paragraph line-height (`1.65`) and margin-bottom (`14px`) for optimal readability.
+- **Files Modified**:
+  - `resources/views/developers/index.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 22: Removed Sidebar Scrollbar on Developer Detail Page)
+
+- **Requirements Completed**:
+  1. **Removed Sidebar Internal Scrollbar**:
+     - Updated `.saimaStickySidebar` in `resources/views/developers/show.blade.php`:
+       - Removed `overflow-y: auto`, `max-height: calc(100vh - 110px)`, and `overscroll-behavior`.
+       - Removed custom `::-webkit-scrollbar` styling and right padding.
+     - The appointment form and sidebar elements now render straight down cleanly with no scrollbar.
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 23: Synchronized Sticky Form Duration with Project Cards)
+
+- **Requirements Completed**:
+  1. **Strict Sticky Sidebar Lifetime Tied to Project Cards**:
+     - Updated `.devMainLayout` with `align-items: stretch; position: relative;`.
+     - Updated `.devSidebarCol` with `align-self: stretch; height: 100%; position: relative;` so the sidebar container exactly spans the full height of the left column (short content + all featured project cards).
+     - As user scrolls, `.saimaStickySidebar` stays fixed at `top: 90px` alongside the cards.
+     - As soon as the project cards end, the parent container boundaries are reached, and the sticky form naturally scrolls away out of view as long content begins.
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 24: Updated Header Search Engine Verifications & GA4/GTM Scripts)
+
+- **Requirements Completed**:
+  1. **Site-Wide Header SEO & Analytics Update**:
+     - Updated `resources/views/partials/seo-head-scripts.blade.php`, which is included across the entire website (`layouts/app.blade.php`, `dynamic-page.blade.php`, `developers/show.blade.php`, `developers/index.blade.php`, `welcome.blade.php`).
+     - **Google Search Console**: `<meta name="google-site-verification" content="y1noJOhSDc2Z8nuDupa_uCByiBdHsimXEc9FhurNqFc" />`
+     - **Bing Webmaster**: `<meta name="msvalidate.01" content="E65C761395C7D12E4A6CFCB1B51CD0E8" />`
+     - **Yandex Verification**: `<meta name="yandex-verification" content="334d714fee991fab" />`
+     - **GA4 / Google Tag Manager**:
+       - Container ID: `GTM-TC468P78`
+       - Async loader and dataLayer initialization snippet included.
+- **Files Modified**:
+  - `resources/views/partials/seo-head-scripts.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 25: CSS Grid Architecture for Robust Sticky Sidebar Duration)
+
+- **Requirements Completed**:
+  1. **Fixed Sticky Sidebar Sticking Duration**:
+     - Refactored `.devMainLayout` from Flexbox to CSS Grid (`display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 40px; align-items: stretch;`).
+     - In CSS Grid, `.devSidebarCol` formally spans 100% of the entire grid row height (dictated by the full length of the project cards).
+     - Ensured `.saimaStickySidebar` stays stuck at `top: 90px` alongside all rows of project cards (Row 1, Row 2, Row 3).
+     - Once the project cards row concludes, the grid container ends, allowing the sticky sidebar to naturally scroll up and out of view as the Long Content section enters.
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 26: Domain Migration to fsadvisory.pk in Sitemap, Developer Sitemaps, Unified Favicon & Compact Content Spacing)
+
+- **Requirements Completed**:
+  1. **Replaced Domain Across Sitemap, Robots.txt, .htaccess & System to `https://fsadvisory.pk`**:
+     - Updated fallback domain in `app/Http/Controllers/SitemapController.php` (`getBaseUrl()` fallback: `https://fsadvisory.pk`).
+     - Updated `public/robots.txt` Sitemap URL to `https://fsadvisory.pk/sitemap.xml`.
+     - Updated `public/.htaccess` canonical redirect to `https://fsadvisory.pk/`.
+     - Updated `seo_canonical_url` in `site_settings` database table to `https://fsadvisory.pk` and flushed cache.
+     - Updated `app/helpers.php` line 532 schema URL to `https://fsadvisory.pk/`.
+     - Updated `FooterSection` columns and copyright strings from `saimaprojects.com` to `fsadvisory.pk`.
+  2. **Added Developers to Sitemap (`sitemap.xml`)**:
+     - Added Developers directory page (`/developers`) to `/sitemap/page-sitemap.xml` with priority `0.8` and changefreq `weekly`.
+     - Implemented dedicated `/sitemap/developer-sitemap.xml` in `SitemapController` that dynamically queries all active published developers (`is_active = true`, `status != 'draft'`) and outputs `/developer/{slug}` with proper `<lastmod>`, `<changefreq>weekly</changefreq>`, `<priority>0.8</priority>`.
+     - Registered `/sitemap/developer-sitemap.xml` in root sitemap index (`/sitemap.xml`).
+     - Registered routes in `routes/web.php` for `/sitemap/developer-sitemap.xml`, `/developer-sitemap.xml`, and 301 redirect.
+  3. **Unified Favicon Consistency**:
+     - Synced `public/favicon.ico` directly from `public/favicon.png` so browsers requesting `/favicon.ico` (such as in `view-source:` and `sitemap.xml`) receive the exact same icon as the UI and CMS.
+     - Ensured all templates (`layouts/app.blade.php`, `admin/layouts/app.blade.php`, `dynamic-page.blade.php`, `developers/show.blade.php`) reference the unified favicon with cache-busting timestamps.
+  4. **Fixed Developer Detail Page Sticky Form Behavior**:
+     - Streamlined `.devMainLayout` and `.devSidebarCol` with clean CSS `position: sticky; top: 85px;` directly on the sidebar column.
+     - Ensured the Appointment form stays sticky alongside all project cards as the user scrolls down through the cards.
+     - The moment all project cards end, the layout container ends and the sticky sidebar smoothly scrolls away with the cards, allowing the content below (`#longContent`) to enter the view.
+     - Removed any internal scrollbar from the appointment form so it is straight, sleek, and fully visible without truncation.
+  5. **Adjusted Paragraph & Heading Line Gaps in Content**:
+     - In `developers/index.blade.php` and `developers/show.blade.php`, tightened paragraph spacing (`margin: 0 0 6px 0`, `line-height: 1.52`) and heading gaps (`h2`, `h3`, `h4`) to eliminate excessive blank line spaces between sentences.
+- **Files Modified**:
+  - `public/robots.txt`
+  - `public/.htaccess`
+  - `app/Http/Controllers/SitemapController.php`
+  - `routes/web.php`
+  - `app/helpers.php`
+  - `app/Models/FooterSection.php`
+  - `public/favicon.ico`
+  - `resources/views/developers/show.blade.php`
+  - `resources/views/developers/index.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: `site_settings` updated `seo_canonical_url` to `https://fsadvisory.pk`; `footer_sections` updated links to `https://fsadvisory.pk`.
+
+
+## Changelog — 2026-11-13 (Part 28: Developer Detail Long Content Background Changed to Pure White)
+
+- **Requirements Completed**:
+  1. **Developer Detail Long Content Background Color**:
+     - Updated `#longContent` section background in `resources/views/developers/show.blade.php` from `#faf8f5` (warm light-pink tint) to pure `#ffffff` (White).
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-13 (Part 26: Domain Migration to fsadvisory.pk in Sitemap, Developer Sitemaps, Unified Favicon & Compact Content Spacing)
+
+- **Requirements Completed**:
+  1. **Replaced Domain Across Sitemap, Robots.txt, .htaccess & System to `https://fsadvisory.pk`**:
+     - Updated fallback domain in `app/Http/Controllers/SitemapController.php` (`getBaseUrl()` fallback: `https://fsadvisory.pk`).
+     - Updated `public/robots.txt` Sitemap URL to `https://fsadvisory.pk/sitemap.xml`.
+     - Updated `public/.htaccess` canonical redirect to `https://fsadvisory.pk/`.
+     - Updated `seo_canonical_url` in `site_settings` database table to `https://fsadvisory.pk` and flushed cache.
+     - Updated `app/helpers.php` line 532 schema URL to `https://fsadvisory.pk/`.
+     - Updated `FooterSection` columns and copyright strings from `saimaprojects.com` to `fsadvisory.pk`.
+  2. **Added Developers to Sitemap (`sitemap.xml`)**:
+     - Added Developers directory page (`/developers`) to `/sitemap/page-sitemap.xml` with priority `0.8` and changefreq `weekly`.
+     - Implemented dedicated `/sitemap/developer-sitemap.xml` in `SitemapController` that dynamically queries all active published developers (`is_active = true`, `status != 'draft'`) and outputs `/developer/{slug}` with proper `<lastmod>`, `<changefreq>weekly</changefreq>`, `<priority>0.8</priority>`.
+     - Registered `/sitemap/developer-sitemap.xml` in root sitemap index (`/sitemap.xml`).
+     - Registered routes in `routes/web.php` for `/sitemap/developer-sitemap.xml`, `/developer-sitemap.xml`, and 301 redirect.
+  3. **Unified Favicon Consistency**:
+     - Synced `public/favicon.ico` directly from `public/favicon.png` so browsers requesting `/favicon.ico` (such as in `view-source:` and `sitemap.xml`) receive the exact same icon as the UI and CMS.
+     - Ensured all templates (`layouts/app.blade.php`, `admin/layouts/app.blade.php`, `dynamic-page.blade.php`, `developers/show.blade.php`) reference the unified favicon with cache-busting timestamps.
+  4. **Fixed Developer Detail Page Sticky Form Behavior**:
+     - Streamlined `.devMainLayout` and `.devSidebarCol` with clean CSS `position: sticky; top: 85px;` directly on the sidebar column.
+     - Ensured the Appointment form stays sticky alongside all project cards as the user scrolls down through the cards.
+     - The moment all project cards end, the layout container ends and the sticky sidebar smoothly scrolls away with the cards, allowing the content below (`#longContent`) to enter the view.
+     - Removed any internal scrollbar from the appointment form so it is straight, sleek, and fully visible without truncation.
+  5. **Adjusted Paragraph & Heading Line Gaps in Content**:
+     - In `developers/index.blade.php` and `developers/show.blade.php`, tightened paragraph spacing (`margin: 0 0 6px 0`, `line-height: 1.52`) and heading gaps (`h2`, `h3`, `h4`) to eliminate excessive blank line spaces between sentences.
+- **Files Modified**:
+  - `public/robots.txt`
+  - `public/.htaccess`
+  - `app/Http/Controllers/SitemapController.php`
+  - `routes/web.php`
+  - `app/helpers.php`
+  - `app/Models/FooterSection.php`
+  - `public/favicon.ico`
+  - `resources/views/developers/show.blade.php`
+  - `resources/views/developers/index.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: `site_settings` updated `seo_canonical_url` to `https://fsadvisory.pk`; `footer_sections` updated links to `https://fsadvisory.pk`.
+
+
+## Changelog — 2026-11-13 (Part 28: Developer Detail Long Content Background Changed to Pure White)
+
+- **Requirements Completed**:
+  1. **Developer Detail Long Content Background Color**:
+     - Updated `#longContent` section background in `resources/views/developers/show.blade.php` from `#faf8f5` (warm light-pink tint) to pure `#ffffff` (White).
+- **Files Modified**:
+  - `resources/views/developers/show.blade.php`
   - `README.md`
 - **Database / Migrations**:
   - Migrations: None created or modified.

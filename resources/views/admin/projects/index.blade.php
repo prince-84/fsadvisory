@@ -483,7 +483,22 @@
                                     <option value="" disabled>No communities found. Please add a community from sidebar first.</option>
                                 @endforelse
                             </select>
-                            <div class="adm-help">Jo community sidebar se add ki hai wo yahan dropdown me ayegi (Community, City format me card par show hogi).</div>
+                        </div>
+
+                        <!-- Developer -->
+                        <div class="adm-field" style="margin-bottom: 20px;">
+                            <label class="adm-label">Developer <span style="font-weight: 400; color: #64748b; font-size: 12px;">(Select Developer)</span></label>
+                            @php
+                                $devList = (isset($developers) && count($developers)) ? $developers : \App\Models\Developer::orderBy('name', 'asc')->get();
+                            @endphp
+                            <select name="developer_id" id="add_prop_developer" class="adm-select" style="background: #ffffff; cursor: pointer;">
+                                <option value="">-- Select Developer --</option>
+                                @forelse($devList as $dev)
+                                    <option value="{{ $dev->id }}">{{ $dev->name }}</option>
+                                @empty
+                                    <option value="" disabled>No developers found. Please add a developer from sidebar first.</option>
+                                @endforelse
+                            </select>
                         </div>
 
                         <!-- Card Badges / Attributes Drag & Drop (City ke neeche do input field) -->
@@ -1206,6 +1221,19 @@
                     </select>
                 </div>
 
+                <!-- Developer Dropdown -->
+                <div>
+                    <label style="display: block; font-size: 11.5px; font-weight: 700; color: #475569; margin-bottom: 5px; text-transform: uppercase;">Developer</label>
+                    <select id="edit_developer_id" name="developer_id" class="adm-input" style="width: 100%; border-radius: 8px; background: #ffffff; cursor: pointer;">
+                        <option value="">-- Select Developer --</option>
+                        @forelse($devList ?? [] as $dev)
+                            <option value="{{ $dev->id }}">{{ $dev->name }}</option>
+                        @empty
+                            <option value="" disabled>No developers found.</option>
+                        @endforelse
+                    </select>
+                </div>
+
                 <!-- Status -->
                 <div>
                     <label style="display: block; font-size: 11.5px; font-weight: 700; color: #475569; margin-bottom: 5px; text-transform: uppercase;">Status</label>
@@ -1722,6 +1750,12 @@
                     locSelect.add(opt);
                 }
             }
+        }
+
+        // Select Developer
+        const devSelect = document.getElementById('edit_developer_id');
+        if (devSelect) {
+            devSelect.value = project.developer_id || '';
         }
 
         document.getElementById('edit_image').value = project.image || '';

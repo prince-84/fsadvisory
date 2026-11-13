@@ -532,8 +532,9 @@ class PageController extends Controller
         }
 
         $communities = \App\Models\Community::with('city')->orderBy('order', 'asc')->orderBy('name', 'asc')->get();
+        $developers = \App\Models\Developer::orderBy('order', 'asc')->orderBy('name', 'asc')->get();
 
-        return view('admin.pages.edit', compact('page', 'projectPages', 'linkedProject', 'projectSlugs', 'allProjects', 'selectedProjectIds', 'communities'));
+        return view('admin.pages.edit', compact('page', 'projectPages', 'linkedProject', 'projectSlugs', 'allProjects', 'selectedProjectIds', 'communities', 'developers'));
     }
 
     /**
@@ -626,6 +627,17 @@ class PageController extends Controller
 
             if ($request->has('location')) {
                 $projectUpdates['location'] = $request->input('location');
+            }
+
+            if ($request->has('developer_id')) {
+                $devId = $request->input('developer_id') ? (int) $request->input('developer_id') : null;
+                $projectUpdates['developer_id'] = $devId;
+                if ($devId) {
+                    $devRecord = \App\Models\Developer::find($devId);
+                    $projectUpdates['developer'] = $devRecord?->name;
+                } else {
+                    $projectUpdates['developer'] = null;
+                }
             }
 
             if ($request->has('badges')) {

@@ -29,7 +29,9 @@ class ProjectController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-        return view('admin.projects.index', compact('projects', 'pages', 'totalProjects', 'activeProjects', 'communities'));
+        $developers = \App\Models\Developer::orderBy('name', 'asc')->get();
+
+        return view('admin.projects.index', compact('projects', 'pages', 'totalProjects', 'activeProjects', 'communities', 'developers'));
     }
 
     /**
@@ -45,6 +47,7 @@ class ProjectController extends Controller
             'location'      => ['nullable', 'string', 'max:255'],
             'price'         => ['nullable', 'string', 'max:255'],
             'delivery_date' => ['nullable', 'string', 'max:255'],
+            'developer_id'  => ['nullable', 'exists:developers,id'],
             'developer'     => ['nullable', 'string', 'max:255'],
             'payment_plan'  => ['nullable', 'string', 'max:255'],
             'image'         => ['nullable', 'string', 'max:500'],
@@ -369,6 +372,16 @@ class ProjectController extends Controller
         }
         $badges = is_array($badgesInput) ? array_values(array_filter(array_map('trim', $badgesInput))) : [];
 
+        // Developer linking
+        $devId = $request->input('developer_id');
+        $devName = null;
+        if ($devId) {
+            $devObj = \App\Models\Developer::find($devId);
+            if ($devObj) {
+                $devName = $devObj->name;
+            }
+        }
+
         // 3. Create Project Card (placed at the top of the list)
         Project::query()->increment('order');
         $project = Project::create([
@@ -379,7 +392,8 @@ class ProjectController extends Controller
             'price'              => null,
             'delivery_date'      => null,
             'badges'             => $badges,
-            'developer'          => $extractedDeveloper ?? null,
+            'developer_id'       => $devId ?: null,
+            'developer'          => $devName ?: ($extractedDeveloper ?? null),
             'payment_plan'       => $extractedPaymentPlan ?? null,
             'image'              => $cardImage,
             'status'             => $status,
@@ -495,10 +509,11 @@ class ProjectController extends Controller
         }
 
         $communities = \App\Models\Community::with('city')->orderBy('order', 'asc')->orderBy('name', 'asc')->get();
+        $developers = \App\Models\Developer::orderBy('order', 'asc')->orderBy('name', 'asc')->get();
         $isProjectContext = true;
 
         return view('admin.pages.edit', compact(
-            'page', 'project', 'projectPages', 'linkedProject', 'projectSlugs', 'allProjects', 'selectedProjectIds', 'communities', 'isProjectContext'
+            'page', 'project', 'projectPages', 'linkedProject', 'projectSlugs', 'allProjects', 'selectedProjectIds', 'communities', 'developers', 'isProjectContext'
         ));
     }
 
@@ -522,6 +537,7 @@ class ProjectController extends Controller
             'price'         => ['nullable', 'string', 'max:255'],
             'delivery_date' => ['nullable', 'string', 'max:255'],
             'badges'        => ['nullable'],
+            'developer_id'  => ['nullable', 'exists:developers,id'],
             'developer'     => ['nullable', 'string', 'max:255'],
             'payment_plan'       => ['nullable', 'string', 'max:255'],
             'image'              => ['nullable', 'string', 'max:500'],
@@ -577,6 +593,19 @@ class ProjectController extends Controller
         }
         $validated['price'] = null;
         $validated['delivery_date'] = null;
+
+        if ($request->has('developer_id')) {
+            $devId = $request->input('developer_id');
+            if ($devId) {
+                $devObj = \App\Models\Developer::find($devId);
+                $validated['developer_id'] = $devId;
+                if ($devObj) {
+                    $validated['developer'] = $devObj->name;
+                }
+            } else {
+                $validated['developer_id'] = null;
+            }
+        }
 
         unset($validated['image_file']);
         $headline = $request->input('headline');

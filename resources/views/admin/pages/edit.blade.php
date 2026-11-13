@@ -508,7 +508,26 @@
                                         <option value="" disabled>No communities found. Please add a community from sidebar first.</option>
                                     @endforelse
                                 </select>
-                                <div class="adm-help">Jo community sidebar se add ki hai wo yahan dropdown me ayegi (Community, City format me card par show hogi).</div>
+                            </div>
+
+                            <!-- Developer Dropdown -->
+                            <div class="adm-field" style="margin-top: 14px;">
+                                <label class="adm-label" for="projectDeveloper">Developer <span style="font-weight: 400; color: #64748b; font-size: 12px;">(Select Developer)</span></label>
+                                @php
+                                    $currDevId = old('developer_id', $linkedProject->developer_id ?? null);
+                                    $currDevName = old('developer', $linkedProject->developer ?? '');
+                                    $devList = (isset($developers) && count($developers)) ? $developers : \App\Models\Developer::orderBy('name', 'asc')->get();
+                                @endphp
+                                <select id="projectDeveloper" name="developer_id" class="adm-select" style="width: 100%; border-radius: 8px; background: #ffffff; cursor: pointer;">
+                                    <option value="">-- Select Developer --</option>
+                                    @forelse($devList as $dev)
+                                        <option value="{{ $dev->id }}" {{ ($currDevId == $dev->id || strcasecmp($currDevName, $dev->name) === 0) ? 'selected' : '' }}>
+                                            {{ $dev->name }}
+                                        </option>
+                                    @empty
+                                        <option value="" disabled>No developers found. Please add a developer from sidebar first.</option>
+                                    @endforelse
+                                </select>
                             </div>
 
                         </div>

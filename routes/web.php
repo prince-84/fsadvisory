@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\CityController as AdminCityController;
 use App\Http\Controllers\Admin\CommunityController as AdminCommunityController;
+use App\Http\Controllers\Admin\DeveloperController as AdminDeveloperController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\AmenityController as AdminAmenityController;
 use App\Http\Controllers\SitemapController;
@@ -42,6 +43,10 @@ Route::get('/sitemap', fn () => redirect('/sitemap.xml', 301));
 Route::get('/sitemap/page-sitemap.xml', [SitemapController::class, 'pageSitemap'])->name('sitemap.page');
 Route::get('/page-sitemap.xml', [SitemapController::class, 'pageSitemap']);
 Route::get('/sitemap/page-sitemap', fn () => redirect('/sitemap/page-sitemap.xml', 301));
+
+Route::get('/sitemap/developer-sitemap.xml', [SitemapController::class, 'developerSitemap'])->name('sitemap.developer');
+Route::get('/developer-sitemap.xml', [SitemapController::class, 'developerSitemap']);
+Route::get('/sitemap/developer-sitemap', fn () => redirect('/sitemap/developer-sitemap.xml', 301));
 
 Route::get('/sitemap/project-sitemap.xml', [SitemapController::class, 'projectSitemap'])->name('sitemap.project');
 Route::get('/project-sitemap.xml', [SitemapController::class, 'projectSitemap']);
@@ -176,6 +181,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/communities/{community}', [AdminCommunityController::class, 'destroy'])->name('communities.destroy');
             Route::patch('/communities/{community}/status', [AdminCommunityController::class, 'updateStatus'])->name('communities.status');
 
+            // Developers CMS
+            Route::get('/developers', [AdminDeveloperController::class, 'index'])->name('developers.index');
+            Route::get('/developers/create', [AdminDeveloperController::class, 'create'])->name('developers.create');
+            Route::post('/developers', [AdminDeveloperController::class, 'store'])->name('developers.store');
+            Route::get('/developers/{developer}/edit', [AdminDeveloperController::class, 'edit'])->name('developers.edit');
+            Route::put('/developers/{developer}', [AdminDeveloperController::class, 'update'])->name('developers.update');
+            Route::delete('/developers/{developer}', [AdminDeveloperController::class, 'destroy'])->name('developers.destroy');
+
             // Blog CMS
             Route::get('/blogs', [AdminBlogController::class, 'index'])->name('blogs.index');
             Route::post('/blogs', [AdminBlogController::class, 'store'])->name('blogs.store');
@@ -264,6 +277,31 @@ Route::get('/blog/{slug}', function ($slug) {
     }
     return view('blogs.show', compact('blog'));
 })->where('slug', '^[a-zA-Z0-9_\-\/% ]+$')->name('blogs.public.show');
+
+// Dedicated Public Developers Main Page (/developers)
+Route::get('/developers', function () {
+    $developers = \App\Models\Developer::where('is_active', true)
+        ->where('status', '!=', 'draft')
+        ->orderBy('id', 'desc')
+        ->get();
+
+    return view('developers.index', compact('developers'));
+})->name('developers.public.index');
+
+Route::get('/developer', fn() => redirect('/developers', 301));
+
+// Dedicated Public Developer Route (/developer/{slug}) with Auto OG Image Sharing
+Route::get('/developer/{slug}', function ($slug) {
+    $cleanSlug = ltrim(urldecode($slug), '/');
+    if (str_contains($cleanSlug, '_')) {
+        return redirect('/developer/' . str_replace('_', '-', $cleanSlug), 301);
+    }
+    $developer = \App\Models\Developer::where('slug', $cleanSlug)->orWhere('slug', '/' . $cleanSlug)->first();
+    if (!$developer || !$developer->is_active || $developer->status === 'draft') {
+        abort(404);
+    }
+    return view('developers.show', compact('developer'));
+})->where('slug', '^[a-zA-Z0-9_\-\/% ]+$')->name('developers.public.show');
 
 // Dedicated Public Property / Project Routes (/project/{slug})
 Route::get('/project', fn() => redirect('/#communities'));
@@ -600,6 +638,15 @@ Route::get('/{slug}', function ($slug) {
             abort(404);
         }
         return redirect('/blog/' . $blog->slug, 301);
+    }
+
+    // Check if it matches a Developer - 301 redirect to /developer/{slug}
+    $dev = \App\Models\Developer::whereIn('slug', $slugVariants)->first();
+    if ($dev) {
+        if (!$dev->is_active || $dev->status === 'draft') {
+            abort(404);
+        }
+        return redirect('/developer/' . $dev->slug, 301);
     }
 
     abort(404);

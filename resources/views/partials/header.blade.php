@@ -46,6 +46,9 @@
                     </li>
                 @endif
                 <li class="navItem">
+                    <a href="/developers" class="navLink {{ request()->is('developers*') ? 'navLinkActive' : '' }}">DEVELOPERS</a>
+                </li>
+                <li class="navItem">
                     <a href="#faq" class="navLink">FAQ</a>
                 </li>
                 <li class="navItem">
@@ -116,6 +119,9 @@
             </div>
         </li>
         @endif
+        <li>
+            <a href="/developers" class="mobileNavLink">DEVELOPERS</a>
+        </li>
         <li>
             <a href="#faq" class="mobileNavLink">FAQ</a>
         </li>

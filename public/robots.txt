@@ -2,4 +2,4 @@ User-agent: *
 Disallow: /admin/
 Disallow: /api/
 
-Sitemap: https://saimaprojects.com/sitemap.xml
+Sitemap: https://fsadvisory.pk/sitemap.xml

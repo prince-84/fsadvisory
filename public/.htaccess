@@ -11,9 +11,9 @@
     RewriteCond %{HTTP:X-Forwarded-Proto} =http
     RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
-    # 2. CONTROL DOMAIN / WWW REDIRECT (Redirect www.saimaprojects.com to saimaprojects.com)
-    RewriteCond %{HTTP_HOST} ^www\.saimaprojects\.com$ [NC]
-    RewriteRule ^(.*)$ https://saimaprojects.com/$1 [R=301,L]
+    # 2. CONTROL DOMAIN / WWW REDIRECT (Redirect www.fsadvisory.pk to fsadvisory.pk)
+    RewriteCond %{HTTP_HOST} ^www\.fsadvisory\.pk$ [NC]
+    RewriteRule ^(.*)$ https://fsadvisory.pk/$1 [R=301,L]
 
     # 3. HANDLE AUTHORIZATION HEADER
     RewriteCond %{HTTP:Authorization} .

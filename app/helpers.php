@@ -529,7 +529,7 @@ if (! function_exists('render_header_schemas')) {
     function render_header_schemas(?\App\Models\Page $page = null, ?\App\Models\Blog $blog = null): string
     {
         try {
-            $siteUrl = 'https://saimaprojects.com/';
+            $siteUrl = 'https://fsadvisory.pk/';
             $siteName = 'Saima Projects';
 
             // 1. Organization Schema

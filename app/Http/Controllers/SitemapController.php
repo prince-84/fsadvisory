@@ -63,7 +63,7 @@ class SitemapController extends Controller
             return $fallback;
         }
 
-        return rtrim((string) (config('app.url') ?: 'https://saimaprojects.com'), '/');
+        return rtrim((string) (config('app.url') ?: 'https://fsadvisory.pk'), '/');
     }
 
     /**
@@ -148,13 +148,21 @@ class SitemapController extends Controller
             ->first();
         $dynamicLastmod = $this->formatDate($latestDynamicPage?->updated_at ?? now());
 
+        // 7. Developers latest updated_at
+        $latestDeveloper = \App\Models\Developer::where('is_active', true)
+            ->where(function ($q) { $q->whereNull('status')->orWhere('status', '!=', 'draft'); })
+            ->orderBy('updated_at', 'desc')
+            ->first();
+        $devLastmod = $this->formatDate($latestDeveloper?->updated_at ?? now());
+
         $sitemaps = [
-            ['url' => $baseUrl . '/sitemap/page-sitemap.xml',    'lastmod' => $coreLastmod],
-            ['url' => $baseUrl . '/sitemap/project-sitemap.xml', 'lastmod' => $projLastmod],
-            ['url' => $baseUrl . '/sitemap/city-sitemap.xml',    'lastmod' => $cityLastmod],
-            ['url' => $baseUrl . '/sitemap/area-sitemap.xml',    'lastmod' => $areaLastmod],
-            ['url' => $baseUrl . '/sitemap/blog-sitemap.xml',    'lastmod' => $blogLastmod],
-            ['url' => $baseUrl . '/sitemap/dynamic-sitemap.xml', 'lastmod' => $dynamicLastmod],
+            ['url' => $baseUrl . '/sitemap/page-sitemap.xml',      'lastmod' => $coreLastmod],
+            ['url' => $baseUrl . '/sitemap/developer-sitemap.xml', 'lastmod' => $devLastmod],
+            ['url' => $baseUrl . '/sitemap/project-sitemap.xml',   'lastmod' => $projLastmod],
+            ['url' => $baseUrl . '/sitemap/city-sitemap.xml',      'lastmod' => $cityLastmod],
+            ['url' => $baseUrl . '/sitemap/area-sitemap.xml',      'lastmod' => $areaLastmod],
+            ['url' => $baseUrl . '/sitemap/blog-sitemap.xml',      'lastmod' => $blogLastmod],
+            ['url' => $baseUrl . '/sitemap/dynamic-sitemap.xml',   'lastmod' => $dynamicLastmod],
         ];
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
@@ -193,6 +201,12 @@ class SitemapController extends Controller
                 'slug_key'   => '',
                 'changefreq' => 'daily',
                 'priority'   => '1.0',
+            ],
+            [
+                'path'       => 'developers',
+                'slug_key'   => 'developers',
+                'changefreq' => 'weekly',
+                'priority'   => '0.8',
             ],
             [
                 'path'       => 'contact-us',
@@ -466,6 +480,45 @@ class SitemapController extends Controller
 
             $loc = $baseUrl . '/' . $cleanSlug;
             $lastmod = $this->formatDate($page->updated_at ?? now());
+
+            $xml .= "    <url>\n";
+            $xml .= "        <loc>{$loc}</loc>\n";
+            $xml .= "        <lastmod>{$lastmod}</lastmod>\n";
+            $xml .= "        <changefreq>weekly</changefreq>\n";
+            $xml .= "        <priority>0.8</priority>\n";
+            $xml .= "    </url>\n";
+        }
+
+        $xml .= '</urlset>';
+
+        return response($xml, 200, [
+            'Content-Type'  => 'application/xml; charset=utf-8',
+            'Cache-Control' => 'public, max-age=3600',
+        ]);
+    }
+
+    /**
+     * Dedicated /sitemap/developer-sitemap.xml:
+     * Outputs all active published developer detail pages (/developer/{slug}).
+     */
+    public function developerSitemap(): Response
+    {
+        $baseUrl = $this->getBaseUrl();
+
+        $developers = \App\Models\Developer::where('is_active', true)
+            ->where(function ($q) { $q->whereNull('status')->orWhere('status', '!=', 'draft'); })
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+        foreach ($developers as $dev) {
+            $cleanSlug = ltrim($dev->slug, '/');
+            if ($cleanSlug === '') continue;
+
+            $loc = $baseUrl . '/developer/' . $cleanSlug;
+            $lastmod = $this->formatDate($dev->updated_at ?? now());
 
             $xml .= "    <url>\n";
             $xml .= "        <loc>{$loc}</loc>\n";
