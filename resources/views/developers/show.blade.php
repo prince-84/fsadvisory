@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $developer->meta_title ?: (($developer->h1 ?: $developer->name) . ' | Saima') }}</title>
+    <title>{{ $developer->meta_title ?: (($developer->h1 ?: $developer->name) . ' | FS Real Estate Advisory') }}</title>
     <link rel="canonical" href="{{ canonical_url() }}" />
 
     @if($developer->meta_description)
@@ -23,6 +23,8 @@
 
     <!-- Open Graph Meta Tags (Auto-generated from Cover Image & Developer Details) -->
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="FS Real Estate Advisory">
+    <meta name="author" content="FS Real Estate Advisory">
     <meta property="og:title" content="{{ $developer->og_title ?: ($developer->h1 ?: $developer->name) }}">
     <meta property="og:description" content="{{ $developer->og_description ?: ($developer->short_content ? strip_tags($developer->short_content) : ($developer->tagline ?: '')) }}">
     <meta property="og:image" content="{{ $developer->og_image_url }}">

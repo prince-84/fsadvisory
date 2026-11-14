@@ -227,6 +227,43 @@
             stroke: #ffffff !important;
             opacity: 1;
         }
+
+        /* CMS Sidebar Complete Solid White Background & Thin Scrollbar (Patla Scrollbar) */
+        .adm-sidebar {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            height: 100vh !important;
+            max-height: 100vh !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            position: sticky !important;
+            top: 0 !important;
+            scrollbar-width: thin !important;
+            scrollbar-color: #cbd5e1 #ffffff !important;
+        }
+        .adm-sidebar::-webkit-scrollbar {
+            width: 4px !important;
+        }
+        .adm-sidebar::-webkit-scrollbar-track {
+            background: #ffffff !important;
+        }
+        .adm-sidebar::-webkit-scrollbar-thumb {
+            background: #cbd5e1 !important;
+            border-radius: 99px !important;
+        }
+        .adm-sidebar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8 !important;
+        }
+        .adm-sidebar-foot {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            flex-shrink: 0 !important;
+            padding-bottom: 24px !important;
+        }
+        .adm-sidebar-foot .adm-user {
+            background: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+        }
     </style>
     @stack('styles')
 </head>

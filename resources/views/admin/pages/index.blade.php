@@ -208,7 +208,7 @@
                     </tr>
                 </thead>
                 <tbody id="cmsTableBody">
-                    @forelse($pages->reject(fn($p) => in_array($p->slug, $projectSlugs ?? [], true) || in_array($p->id, $projectPageIds ?? [], true) || in_array($p->id, $cityPageIds ?? [], true) || in_array($p->slug, $citySlugs ?? [], true) || in_array($p->id, $commPageIds ?? [], true) || in_array($p->slug, $commSlugs ?? [], true))->values() as $page)
+                    @forelse($pages->reject(fn($p) => in_array($p->slug, $projectSlugs ?? [], true) || in_array($p->id, $projectPageIds ?? [], true) || in_array($p->id, $cityPageIds ?? [], true) || in_array($p->slug, $citySlugs ?? [], true) || in_array($p->id, $commPageIds ?? [], true) || in_array($p->slug, $commSlugs ?? [], true) || in_array($p->slug, ['developers', '/developers'], true))->values() as $page)
                         <tr class="cms-page-row" data-name="{{ strtolower($page->title) }}" style="border-bottom:1px dotted #e2e8f0; transition:background 0.15s ease;">
                             <td class="cms-row-num" style="padding:18px 12px; font-size:14px; color:#64748b; font-weight:500;">
                                 {{ $loop->iteration }}

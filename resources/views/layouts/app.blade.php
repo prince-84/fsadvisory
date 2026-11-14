@@ -7,13 +7,16 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @php
     $activePage = page_data();
+    $siteDefaultTitle = \App\Models\SiteSetting::where('key', 'seo_default_title')->value('value');
+    $siteDefaultDesc = \App\Models\SiteSetting::where('key', 'seo_default_description')->value('value');
+    $siteDefaultKeywords = \App\Models\SiteSetting::where('key', 'seo_default_keywords')->value('value');
     $sectionTitle = trim($__env->yieldContent('title'));
     $sectionMetaDesc = trim($__env->yieldContent('meta_description'));
     $sectionCanonical = trim($__env->yieldContent('canonical'));
     $sectionOgImage = trim($__env->yieldContent('og_image'));
-    $pageMetaTitle = $sectionTitle ?: ($activePage?->meta_title ?: 'Saima – Luxury Villas & Waterfront Living');
-    $pageMetaDesc = $sectionMetaDesc ?: ($activePage?->meta_description ?: 'Discover Saima, a premier luxury waterfront community offering exclusive villas, apartments, mansions, and world-class amenities. Invest in your dream home today.');
-    $pageMetaKeywords = $activePage?->meta_keywords ?: 'Saima, Saima Projects, Saima Group, Luxury villas, Waterfront living, Villas for sale, Saima apartments, Real estate investment';
+    $pageMetaTitle = $sectionTitle ?: ($activePage?->meta_title ?: ($siteDefaultTitle ?: 'FS Real Estate Advisory | Top Real Estate Agency in Pakistan'));
+    $pageMetaDesc = $sectionMetaDesc ?: ($activePage?->meta_description ?: ($siteDefaultDesc ?: 'New launch projects by Emaar, HMR, Saima, Al Ghafoor & Naya Nazimabad – check prices, floor plans & payment plans. Book now with FS Real Estate Advisory.'));
+    $pageMetaKeywords = $activePage?->meta_keywords ?: ($siteDefaultKeywords ?: 'FS Real Estate Advisory, Real Estate Pakistan, Property Investment Pakistan, Luxury Apartments, Villas for Sale, Commercial Projects');
     $pageOgImage = $sectionOgImage ?: ($activePage?->og_image ? (str_starts_with($activePage->og_image, 'http') ? $activePage->og_image : asset($activePage->og_image)) : asset('images/hero/slide-1.jpg'));
     $pageCanonicalUrl = canonical_url($sectionCanonical ?: null);
 @endphp
@@ -21,7 +24,7 @@
     <link rel="canonical" href="{{ $pageCanonicalUrl }}" />
     <meta name="description" content="{{ $pageMetaDesc }}">
     <meta name="keywords" content="{{ $pageMetaKeywords }}">
-    <meta name="author" content="Saima Group">
+    <meta name="author" content="FS Real Estate Advisory">
     @if(is_indexing_enabled())
     <meta name="robots" content="index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large">
     <meta name="googlebot" content="index, follow">
@@ -44,7 +47,7 @@
     <meta property="og:description" content="{{ $pageMetaDesc }}">
     <meta property="og:image" content="{{ $pageOgImage }}">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Saima">
+    <meta property="og:site_name" content="FS Real Estate Advisory">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ ($page ?? null)?->meta_title ?: ((($page ?? null)?->title ?? ($project->title ?? ($city->name ?? ($community->name ?? 'Page')))) . ' | Saima') }}</title>
+    <title>{{ ($page ?? null)?->meta_title ?: ((($page ?? null)?->title ?? ($project->title ?? ($city->name ?? ($community->name ?? 'Page')))) . ' | FS Real Estate Advisory') }}</title>
     <link rel="canonical" href="{{ canonical_url() }}" />
     
 @if(($page ?? null)?->meta_description)

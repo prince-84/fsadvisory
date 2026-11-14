@@ -3063,3 +3063,105 @@ php artisan optimize:clear
 - **Database / Migrations**:
   - Migrations: None created or modified.
   - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-14 (Part 29: Developer Main Page Content Replacement & CMS Pages Exclusion)
+
+- **Requirements Completed**:
+  1. **Developer Main Page Content Replacement**:
+     - Removed the old introductory text ("Real Estate Development in Pakistan") from `resources/views/developers/index.blade.php`.
+     - Replaced the content section with the requested text starting with `Why Choose the Right Property Developer in Pakistan?`, followed by `How to Choose a Property Developer in Pakistan`, `Residential vs. Commercial Property Developers`, `Popular Real Estate Markets in Pakistan`, and `Leading Real Estate Developers in Pakistan`.
+     - Removed the accidental trailing word "Cards" from the `Featured Developers` subtitle.
+  2. **CMS Pages Tab Developer Exclusion**:
+     - Explicitly excluded `developers` and `/developers` from `PageController.php` and `resources/views/admin/pages/index.blade.php`.
+     - Ensured Developer directory is exclusively managed under its dedicated `Developer` CMS tab (`/admin/developers`) and will never appear under `/admin/pages`.
+- **Files Modified**:
+  - `resources/views/developers/index.blade.php`
+  - `app/Http/Controllers/Admin/PageController.php`
+  - `resources/views/admin/pages/index.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-14 (Part 30: "View Live Page" Button Added to Edit Developer Screen)
+
+- **Requirements Completed**:
+  1. **View Live Page Action Button on Edit Developer**:
+     - Added `View Live Page` button right next to `Developers List` on the top action bar in `resources/views/admin/developers/edit.blade.php`.
+     - Styled with matching admin design language (`dev-live-btn`: white card, sky-blue border `#bae6fd`, primary blue `#0284c7`, hover animation, and external link icon).
+     - Opens the developer's public detail page (`/developer/{slug}`) in a new tab (`target="_blank" rel="noopener"`).
+     - Added real-time JS synchronization so if the admin edits the `dev_slug` field, the link's `href` updates on the fly.
+  2. **Admin Draft/Inactive Preview Support**:
+     - Updated `/developer/{slug}` route in `routes/web.php` to allow logged-in administrators (`auth()->check()`) to preview developer detail pages even when in `draft` status or inactive, preventing premature 404 errors during review.
+- **Files Modified**:
+  - `resources/views/admin/developers/edit.blade.php`
+  - `routes/web.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-14 (Part 31: Hardcoded "Saima" Meta Tags & Schema Migrated to "FS Real Estate Advisory")
+
+- **Requirements Completed**:
+  1. **Fixed Static Hardcoded Author & OG Site Name in Global Layout**:
+     - Investigated source of SEO metadata reported by SEO team. Identified that `<meta name="author" content="Saima Group">` and `<meta property="og:site_name" content="Saima">` were 100% hardcoded in `resources/views/layouts/app.blade.php`.
+     - Replaced both static tags with `content="FS Real Estate Advisory"`.
+  2. **Fixed Static Hardcoded Keywords & Description Fallbacks**:
+     - Updated fallback metadata in `resources/views/layouts/app.blade.php` to first read CMS `seo_default_keywords` and `seo_default_description` from `SiteSetting`, falling back to `FS Real Estate Advisory` keywords rather than old `Saima` keywords when a page in CMS has empty metadata.
+  3. **Updated Schema Organization & RealEstateAgent Name in Helpers**:
+     - In `app/helpers.php` (`render_header_schemas`), updated `$siteName` from `'Saima Projects'` to `'FS Real Estate Advisory'` so JSON-LD Structured Data reflects the new company.
+  4. **Updated Dynamic & Developer Detail Title Fallbacks**:
+     - In `dynamic-page.blade.php` and `developers/show.blade.php`, updated default title suffix from `' | Saima'` to `' | FS Real Estate Advisory'`.
+     - In `developers/index.blade.php`, updated `@section('title')` to `'Real Estate Developers in Pakistan | FS Real Estate Advisory'`.
+- **Files Modified**:
+  - `resources/views/layouts/app.blade.php`
+  - `resources/views/dynamic-page.blade.php`
+  - `resources/views/developers/show.blade.php`
+  - `resources/views/developers/index.blade.php`
+  - `app/helpers.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-14 (Part 32: Navbar Active Underline Fixed to Current Page Only)
+
+- **Requirements Completed**:
+  1. **Fixed Dual Active Navbar Underline**:
+     - In `resources/views/partials/header.blade.php`, the `HOME` navigation item previously had `class="navLink navLinkActive"` hardcoded statically, causing it to display an active underline on all pages including `/developers`.
+     - Replaced hardcoded class with dynamic condition: `class="navLink {{ (request()->is('/') || request()->path() === '/') ? 'navLinkActive' : '' }}"`.
+     - Ensured only the link corresponding to the current active route receives `.navLinkActive`:
+       - Homepage (`/`): only HOME is active.
+       - Developers (`/developers`, `/developer/*`): only DEVELOPERS is active.
+       - Projects (`/project/*`): only PROJECTS is active.
+       - Commercial (`/commercial/*`): only COMMERCIAL is active.
+       - Contact Us (`/contact-us*`): only CONTACT US is active.
+- **Files Modified**:
+  - `resources/views/partials/header.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-14 (Part 33: CMS Sidebar Solid White Background & Thin Scrollbar)
+
+- **Requirements Completed**:
+  1. **Complete Solid White Sidebar Background**:
+     - Applied solid `#ffffff` (`background: #ffffff !important; background-color: #ffffff !important;`) to `.adm-sidebar` and `.adm-sidebar-foot` across `public/css/admin.css` and `resources/views/admin/layouts/app.blade.php`.
+     - Modernized `.adm-user` with a clean light slate card background (`#f8fafc`) and subtle border (`#e2e8f0`).
+  2. **Slim Thin Custom Scrollbar (Patla Scrollbar)**:
+     - Added `overflow-y: auto !important; max-height: 100vh !important;` to `.adm-sidebar` so all navigation items, site settings, and footer actions are smoothly accessible on any screen height without truncation.
+     - Implemented an ultra-thin 4px custom scrollbar (`width: 4px;`) with a light rounded thumb (`#cbd5e1`) and pure white track (`#ffffff`), supporting both Webkit and Firefox standards (`scrollbar-width: thin`).
+- **Files Modified**:
+  - `public/css/admin.css`
+  - `resources/views/admin/layouts/app.blade.php`
+  - `README.md`
+- **Database / Migrations**:
+  - Migrations: None created or modified.
+  - Database Tables: Schema unchanged.

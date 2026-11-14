@@ -24,7 +24,7 @@ class PageController extends Controller
         $commSlugs = \App\Models\Community::pluck('slug')->all();
 
         $excludedIds = array_merge($projectPageIds, $cityPageIds, $commPageIds);
-        $excludedSlugs = array_merge($projectSlugs, $citySlugs, $commSlugs);
+        $excludedSlugs = array_merge($projectSlugs, $citySlugs, $commSlugs, ['developers', '/developers']);
 
         $pages = Page::withCount('sections')
             ->orderBy('id', 'asc')

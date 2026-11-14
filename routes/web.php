@@ -297,7 +297,10 @@ Route::get('/developer/{slug}', function ($slug) {
         return redirect('/developer/' . str_replace('_', '-', $cleanSlug), 301);
     }
     $developer = \App\Models\Developer::where('slug', $cleanSlug)->orWhere('slug', '/' . $cleanSlug)->first();
-    if (!$developer || !$developer->is_active || $developer->status === 'draft') {
+    if (!$developer) {
+        abort(404);
+    }
+    if ((!$developer->is_active || $developer->status === 'draft') && !auth()->check()) {
         abort(404);
     }
     return view('developers.show', compact('developer'));

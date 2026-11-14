@@ -530,7 +530,7 @@ if (! function_exists('render_header_schemas')) {
     {
         try {
             $siteUrl = 'https://fsadvisory.pk/';
-            $siteName = 'Saima Projects';
+            $siteName = 'FS Real Estate Advisory';
 
             // 1. Organization Schema
             $orgSchema = [

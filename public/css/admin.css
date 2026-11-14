@@ -62,12 +62,32 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; letter-spacing: -0
 /* ---------------- Layout ---------------- */
 .adm-shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
 .adm-sidebar {
-    position: sticky; top: 0; height: 100vh;
+    position: sticky; top: 0; height: 100vh; max-height: 100vh;
     display: flex; flex-direction: column; gap: 6px;
-    padding: 24px 16px;
+    padding: 24px 16px 20px 16px;
     background: #ffffff;
+    background-color: #ffffff;
     border-right: 1px solid var(--border);
     box-shadow: 2px 0 16px rgba(0, 0, 0, 0.02);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #ffffff;
+}
+
+/* Thin Custom Scrollbar (Patla Scrollbar) */
+.adm-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+.adm-sidebar::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+.adm-sidebar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 99px;
+}
+.adm-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
 .adm-brand { display: flex; align-items: center; gap: 12px; padding: 4px 8px 24px; }
 .adm-brand-mark {

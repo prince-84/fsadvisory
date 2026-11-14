@@ -13,11 +13,11 @@
         <nav class="nav">
             <ul class="navList">
                 <li class="navItem">
-                    <a href="/" class="navLink navLinkActive">HOME</a>
+                    <a href="/" class="navLink {{ (request()->is('/') || request()->path() === '/') ? 'navLinkActive' : '' }}">HOME</a>
                 </li>
                 @if($navbarProjects->isNotEmpty())
                     <li class="navItem" id="navProjectsItem">
-                        <button type="button" class="navLink" id="navProjectsBtn" style="background: none; border: none; cursor: pointer;">
+                        <button type="button" class="navLink {{ request()->is('project*') ? 'navLinkActive' : '' }}" id="navProjectsBtn" style="background: none; border: none; cursor: pointer;">
                             PROJECTS
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m6 9 6 6 6-6"/>
@@ -32,7 +32,7 @@
                 @endif
                 @if($navbarCommercial->isNotEmpty())
                     <li class="navItem" id="navCommercialItem">
-                        <button type="button" class="navLink" id="navCommercialBtn" style="background: none; border: none; cursor: pointer;">
+                        <button type="button" class="navLink {{ request()->is('commercial*') ? 'navLinkActive' : '' }}" id="navCommercialBtn" style="background: none; border: none; cursor: pointer;">
                             COMMERCIAL
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m6 9 6 6 6-6"/>
@@ -46,13 +46,13 @@
                     </li>
                 @endif
                 <li class="navItem">
-                    <a href="/developers" class="navLink {{ request()->is('developers*') ? 'navLinkActive' : '' }}">DEVELOPERS</a>
+                    <a href="/developers" class="navLink {{ (request()->is('developer*') || request()->is('developers*')) ? 'navLinkActive' : '' }}">DEVELOPERS</a>
                 </li>
                 <li class="navItem">
                     <a href="#faq" class="navLink">FAQ</a>
                 </li>
                 <li class="navItem">
-                    <a href="/contact-us" class="navLink">CONTACT US</a>
+                    <a href="/contact-us" class="navLink {{ (request()->is('contact-us*') || request()->is('contact*')) ? 'navLinkActive' : '' }}">CONTACT US</a>
                 </li>
                 <!-- LIST YOUR PROPERTY Button right beside Contact Us -->
                 <li class="navItem">

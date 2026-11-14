@@ -187,7 +187,8 @@
         color: #1e293b;
         font-family: inherit;
     }
-    .dev-list-btn {
+    .dev-list-btn,
+    .dev-live-btn {
         display: inline-flex;
         align-items: center;
         gap: 6px;
@@ -202,7 +203,8 @@
         transition: all 0.18s ease;
         box-shadow: 0 1px 2px rgba(2, 132, 199, 0.05);
     }
-    .dev-list-btn:hover {
+    .dev-list-btn:hover,
+    .dev-live-btn:hover {
         background: #f0f9ff;
         border-color: #7dd3fc;
         color: #0369a1;
@@ -278,7 +280,7 @@
             <h1 style="font-size: 20px; font-weight: 700; color: #1e293b; margin: 0 0 4px 0; font-family: var(--font-display, 'Outfit', sans-serif); letter-spacing: -0.01em;">Edit Developer &gt; {{ $developer->name }}</h1>
             <div style="font-size: 13px; color: #8c9ba5; font-weight: 400;">Home &ndash; Manage &ndash; Developer &ndash; {{ $developer->name }}</div>
         </div>
-        <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
             <!-- Status dropdown (draft/publish) -->
             <select name="status" id="dev_status" class="dev-status-select" form="developerForm">
                 <option value="draft" {{ old('status', $developer->status) === 'draft' ? 'selected' : '' }}>Draft</option>
@@ -287,6 +289,19 @@
 
             <a href="{{ route('admin.developers.index') }}" class="dev-list-btn">
                 Developers List
+            </a>
+
+            @php
+                $cleanDevSlug = ltrim($developer->slug ?? '', '/');
+                $liveDevUrl = url('/developer/' . $cleanDevSlug);
+            @endphp
+            <a href="{{ $liveDevUrl }}" target="_blank" rel="noopener" id="devLivePageBtn" class="dev-live-btn" title="View Live Page">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <polyline points="15 3 21 3 21 9"/>
+                    <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+                View Live Page
             </a>
         </div>
     </div>
@@ -829,6 +844,18 @@
         e.preventDefault();
         const id = draggedDevCardId || e.dataTransfer.getData('text/plain');
         if (id) moveDevCardToAvailable(id);
+    }
+
+    // Keep View Live Page link synced with Slug input if updated
+    const devSlugInput = document.getElementById('dev_slug');
+    const devLivePageBtn = document.getElementById('devLivePageBtn');
+    if (devSlugInput && devLivePageBtn) {
+        devSlugInput.addEventListener('input', function() {
+            const clean = this.value.trim().replace(/^\/+/, '');
+            if (clean) {
+                devLivePageBtn.href = "{{ url('/developer') }}/" + encodeURIComponent(clean);
+            }
+        });
     }
 </script>
 @endpush

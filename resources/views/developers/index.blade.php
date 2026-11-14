@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Real Estate Developers in Pakistan | Saima Group')
+@section('title', 'Real Estate Developers in Pakistan | FS Real Estate Advisory')
 @section('meta_description', 'Discover the Developers Shaping Pakistan\'s Real Estate Landscape. Explore recognised property developers, verified development projects, and updated developer profiles.')
 
 @section('content')
@@ -414,7 +414,7 @@
     <div class="featuredDevContainer">
         <div class="featuredDevHeader">
             <h2 class="featuredDevTitle">Featured Developers</h2>
-            <p class="featuredDevSubtitle">Discover some of Pakistan's recognised real estate developers and development companies Cards</p>
+            <p class="featuredDevSubtitle">Discover some of Pakistan's recognised real estate developers and development companies</p>
         </div>
 
         @if(isset($developers) && $developers->isNotEmpty())
@@ -488,25 +488,7 @@
         <article class="devEditorialBody saimaDynamicContent devContentArea">
             
             <!-- Section 1 -->
-            <h2>Real Estate Development in Pakistan</h2>
-            <p>Pakistan's real estate development industry plays an important role in the country's residential, commercial, and infrastructure landscape. From planned housing societies and residential communities to high-rise apartment developments and commercial projects, developers contribute to the changing urban environment of major Pakistani cities. Real estate developers are responsible for planning, managing, and delivering different types of property development projects. Their work may involve land development, infrastructure planning, residential construction, commercial development, and the creation of integrated communities.</p>
-            <p>Pakistan's property development market includes private development companies, construction groups, housing organisations, and public development authorities. Each operates under different responsibilities and regulatory frameworks. Major urban markets such as Karachi, Lahore, Islamabad, and Rawalpindi continue to offer a variety of residential and commercial development opportunities. Developers operating in these markets may focus on different property categories, including residential plots, apartment complexes, luxury houses, commercial buildings, and large-scale housing communities.</p>
-            <p>Choosing a suitable developer is an important part of researching a property project. Buyers and investors should consider the company's previous development experience, project delivery history, financial arrangements, construction progress, and applicable regulatory approvals. Our platform brings developer profiles and project information together to help users research Pakistan's real estate development industry. Explore established property developers, compare their project portfolios, discover new housing developments, and review residential and commercial projects across different cities. Whether you are researching property development companies or exploring potential investment opportunities, our developer directory provides a starting point for informed property research.</p>
-
-            <h3>Explore Our Developer Categories:</h3>
-            <ul>
-                <li>Real Estate Developers in Pakistan</li>
-                <li>Housing Society Developers</li>
-                <li>Residential Property Developers</li>
-                <li>Commercial Property Developers</li>
-                <li>Apartment Developers</li>
-                <li>Infrastructure and Construction Companies</li>
-                <li>New Housing Project Developers</li>
-            </ul>
-
-            <!-- Section 2 -->
             <h2>Why Choose the Right Property Developer in Pakistan?</h2>
-            <h3>Important Factors to Consider When Selecting a Real Estate Developer</h3>
             <p>Choosing a property developer is one of the most important steps when researching a residential or commercial property project. A developer's experience, planning approach, documentation, and project execution can influence the overall development experience. Here are some important factors buyers and investors should consider before selecting a property developer.</p>
 
             <h4>1. Development Experience and Track Record</h4>
@@ -525,9 +507,11 @@
             <p>A reliable developer should provide clear information about property prices, booking requirements, instalment schedules, development charges, and applicable transfer fees. Review the complete financial commitment before making a booking. Compare payment plans across different projects and understand all contractual conditions.</p>
 
             <h4>6. Customer Support and Communication</h4>
-            <p>Effective communication can make the property purchasing process easier. Consider how the developer handles customer enquiries, documentation requests, payment confirmations, possession information, and project updates. Access to clear and consistent information can help buyers make better decisions. Together, these factors can help buyers and investors compare property development companies and identify projects that match their requirements.</p>
+            <p>Effective communication can make the property purchasing process easier. Consider how the developer handles customer enquiries, documentation requests, payment confirmations, possession information, and project updates. Access to clear and consistent information can help buyers make better decisions.</p>
 
-            <!-- Section 3 -->
+            <p>Together, these factors can help buyers and investors compare property development companies and identify projects that match their requirements.</p>
+
+            <!-- Section 2 -->
             <h2>How to Choose a Property Developer in Pakistan</h2>
             <h3>A Step-by-Step Guide to Evaluating Real Estate Developers</h3>
             <p>Selecting a developer requires research beyond promotional material and advertised property prices. Follow these steps to evaluate different companies and their development projects.</p>
@@ -547,7 +531,7 @@
             <h4>Step 05 – Review Prices and Payment Arrangements</h4>
             <p>Examine the complete property price and payment structure. Check booking amounts, down payments, instalments, development charges, transfer fees, and possession-related payments. Always review the written agreement and obtain official payment receipts.</p>
 
-            <!-- Section 4 -->
+            <!-- Section 3 -->
             <h2>Residential vs. Commercial Property Developers</h2>
             <h3>Explore Different Types of Real Estate Development Companies</h3>
             <p>Pakistan's real estate industry includes developers working across different property categories. Understanding the differences between these development segments can help buyers identify companies that match their property interests.</p>
@@ -564,7 +548,7 @@
             <h4>Infrastructure and Housing Developers</h4>
             <p>Some companies specialise in large-scale infrastructure and housing development. Their work may involve land development, road networks, utilities, residential infrastructure, and master-planned communities. Understanding a developer's specialisation can help you identify companies with experience relevant to your intended property purchase.</p>
 
-            <!-- Section 5 -->
+            <!-- Section 4 -->
             <h2>Popular Real Estate Markets in Pakistan</h2>
             <h3>Explore Leading Property Development Locations</h3>
             <p>Pakistan's real estate development industry spans several major cities and emerging residential markets. Explore some of the most recognised locations where developers and housing organisations operate.</p>
@@ -593,7 +577,7 @@
             <h4>Gwadar</h4>
             <p>Gwadar attracts interest from buyers and investors exploring property opportunities connected with regional infrastructure and development initiatives. Research the relevant developer, land ownership, project documentation, and approval status before considering a property purchase.</p>
 
-            <!-- Section 6 -->
+            <!-- Section 5 -->
             <h2>Leading Real Estate Developers in Pakistan</h2>
             <h3>Discover Recognised Property Development Companies</h3>
             <p>Explore some of the recognised names associated with Pakistan's real estate and property development industry.</p>
@@ -619,7 +603,7 @@
             <h4>Lake City Holdings</h4>
             <p>Discover residential community and property development opportunities associated with Lake City in Lahore.</p>
 
-            <p style="margin-top: 16px;">Compare company backgrounds, project portfolios, locations, and development information to understand the different opportunities available across Pakistan.</p>
+            <p style="margin-top: 14px;">Compare company backgrounds, project portfolios, locations, and development information to understand the different opportunities available across Pakistan.</p>
 
         </article>
     </div>
