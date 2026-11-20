@@ -47,7 +47,7 @@
 .blogContainer h4,
 .overviewMainTitle,
 .overviewSubHeading {
-    color: #1a4731 !important;
+    color: #BFA16A !important;
 }
 </style>
 <section class="overviewSection" aria-label="Saima Projects: The Residential Communities">

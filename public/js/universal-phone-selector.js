@@ -375,6 +375,7 @@
             ['modalCountryBtn', 'modalCountryDropdown', 'modalFlagSlot', 'modalPhoneInput'],
             ['aboutCountryBtn', 'aboutCountryDropdown', 'aboutFlagSlot', 'aboutPhoneInput'],
             ['sidebarCountryBtn', 'sidebarCountryDropdown', 'sidebarFlagSlot', 'saimaPhoneInput'],
+            ['heroModalCountryBtn', 'heroModalCountryDropdown', 'heroModalFlagSlot', 'heroModalPhoneInput'],
             ['pageArticleCountryBtn', 'pageArticleCountryDropdown', 'pageArticleFlagSlot', 'pageArticlePhoneInput'],
             ['blogCountryBtn', 'blogCountryDropdown', 'blogFlagSlot', 'blogPhoneInput']
         ];

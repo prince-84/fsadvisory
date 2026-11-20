@@ -3,90 +3,164 @@
     $commHighlights = array_values(array_filter((array)$rawHighlights, fn($item) => is_array($item) && (!empty(trim($item['label'] ?? '')) || !empty(trim($item['value'] ?? '')))));
 @endphp
 @if(!empty($commHighlights))
-<section class="GolfHighlights-module__mmSHGq__highlightsSection">
+<section class="GolfHighlights-module__mmSHGq__highlightsSection highlightsSection" style="background-color: #f7f5f2; border-bottom: 1px solid #ebe6dd; padding: 24px 0;">
 <style>
-[class*="__iconWrapper"] {
-    position: relative !important;
+.fsHighlightsGrid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+}
+.fsHighlightCard {
+    flex: 1 1 calc(16.666% - 14px) !important;
+    min-width: 175px !important;
+    max-width: 100% !important;
+    background: #ffffff !important;
+    border: 1px solid #eeebe3 !important;
+    border-radius: 12px !important;
+    padding: 14px 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+    box-sizing: border-box !important;
+}
+.fsHighlightCard:hover {
+    border-color: #BFA16A !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(191, 161, 106, 0.18) !important;
+}
+.fsHighlightIconBox {
     width: 44px !important;
     height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     flex-shrink: 0 !important;
 }
-[class*="__accentCircle"], .accentCircle {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 38px !important;
-    height: 38px !important;
-    border-radius: 50% !important;
-    background: #1a4731 !important;
-    opacity: 1 !important;
-    z-index: 1 !important;
+.fsHighlightIconBox img {
+    width: 44px !important;
+    height: 44px !important;
+    max-width: 44px !important;
+    max-height: 44px !important;
+    object-fit: contain !important;
+    display: block !important;
+    filter: none !important;
+    -webkit-filter: none !important;
 }
-[class*="__svgIcon"], .svgIcon {
-    position: relative !important;
-    z-index: 2 !important;
-    color: #ffffff !important;
+.fsHighlightIconBox .defaultBadge {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    background: #BFA16A !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 100% !important;
-    height: 100% !important;
-}
-[class*="__svgIcon"] img, .svgIcon img {
-    width: 20px !important;
-    height: 20px !important;
-    max-width: 20px !important;
-    max-height: 20px !important;
-    object-fit: contain !important;
-    filter: brightness(0) invert(1) !important;
-    -webkit-filter: brightness(0) invert(1) !important;
-    display: block !important;
-    margin: auto !important;
-}
-[class*="__svgIcon"] svg, .svgIcon svg {
-    width: 20px !important;
-    height: 20px !important;
-    max-width: 20px !important;
-    max-height: 20px !important;
-    stroke: #ffffff !important;
     color: #ffffff !important;
+}
+.fsHighlightInfo {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    min-width: 0 !important;
+    flex: 1 !important;
+}
+.fsHighlightLabel {
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    line-height: 1.25 !important;
     display: block !important;
-    margin: auto !important;
+    margin: 0 !important;
+}
+.fsHighlightValue {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #4b5563 !important;
+    line-height: 1.35 !important;
+    display: block !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+@media (max-width: 1200px) {
+    .fsHighlightCard {
+        flex: 1 1 calc(33.333% - 12px) !important;
+        min-width: 180px !important;
+    }
+}
+@media (max-width: 768px) {
+    .fsHighlightCard {
+        flex: 1 1 calc(50% - 8px) !important;
+        min-width: 145px !important;
+        padding: 12px 14px !important;
+        gap: 10px !important;
+    }
+    .fsHighlightIconBox,
+    .fsHighlightIconBox img {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        min-height: 38px !important;
+    }
+    .fsHighlightLabel {
+        font-size: 13.5px !important;
+    }
+    .fsHighlightValue {
+        font-size: 12px !important;
+    }
+}
+@media (max-width: 480px) {
+    .fsHighlightCard {
+        flex: 1 1 100% !important;
+    }
 }
 </style>
-<div class="container"><div class="GolfHighlights-module__mmSHGq__highlightsGrid">
-@foreach($commHighlights as $hItem)
-    @php
-        $hLabel = $hItem['label'] ?? '';
-        $hIcon = $hItem['icon'] ?? '';
-        if (!empty($hIcon) || !empty($hLabel)) {
-            $matchedAmenity = \App\Models\Amenity::where('is_active', true)
-                ->where(function($q) use ($hIcon, $hLabel) {
-                    if (!empty($hIcon)) $q->where('icon', $hIcon);
-                    if (!empty($hLabel)) $q->orWhereRaw('LOWER(name) = ?', [strtolower(trim($hLabel))]);
-                })->first();
-            if ($matchedAmenity) {
-                $hLabel = $matchedAmenity->name;
-                if (!empty($matchedAmenity->icon)) $hIcon = $matchedAmenity->icon;
-            }
-        }
-    @endphp
-    <div class="GolfHighlights-module__mmSHGq__highlightCard">
-        @if(!empty($hIcon))
-        <div class="GolfHighlights-module__mmSHGq__iconWrapper">
-            <span class="GolfHighlights-module__mmSHGq__accentCircle"></span>
-            <span class="GolfHighlights-module__mmSHGq__svgIcon">@include('partials.highlight-icon', ['label' => $hLabel, 'icon' => $hIcon, 'index' => $loop->index])</span>
-        </div>
-        @endif
-        <div class="GolfHighlights-module__mmSHGq__highlightInfo">
-            <span class="GolfHighlights-module__mmSHGq__highlightLabel">{{ $hLabel }}</span>
-            <span class="GolfHighlights-module__mmSHGq__highlightValue">{{ $hItem['value'] ?? '' }}</span>
-        </div>
+<div class="container">
+    <div class="fsHighlightsGrid GolfHighlights-module__mmSHGq__highlightsGrid">
+        @foreach($commHighlights as $hItem)
+            @php
+                $hLabel = $hItem['label'] ?? '';
+                $hIcon = $hItem['icon'] ?? '';
+                if (!empty($hIcon) || !empty($hLabel)) {
+                    $matchedAmenity = \App\Models\Amenity::where('is_active', true)
+                        ->where(function($q) use ($hIcon, $hLabel) {
+                            if (!empty($hIcon)) $q->where('icon', $hIcon);
+                            if (!empty($hLabel)) $q->orWhereRaw('LOWER(name) = ?', [strtolower(trim($hLabel))]);
+                        })->first();
+                    if ($matchedAmenity) {
+                        $hLabel = $matchedAmenity->name;
+                        if (!empty($matchedAmenity->icon)) $hIcon = $matchedAmenity->icon;
+                    }
+                }
+                $isImgFile = !empty($hIcon) && (str_starts_with($hIcon, '/') || str_starts_with($hIcon, 'http') || file_exists(public_path(ltrim($hIcon, '/'))));
+                $imgSrc = $isImgFile ? (str_starts_with($hIcon, 'http') ? $hIcon : asset(ltrim($hIcon, '/'))) : '';
+            @endphp
+            <div class="fsHighlightCard GolfHighlights-module__mmSHGq__highlightCard">
+                @if(!empty($hIcon))
+                    <div class="fsHighlightIconBox GolfHighlights-module__mmSHGq__iconWrapper">
+                        @if($isImgFile)
+                            <img src="{{ $imgSrc }}" alt="{{ $hLabel }}" loading="lazy">
+                        @else
+                            <div class="defaultBadge">
+                                @include('partials.highlight-icon', ['label' => $hLabel, 'icon' => $hIcon, 'index' => $loop->index])
+                            </div>
+                        @endif
+                    </div>
+                @endif
+                <div class="fsHighlightInfo GolfHighlights-module__mmSHGq__highlightInfo">
+                    <span class="fsHighlightLabel GolfHighlights-module__mmSHGq__highlightLabel">{{ $hLabel }}</span>
+                    <span class="fsHighlightValue GolfHighlights-module__mmSHGq__highlightValue" title="{{ $hItem['value'] ?? '' }}">{{ $hItem['value'] ?? '' }}</span>
+                </div>
+            </div>
+        @endforeach
     </div>
-@endforeach
-</div></div></section>
+</div>
+</section>
 @endif

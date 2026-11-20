@@ -79,6 +79,12 @@ class PageBlueprintService
                 'icon' => 'mail',
                 'default_order' => 11,
             ],
+            'floor_plan' => [
+                'name' => 'Floor Plan',
+                'description' => 'Floor plan section title, description and uploadable floor plan / payment sheet images',
+                'icon' => 'grid',
+                'default_order' => 6,
+            ],
             'floor_plans' => [
                 'name' => 'Floor Plans & Layouts',
                 'description' => 'Tabbed floor plans by unit types (Apartments, Villas, Mansions) with floor specs',
@@ -113,6 +119,7 @@ class PageBlueprintService
             'gallery',
             'content',
             'payment_plan',
+            'floor_plan',
             'master_plan',
             'location',
             'faq',
@@ -155,6 +162,12 @@ class PageBlueprintService
             'gallery' => [
                 'title' => '',
                 'images' => [],
+            ],
+
+            'floor_plan' => [
+                'title' => '',
+                'description' => '',
+                'plan_images' => [],
             ],
 
             'floor_plans' => [

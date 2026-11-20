@@ -277,9 +277,9 @@
                 <a href="{{ route('admin.cities.index') }}" style="padding: 6px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; text-decoration: none; color: #64748b;">Cities</a>
                 <a href="{{ route('admin.communities.index') }}" style="padding: 6px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; text-decoration: none; background: #ffffff; color: #1e293b; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">Neighbourhood / Community ({{ $totalCommunities }})</a>
             </div>
-            <button type="button" class="adm-btn adm-btn-primary" onclick="toggleAddCommForm()" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 8px 16px; border-radius: 8px;">
+            <a href="{{ route('admin.communities.create') }}" class="adm-btn adm-btn-primary" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 8px 16px; border-radius: 8px; text-decoration: none;">
                 @include('admin.partials.icon', ['name' => 'plus']) Add Neighbourhood/Community
-            </button>
+            </a>
         </div>
     </div>
 
@@ -420,7 +420,6 @@
                                     <option value="{{ $city->id }}">{{ $city->name }}</option>
                                 @endforeach
                             </select>
-                            <div class="adm-help">Jo cities add ki hain wo is dropdown me ayengi. Select karein kis city me ye community aati hai.</div>
                         </div>
 
                         <div class="adm-field" style="margin-top: 18px;">
@@ -502,10 +501,7 @@
                         <div style="margin-top: 20px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                 <span style="font-size: 13px; font-weight: 700; color: #1a4731; text-transform: uppercase; letter-spacing: 0.5px;">
-                                    Select Property Cards (Drag &amp; Drop Between Boxes):
-                                </span>
-                                <span style="font-size: 12px; color: #64748b;">
-                                    Mouse se card ko pakar kar right box me le aayein ya (+ Add) par click karein
+                                    Select Property Cards:
                                 </span>
                             </div>
 
@@ -517,9 +513,8 @@
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
                                         <div>
                                             <strong style="font-size: 13.5px; color: #1e293b; display: flex; align-items: center; gap: 6px;">
-                                                📁 Available Property Cards ( <span id="availableCount">{{ $allProjects->count() }}</span> )
+                                                Available Property Cards ( <span id="availableCount">{{ $allProjects->count() }}</span> )
                                             </strong>
-                                            <span style="font-size: 11.5px; color: #64748b;">All created property cards in your system</span>
                                         </div>
                                     </div>
 
@@ -553,7 +548,6 @@
                                             <strong style="font-size: 13.5px; color: #1a4731; display: flex; align-items: center; gap: 6px;">
                                                 ✓ Selected Cards for This Page ( <span id="selectedCount">0</span> )
                                             </strong>
-                                            <span style="font-size: 11.5px; color: #64748b;">Sirf ye cards aapke page par dikhenge</span>
                                         </div>
                                         <button type="button" onclick="clearAllSelectedCards()" style="background: none; border: none; font-size: 11.5px; color: #ef4444; cursor: pointer; text-decoration: underline;">Clear All</button>
                                     </div>
@@ -562,8 +556,7 @@
                                         <!-- Empty placeholder when 0 cards -->
                                         <div id="selectedCardsEmptyState" style="text-align: center; padding: 80px 20px; border: 2px dashed #e2e8f0; border-radius: 8px; color: #94a3b8;">
                                             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" style="margin: 0 auto 10px; display: block;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-                                            <strong style="display: block; font-size: 14px; color: #475569; margin-bottom: 4px;">Drag Cards Here</strong>
-                                            <span style="font-size: 12px; color: #94a3b8;">Left box se mouse se pakar kar yahan chhor dein (drop karein)</span>
+                                            <strong style="display: block; font-size: 14px; color: #475569;">Drag Cards Here</strong>
                                         </div>
                                     </div>
 

@@ -2,36 +2,70 @@
     $secHeading = page_section('communities', 'heading', 'Projects', $page->slug ?? null);
     $secSubtitle = page_section('communities', 'subtitle', '', $page->slug ?? null);
     
-    $rawSelectedProjectIds = page_section('communities', 'selected_ids', null, $page->slug ?? null)
-        ?: page_section('communities', 'project_ids', null, $page->slug ?? null);
-
-    $selectedProjectIds = is_array($rawSelectedProjectIds) ? array_values(array_filter($rawSelectedProjectIds)) : [];
-
-    $isCityPage = isset($page) && (
-        \App\Models\City::where('page_id', $page->id)->exists()
-        || \App\Models\City::where('slug', $page->slug)->exists()
-        || \App\Models\Community::where('page_id', $page->id)->exists()
-        || \App\Models\Community::where('slug', $page->slug)->exists()
-    );
+    $isCity = isset($city) || (isset($page) && \App\Models\City::where('page_id', $page->id)->exists());
+    if ($isCity && !isset($city)) {
+        $city = \App\Models\City::where('page_id', $page->id)->first();
+    }
 
     $hasDbProjects = false;
     $dbProjects = collect();
 
-    if (!empty($selectedProjectIds)) {
-        $dbProjects = \App\Models\Project::whereIn('id', $selectedProjectIds)
-            ->where('is_active', true)
-            ->where(function($q) {
-                $q->whereNull('status')->orWhere('status', '!=', 'draft');
-            })
-            ->whereDoesntHave('page', function($q) {
-                $q->where('status', 'draft')->orWhere('is_published', false);
-            })
-            ->with('page')
-            ->get()
-            ->sortBy(function($model) use ($selectedProjectIds) {
-                return array_search($model->id, $selectedProjectIds);
+    if ($isCity && $city) {
+        $rawSelectedCommIds = !empty($city->featured_communities)
+            ? $city->featured_communities
+            : (page_section('communities', 'selected_ids', null, $page->slug ?? null)
+                ?: page_section('communities', 'project_ids', null, $page->slug ?? null));
+        $selectedCommIds = is_array($rawSelectedCommIds) ? array_values(array_filter($rawSelectedCommIds)) : [];
+
+        if (!empty($selectedCommIds)) {
+            $comms = \App\Models\Community::whereIn('id', $selectedCommIds)
+                ->where('is_active', true)
+                ->where(function($q) {
+                    $q->whereNull('status')->orWhere('status', '!=', 'draft');
+                })
+                ->get()
+                ->sortBy(function($model) use ($selectedCommIds) {
+                    return array_search($model->id, $selectedCommIds);
+                });
+
+            $dbProjects = $comms->map(function($c) use ($city) {
+                return (object) [
+                    'id'        => $c->id,
+                    'title'     => $c->name,
+                    'location'  => $city->name,
+                    'image_url' => $c->image ? (str_starts_with($c->image, 'http') ? $c->image : asset(ltrim($c->image, '/'))) : asset('images/default-project.jpg'),
+                    'url'       => $c->url,
+                    'badges'    => [],
+                    'status'    => $c->status,
+                    'page'      => $c->page,
+                ];
             });
-        $hasDbProjects = $dbProjects->isNotEmpty();
+            $hasDbProjects = $dbProjects->isNotEmpty();
+        }
+    } else {
+        $rawSelectedProjectIds = (isset($community) && !empty($community->featured_projects))
+            ? $community->featured_projects
+            : (page_section('communities', 'selected_ids', null, $page->slug ?? null)
+                ?: page_section('communities', 'project_ids', null, $page->slug ?? null));
+
+        $selectedProjectIds = is_array($rawSelectedProjectIds) ? array_values(array_filter($rawSelectedProjectIds)) : [];
+
+        if (!empty($selectedProjectIds)) {
+            $dbProjects = \App\Models\Project::whereIn('id', $selectedProjectIds)
+                ->where('is_active', true)
+                ->where(function($q) {
+                    $q->whereNull('status')->orWhere('status', '!=', 'draft');
+                })
+                ->whereDoesntHave('page', function($q) {
+                    $q->where('status', 'draft')->orWhere('is_published', false);
+                })
+                ->with('page')
+                ->get()
+                ->sortBy(function($model) use ($selectedProjectIds) {
+                    return array_search($model->id, $selectedProjectIds);
+                });
+            $hasDbProjects = $dbProjects->isNotEmpty();
+        }
     }
 
     if (!$hasDbProjects) {
@@ -58,7 +92,7 @@
                         $cardHref = $item->url;
                         $isSoldOut = ($item->status === 'sold_out') || ($item->page?->status === 'sold_out');
                     @endphp
-                    <a href="{{ $cardHref }}" class="cardCustom" style="text-decoration: none; cursor: pointer;" aria-label="{{ $item->title }}{{ !empty($item->developer) ? ' by ' . $item->developer : '' }}">
+                    <div class="cardCustom" style="cursor: pointer;" onclick="window.location='{{ $cardHref }}'" role="link" tabindex="0" aria-label="{{ $item->title }}">
                         <!-- Top-Left Badges (New, Offer, Off plan, Ready) -->
                         <div class="topTags">
                             @if(!empty($item->badges) && is_array($item->badges))
@@ -82,9 +116,9 @@
                             <p class="cardLocation">{{ $item->location ?? 'Saima, Pakistan' }}</p>
 
                             <!-- Big Green Rounded BOOK NOW Button -->
-                            <div class="cardBookBtn">BOOK NOW</div>
+                            @include('partials.project-card-actions', ['proj' => $item, 'href' => $cardHref])
                         </div>
-                    </a>
+                    </div>
                 @endforeach
             @endif
         </div>
@@ -158,18 +192,18 @@
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: #1a4731;
+    background: #BFA16A;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 3;
-    box-shadow: 0 4px 14px rgba(26, 71, 49, 0.45);
+    box-shadow: 0 4px 14px rgba(191, 161, 106, 0.45);
     transition: transform 0.25s ease, background-color 0.25s ease;
 }
 
 .cardCustom:hover .sparkleBtn {
     transform: scale(1.08);
-    background: #123322;
+    background: #aa8d58;
 }
 
 .bottomContent {
@@ -243,7 +277,7 @@
 }
 
 .cardBookBtn {
-    background: #1a4731;
+    background: #BFA16A;
     color: #ffffff;
     font-size: 13px;
     font-weight: 800;
@@ -258,15 +292,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(26, 71, 49, 0.45);
+    box-shadow: 0 4px 14px rgba(191, 161, 106, 0.45);
     border: 1.5px solid rgba(255, 255, 255, 0.25);
     transition: all 0.25s ease;
 }
 
 .cardCustom:hover .cardBookBtn {
-    background: #133825;
+    background: #aa8d58;
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(26, 71, 49, 0.6);
+    box-shadow: 0 6px 18px rgba(191, 161, 106, 0.6);
 }
 
 .soldOutBadge {
@@ -294,3 +328,4 @@
     }
 }
 </style>
+

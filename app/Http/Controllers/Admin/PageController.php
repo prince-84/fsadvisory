@@ -114,9 +114,9 @@ class PageController extends Controller
             $heroBgImage = $request->input('hero_bg_image');
         }
 
-        $status = $request->input('status', 'publish');
+        $status = $request->input('status', 'draft');
         if (!in_array($status, ['publish', 'draft', 'sold_out'])) {
-            $status = 'publish';
+            $status = 'draft';
         }
         $isPublished = ($status !== 'draft');
 
@@ -485,7 +485,7 @@ class PageController extends Controller
         // Ensure all core sections exist for the page (missing ones start as inactive)
         $existingKeys = $page->sections->pluck('section_key')->all();
         $globalSections = \App\Services\PageBlueprintService::getGlobalSections();
-        $coreKeys = ['hero', 'highlights', 'about', 'content', 'communities', 'faq', 'contact'];
+        $coreKeys = ['hero', 'highlights', 'about', 'content', 'communities', 'faq', 'contact', 'floor_plan'];
         $hasMissing = false;
         foreach ($coreKeys as $cKey) {
             if (!in_array($cKey, $existingKeys, true)) {
@@ -579,6 +579,8 @@ class PageController extends Controller
             'is_published'       => ['nullable', 'boolean'],
             'status'             => ['nullable', 'string', 'in:publish,draft,sold_out'],
             'location'           => ['nullable', 'string', 'max:255'],
+            'developer_id'       => ['nullable', 'exists:developers,id'],
+            'community_id'       => ['nullable', 'exists:communities,id'],
             'badges'             => ['nullable'],
             'card_image'         => ['nullable', 'string', 'max:500'],
             'meta_title'         => ['nullable', 'string', 'max:255'],
@@ -637,6 +639,27 @@ class PageController extends Controller
                     $projectUpdates['developer'] = $devRecord?->name;
                 } else {
                     $projectUpdates['developer'] = null;
+                }
+            }
+
+            if ($request->has('community_id')) {
+                $commId = $request->input('community_id') ? (int) $request->input('community_id') : null;
+                $projectUpdates['community_id'] = $commId;
+                if ($commId) {
+                    $commModel = \App\Models\Community::with('city')->find($commId);
+                    if ($commModel) {
+                        $projectUpdates['location'] = $commModel->name . ($commModel->city ? ', ' . $commModel->city->name : '');
+                    }
+                }
+            } elseif ($request->filled('location')) {
+                $locText = trim($request->input('location'));
+                $matchedComm = \App\Models\Community::all()->first(function($c) use ($locText) {
+                    return strcasecmp($c->name, $locText) === 0 
+                        || str_starts_with(strtolower($locText), strtolower($c->name));
+                });
+                if ($matchedComm) {
+                    $projectUpdates['community_id'] = $matchedComm->id;
+                    $projectUpdates['location'] = $matchedComm->name . ($matchedComm->city ? ', ' . $matchedComm->city->name : '');
                 }
             }
 
@@ -875,6 +898,32 @@ class PageController extends Controller
                     unset($contentData['images'], $contentData['_has_images']);
                 }
 
+                if (isset($contentData['_has_breakdown'])) {
+                    if (isset($contentData['breakdown']) && is_array($contentData['breakdown'])) {
+                        $currentContent['breakdown'] = array_values(array_filter($contentData['breakdown'], function($bd) {
+                            if (!is_array($bd)) return false;
+                            return !empty(trim($bd['title'] ?? '')) || !empty(trim($bd['percentage'] ?? ''));
+                        }));
+                    } else {
+                        $currentContent['breakdown'] = [];
+                    }
+                    // Clear legacy 'items' key on payment_plan so deleted stages never reappear from fallback
+                    if ($secKey === 'payment_plan') {
+                        $currentContent['items'] = [];
+                    }
+                    unset($contentData['breakdown'], $contentData['_has_breakdown']);
+                }
+
+                if (isset($contentData['_has_plan_images'])) {
+                    if (!isset($contentData['plan_images']) || !is_array($contentData['plan_images'])) {
+                        $currentContent['plan_images'] = [];
+                        if ($secKey === 'payment_plan') {
+                            $currentContent['images'] = [];
+                        }
+                    }
+                    unset($contentData['_has_plan_images']);
+                }
+
                 foreach ($contentData as $k => $v) {
                     if ($k === 'items' && is_array($v)) {
                         $currentContent[$k] = array_values(array_filter($v, function ($item) {
@@ -888,11 +937,59 @@ class PageController extends Controller
                         $currentContent[$k] = array_values(array_filter($v, function ($item) {
                             return is_array($item) && (!empty(trim($item['name'] ?? '')) || !empty(trim($item['distance'] ?? '')));
                         }));
+                    } elseif ($k === 'plan_images' && is_array($v)) {
+                        // Merge plan_images: preserve existing image paths, only update if new non-empty value provided
+                        $existingPlanImages = $currentContent['plan_images'] ?? [];
+                        $mergedPlanImages = is_array($existingPlanImages) ? $existingPlanImages : [];
+                        foreach ($v as $piIdx => $piItem) {
+                            $newSrc = '';
+                            if (is_array($piItem)) {
+                                $newSrc = trim($piItem['image'] ?? ($piItem['src'] ?? ($piItem['url'] ?? '')));
+                            } elseif (is_string($piItem)) {
+                                $newSrc = trim($piItem);
+                            }
+                            if (!empty($newSrc)) {
+                                // New non-empty src provided from form text field
+                                if (!isset($mergedPlanImages[$piIdx]) || !is_array($mergedPlanImages[$piIdx])) {
+                                    $mergedPlanImages[$piIdx] = [];
+                                }
+                                $mergedPlanImages[$piIdx]['image'] = $newSrc;
+                                $mergedPlanImages[$piIdx]['src'] = $newSrc;
+                            } elseif (!isset($mergedPlanImages[$piIdx])) {
+                                // New slot with no src yet — create empty placeholder (will be filled by file upload)
+                                $mergedPlanImages[$piIdx] = ['image' => '', 'src' => ''];
+                            }
+                            // If existing slot has a valid image and new src is empty, keep existing (don't overwrite)
+                        }
+                        // Remove slots with no image (deleted cards)
+                        $keptKeys = array_keys($v);
+                        $mergedPlanImages = array_intersect_key($mergedPlanImages, array_flip($keptKeys));
+                        // Filter out completely empty ones
+                        $currentContent['plan_images'] = array_values(array_filter($mergedPlanImages, function($pi) {
+                            $src = is_array($pi) ? ($pi['image'] ?? ($pi['src'] ?? '')) : (string)$pi;
+                            return !empty(trim($src));
+                        }));
+                    } elseif ($k === 'breakdown' && is_array($v)) {
+                        // Breakdown cards: filter empty items
+                        $currentContent['breakdown'] = array_values(array_filter($v, function($bd) {
+                            if (!is_array($bd)) return false;
+                            return !empty(trim($bd['title'] ?? '')) || !empty(trim($bd['percentage'] ?? ''));
+                        }));
                     } elseif (is_string($v)) {
                         $currentContent[$k] = html_entity_decode($v, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                    } elseif ($v === null) {
+                        $currentContent[$k] = '';
                     } else {
                         $currentContent[$k] = $v;
                     }
+                }
+
+                // Keep synced alias keys consistent when cleared in CMS
+                if ($secKey === 'faq' && array_key_exists('heading', $contentData)) {
+                    $currentContent['title'] = $currentContent['heading'] ?? '';
+                }
+                if ($secKey === 'contact' && array_key_exists('heading', $contentData)) {
+                    $currentContent['title'] = $currentContent['heading'] ?? '';
                 }
 
                 if ($secKey === 'hero') {
@@ -942,18 +1039,20 @@ class PageController extends Controller
 
                     if (is_array($uploadedSectionFiles)) {
                         foreach ($uploadedSectionFiles as $fKey => $fVal) {
-                            if ($fKey === 'images' && is_array($fVal)) {
+                            if (($fKey === 'images' || $fKey === 'plan_images') && is_array($fVal)) {
                                 foreach ($fVal as $gIdx => $gFile) {
-                                    $actualFile = is_array($gFile) ? ($gFile['file'] ?? null) : $gFile;
+                                    $actualFile = is_array($gFile) ? ($gFile['file'] ?? ($gFile['image'] ?? null)) : $gFile;
                                     if ($actualFile instanceof \Illuminate\Http\UploadedFile && $actualFile->isValid()) {
                                         $ext = strtolower($actualFile->getClientOriginalExtension());
-                                        if (in_array($ext, ['jpg', 'jpeg', 'webp', 'png']) && $actualFile->getSize() <= 2097152) {
+                                        if (in_array($ext, ['jpg', 'jpeg', 'webp', 'png', 'svg', 'avif'])) {
                                             $fileName = time() . '_' . uniqid() . '.' . $ext;
                                             $actualFile->move($uploadDir, $fileName);
-                                            if (!isset($currentContent['images'][$gIdx])) {
-                                                $currentContent['images'][$gIdx] = ['alt' => 'Project Photo', 'category' => 'Exterior'];
+                                            $filePath = '/uploads/pages/' . $fileName;
+                                            if (!isset($currentContent[$fKey][$gIdx]) || !is_array($currentContent[$fKey][$gIdx])) {
+                                                $currentContent[$fKey][$gIdx] = [];
                                             }
-                                            $currentContent['images'][$gIdx]['src'] = '/uploads/pages/' . $fileName;
+                                            $currentContent[$fKey][$gIdx]['image'] = $filePath;
+                                            $currentContent[$fKey][$gIdx]['src'] = $filePath;
                                         }
                                     }
                                 }
@@ -989,6 +1088,14 @@ class PageController extends Controller
                         return is_array($im) && !empty(trim($im['src'] ?? ''));
                     }));
                     $currentContent['images'] = array_slice($filteredImages, 0, 10);
+                }
+
+                // Re-index plan_images after all processing (file upload + text merge)
+                if (isset($currentContent['plan_images']) && is_array($currentContent['plan_images'])) {
+                    $currentContent['plan_images'] = array_values(array_filter($currentContent['plan_images'], function($pi) {
+                        $src = is_array($pi) ? ($pi['image'] ?? ($pi['src'] ?? '')) : (string)$pi;
+                        return !empty(trim($src));
+                    }));
                 }
 
                 if ($secKey === 'highlights' && !empty($currentContent['items'])) {
@@ -1092,6 +1199,17 @@ class PageController extends Controller
             }
         }
 
+        // Per-section "Visible on site" toggles (default ON)
+        if (is_array($request->input('section_visible'))) {
+            foreach ($request->input('section_visible') as $secKey => $flag) {
+                $sec = $page->sections()->where('section_key', $secKey)->first();
+                if ($sec) {
+                    $sec->is_visible = filter_var($flag, FILTER_VALIDATE_BOOLEAN);
+                    $sec->save();
+                }
+            }
+        }
+
         $activeTab = $request->input('active_tab', 'general');
 
         if ($request->filled('from_project') || $request->input('context') === 'project' || request()->routeIs('admin.projects.*')) {
@@ -1106,6 +1224,18 @@ class PageController extends Controller
         return redirect()
             ->route('admin.pages.edit', ['page' => $page->id, 'tab' => $activeTab])
             ->with('success', "Page '{$page->title}' updated successfully. Changes are live!");
+    }
+
+    /**
+     * Toggle a section's "Visible on site" flag instantly (AJAX).
+     */
+    public function toggleSectionVisibility(Request $request, Page $page, string $sectionKey)
+    {
+        $sec = $page->sections()->where('section_key', $sectionKey)->firstOrFail();
+        $sec->is_visible = $request->boolean('visible');
+        $sec->save();
+
+        return response()->json(['success' => true, 'section' => $sectionKey, 'visible' => $sec->is_visible]);
     }
 
     /**

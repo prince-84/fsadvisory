@@ -55,6 +55,12 @@ class Amenity extends Model implements Auditable
             return '<img src="' . e($this->icon) . '" alt="' . e($this->name) . '" style="width:100%;height:100%;object-fit:contain;" />';
         }
 
-        return '';
+        // Auto green checkmark fallback when no logo was uploaded
+        $autoCheckPath = public_path('uploads/amenities/auto-check.svg');
+        if (file_exists($autoCheckPath)) {
+            return file_get_contents($autoCheckPath);
+        }
+
+        return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#FAF5EB" stroke="#DFCFB2" stroke-width="1.2"/><path d="M7.5 12.5L10.5 15.5L16.5 9.5" stroke="#BFA16A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     }
 }

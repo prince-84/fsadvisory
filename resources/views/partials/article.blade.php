@@ -67,15 +67,15 @@
 }
 
 .saimaContainer {
-    max-width: 1240px;
+    max-width: 1440px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 36px;
 }
 
 .saimaMainGrid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 370px;
-    gap: 40px;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 48px;
     align-items: start;
 }
 
@@ -135,7 +135,7 @@
 .saimaTocTitle {
     font-size: 18px;
     font-weight: 700;
-    color: #1a4731;
+    color: #BFA16A;
     margin: 0;
     line-height: 1.3;
 }
@@ -199,13 +199,13 @@
 }
 
 .saimaTocList a:hover {
-    color: #1a4731 !important;
+    color: #BFA16A !important;
     text-decoration: underline !important;
     transform: translateX(3px);
 }
 
 .saimaTocList a.active {
-    color: #1a4731 !important;
+    color: #BFA16A !important;
     font-weight: 700 !important;
     text-decoration: underline !important;
 }
@@ -224,7 +224,7 @@
 .saimaDynamicArticleContent h2,
 .saimaLongContentBody h2,
 .saimaShortContent h2 {
-    color: #1a4731 !important;
+    color: #BFA16A !important;
     font-size: 26px !important;
     font-weight: 700 !important;
     margin-top: 24px !important;
@@ -240,7 +240,7 @@
 .saimaDynamicArticleContent h3,
 .saimaLongContentBody h3,
 .saimaShortContent h3 {
-    color: #1a4731 !important;
+    color: #BFA16A !important;
     font-size: 20px !important;
     font-weight: 700 !important;
     margin-top: 20px !important;
@@ -255,7 +255,7 @@
 .saimaDynamicArticleContent h4,
 .saimaLongContentBody h4,
 .saimaShortContent h4 {
-    color: #1a4731 !important;
+    color: #BFA16A !important;
     font-size: 17px !important;
     font-weight: 700 !important;
     margin-top: 18px !important;
@@ -276,7 +276,7 @@
 .saimaLongContentBody h1,
 .saimaLongContentBody h5,
 .saimaLongContentBody h6 {
-    color: #1a4731 !important;
+    color: #BFA16A !important;
     font-weight: 700 !important;
 }
 
@@ -286,15 +286,17 @@
 .saimaDynamicArticleContent h1 *, .saimaDynamicArticleContent h2 *, .saimaDynamicArticleContent h3 *, .saimaDynamicArticleContent h4 *, .saimaDynamicArticleContent h5 *, .saimaDynamicArticleContent h6 *,
 .saimaLongContentBody h1 *, .saimaLongContentBody h2 *, .saimaLongContentBody h3 *, .saimaLongContentBody h4 *, .saimaLongContentBody h5 *, .saimaLongContentBody h6 *,
 .saimaShortContent h1 *, .saimaShortContent h2 *, .saimaShortContent h3 *, .saimaShortContent h4 *, .saimaShortContent h5 *, .saimaShortContent h6 * {
-    color: #1a4731 !important;
+    color: #BFA16A !important;
 }
 
 .saimaP,
 .saimaContentCol p {
-    font-size: 15px;
-    color: #111111;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14.5px;
+    font-weight: 400;
+    color: #2B2B2B;
     margin-bottom: 12px;
-    line-height: 1.55;
+    line-height: 1.6;
 }
 
 /* Prevent text from awkwardly wrapping beside images in articles/content (Clean block display) */
@@ -396,7 +398,7 @@
 
 .communitiesGrid .cardCustom .cardBookBtn,
 .cardCustom .cardBookBtn {
-    background: #1a4731 !important;
+    background: #BFA16A !important;
     color: #ffffff !important;
     text-align: center !important;
     padding: 10px 18px !important;
@@ -411,7 +413,7 @@
 
 .communitiesGrid .cardCustom:hover .cardBookBtn,
 .cardCustom:hover .cardBookBtn {
-    background: #123322 !important;
+    background: #aa8d58 !important;
     transform: translateY(-2px) !important;
 }
 
@@ -443,13 +445,13 @@
 
 .saimaP a,
 .saimaContentCol a {
-    color: #1a4731;
+    color: #BFA16A;
     text-decoration: underline;
     font-weight: 600;
 }
 
 .saimaP a:hover {
-    color: #123322;
+    color: #aa8d58;
 }
 
 /* CMS / Article Content Lists (Bullet Circles & Numbers) */
@@ -484,9 +486,10 @@
     list-style: inherit !important;
     display: list-item !important;
     margin-bottom: 10px !important;
-    font-size: 17px !important;
-    line-height: 1.8 !important;
-    color: #111111 !important;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    font-size: 14.5px !important;
+    line-height: 1.6 !important;
+    color: #2B2B2B !important;
 }
 
 .saimaContentCol ul ul,
@@ -503,7 +506,7 @@
     list-style-type: square !important;
 }
 
-/* Ensure ALL body text (p, li, b, i, span) have the exact same dark black color, while h2 remains green */
+/* Ensure ALL body text (p, li, b, i, span) match the exact light black #2B2B2B Open Sans style, while headings & links remain golden */
 .saimaContentCol p,
 .saimaContentCol li,
 .saimaContentCol ul,
@@ -524,7 +527,8 @@
 .saimaDynamicArticleContent em,
 .saimaDynamicArticleContent span:not(h1 *):not(h2 *):not(h3 *):not(h4 *):not(h5 *):not(h6 *),
 .saimaDynamicArticleContent div:not(h1 *):not(h2 *):not(h3 *):not(h4 *):not(h5 *):not(h6 *) {
-    color: #111111 !important;
+    color: #2B2B2B !important;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
 }
 
 .saimaContentCol p,
@@ -533,8 +537,11 @@
 .saimaDynamicArticleContent p,
 .saimaDynamicArticleContent ul:not(.saimaTocList) li,
 .saimaDynamicArticleContent ol:not(.saimaTocList) li {
-    font-size: 15px !important;
-    line-height: 1.55 !important;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    font-size: 14.5px !important;
+    font-weight: 400 !important;
+    color: #2B2B2B !important;
+    line-height: 1.6 !important;
     margin-bottom: 12px !important;
 }
 
@@ -544,7 +551,7 @@
 .saimaDynamicArticleContent h2,
 .saimaLongContentBody h2,
 .saimaShortContent h2 {
-    color: #1a4731 !important;
+    color: #BFA16A !important;
 }
 
 .saimaContentCol ul:not(.saimaTocList) ul,
@@ -587,7 +594,6 @@
 /* Right Sticky Sidebar */
 .saimaSidebarCol {
     min-width: 0;
-    height: 100%;
     align-self: stretch;
     position: relative;
 }
@@ -595,29 +601,11 @@
 .saimaStickySidebar {
     position: -webkit-sticky;
     position: sticky;
-    top: 95px;
-    max-height: calc(100vh - 110px);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
+    top: 85px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;
     z-index: 20;
-}
-
-.saimaStickySidebar::-webkit-scrollbar {
-    width: 4px;
-}
-
-.saimaStickySidebar::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.saimaStickySidebar::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
 }
 
 /* Book an Appointment Card */
@@ -660,8 +648,8 @@
 }
 
 .saimaInput:focus {
-    border-color: #1a4731;
-    box-shadow: 0 0 0 3px rgba(26, 71, 49, 0.15);
+    border-color: #BFA16A;
+    box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.15);
 }
 
 .saimaTextarea {
@@ -681,13 +669,13 @@
 }
 
 .saimaTextarea:focus {
-    border-color: #1a4731;
-    box-shadow: 0 0 0 3px rgba(26, 71, 49, 0.15);
+    border-color: #BFA16A;
+    box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.15);
 }
 
-/* Submit Button: Exact #1a4731 Color from Image 3 */
+/* Submit Button: Exact #BFA16A Color from Image 3 */
 .saimaSubmitBtn {
-    background-color: #1a4731 !important;
+    background-color: #BFA16A !important;
     color: #ffffff !important;
     font-size: 16px;
     font-weight: 700;
@@ -699,13 +687,13 @@
     width: 100%;
     text-transform: uppercase;
     transition: all 0.25s ease;
-    box-shadow: 0 4px 12px rgba(26, 71, 49, 0.25);
+    box-shadow: 0 4px 12px rgba(191, 161, 106, 0.25);
 }
 
 .saimaSubmitBtn:hover {
-    background-color: #123322 !important;
+    background-color: #aa8d58 !important;
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(26, 71, 49, 0.35);
+    box-shadow: 0 6px 18px rgba(191, 161, 106, 0.35);
 }
 
 .saimaSubmitBtn:active {
@@ -819,9 +807,11 @@
     }
 }
 </style>
+@if(!($embedded ?? false))
 <section class="saimaArticleWrapper" id="saima-article-section" style="{{ $isNewPage ? 'padding: 35px 0 10px 0;' : '' }}">
     <div class="saimaContainer">
         <div class="saimaMainGrid">
+@endif
             <!-- Left Column: Article Content -->
             <article class="saimaContentCol">
                 @if($isNewPage)
@@ -901,7 +891,7 @@
                                                 $pcHref    = $pcItem->url;
                                                 $pcSoldOut = ($pcItem->status === 'sold_out') || ($pcItem->page?->status === 'sold_out');
                                             @endphp
-                                            <a href="{{ $pcHref }}" class="cardCustom" style="text-decoration: none; cursor: pointer;" aria-label="{{ $pcItem->title }}">
+                                            <div class="cardCustom" style="cursor: pointer;" onclick="window.location='{{ $pcHref }}'" role="link" tabindex="0" aria-label="{{ $pcItem->title }}">
                                                 <div class="topTags">
                                                     @if(!empty($pcItem->badges) && is_array($pcItem->badges))
                                                         @foreach($pcItem->badges as $badge)<span class="badgeTag">{{ $badge }}</span>@endforeach
@@ -912,9 +902,9 @@
                                                 <div class="bottomContent">
                                                     <h3 class="cardTitle">{{ $pcItem->title }}</h3>
                                                     <p class="cardLocation">{{ $pcItem->location ?? 'Saima, Pakistan' }}</p>
-                                                    <div class="cardBookBtn">BOOK NOW</div>
+                                                    @include('partials.project-card-actions', ['proj' => $pcItem, 'href' => $pcHref])
                                                 </div>
-                                            </a>
+                                            </div>
                                         @endforeach
                                     @endif
                                 </div>
@@ -1021,7 +1011,7 @@
                             The project is a blend of luxury, convenience, and investment value. Hence, buyers can purchase a high-value waterfront property in one of the upcoming coastal areas of Karachi.
                         </p>
 
-                        <!-- 1. About the Developers (Color #1a4731 matching Image 3) -->
+                        <!-- 1. About the Developers (Color #BFA16A matching Image 3) -->
                         <h2 class="saimaH2" id="about-the-developers">{{ toc_title('about-the-developers', 'About the Developers') }}</h2>
                         {!! toc_content('about-the-developers', '
                         <p class="saimaP">
@@ -1180,83 +1170,15 @@
             </article>
 
             <!-- Right Column: Sticky Sidebar -->
+            @if(!($embedded ?? false))
+            <!-- Right Column: Sticky Sidebar -->
             <aside class="saimaSidebarCol">
-                <div class="saimaStickySidebar">
-                    <!-- BOOK AN APPOINTMENT Form -->
-                    <div class="saimaApptCard">
-                        <h3 class="saimaApptTitle">BOOK AN APPOINTMENT</h3>
-                        <form id="saimaAppointmentForm" class="saimaApptForm">
-                            <input type="text" name="name" class="saimaInput" placeholder="Name" required>
-                            <div class="phoneUnifiedContainer" style="margin-bottom: 12px; height: 42px !important; background: #fff !important; border: 1px solid #dcdcdc !important;">
-                                <div class="countryTriggerWrapper">
-                                    <button type="button" class="countryTriggerBtn" id="sidebarCountryBtn" aria-label="Country selector" style="height: 100%;">
-                                        <span class="flagSlot" id="sidebarFlagSlot"></span>
-                                        <span class="caretDown"></span>
-                                    </button>
-                                    <ul class="countryDropdownMenu" id="sidebarCountryDropdown" style="display: none;"></ul>
-                                </div>
-                                <input type="tel" name="phone" id="saimaPhoneInput" class="phoneInputField" value="+971 " required>
-                            </div>
-                            <input type="email" name="email" class="saimaInput" placeholder="Email" required>
-                            <textarea name="comment" class="saimaTextarea" placeholder="Leave a comment here"></textarea>
-                            <button type="submit" class="saimaSubmitBtn">SUBMIT</button>
-                            <div id="saimaFormSuccess" class="saimaSuccessMsg">
-                                Thank you! Your appointment request has been submitted successfully.
-                            </div>
-                        </form>
-                    </div>
-
-                    @php
-                        $sidebarProjectsQuery = \App\Models\Project::where('is_active', true)
-                            ->where(function($q) {
-                                $q->whereNull('status')->orWhere('status', '!=', 'draft');
-                            })
-                            ->whereDoesntHave('page', function($q) {
-                                $q->where('status', 'draft')->orWhere('is_published', false);
-                            });
-
-                        // Exclude current property from Latest Projects
-                        if (isset($page) && !empty($page->id)) {
-                            $sidebarProjectsQuery->where('page_id', '!=', $page->id);
-                        }
-                        $currExcludeSlug = !empty($cleanSlug) ? $cleanSlug : trim($articleSlug ?? '', '/');
-                        if (!empty($currExcludeSlug)) {
-                            $sidebarProjectsQuery->where('slug', '!=', $currExcludeSlug)
-                                                 ->where('slug', '!=', '/' . $currExcludeSlug);
-                        }
-                        $currReqPath = trim(request()->path(), '/');
-                        if (!empty($currReqPath)) {
-                            $sidebarProjectsQuery->where('slug', '!=', $currReqPath)
-                                                 ->where('slug', '!=', '/' . $currReqPath);
-                        }
-
-                        $sidebarProjects = $sidebarProjectsQuery
-                            ->orderBy('order', 'asc')
-                            ->take(5)
-                            ->get();
-                    @endphp
-
-                    @if($sidebarProjects->isNotEmpty())
-                    <div class="saimaProjectsCard">
-                        <h4 class="saimaProjectsHeader">Latest Projects</h4>
-                        <div class="saimaProjectsList">
-                            @foreach($sidebarProjects as $sp)
-                                <a href="{{ $sp->url }}" class="saimaProjectItem">
-                                    <img src="{{ $sp->image ?: '/images/communities/wadeem-gardens.png' }}" alt="{{ $sp->title }}" class="saimaProjectThumb">
-                                    <div class="saimaProjectMeta">
-                                        <div class="saimaProjectItemTitle">{{ $sp->title }}</div>
-                                        <div class="saimaProjectItemDesc">{{ $sp->location ?? 'Waterfront Residences' }}</div>
-                                    </div>
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
-                </div>
+                @include('partials.sidebar-form-widget')
             </aside>
         </div>
     </div>
 </section>
+@endif
 
 @if($isNewPage && $hasProjectCards)
     <!-- Long Content Section - Displayed below project cards when split layout is active -->
@@ -1477,7 +1399,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 key_requirement: apptForm.querySelector('textarea[name="comment"]')?.value || '',
                 comment: apptForm.querySelector('textarea[name="comment"]')?.value || '',
                 source: 'Website',
-                sub_source: 'saima project',
+                sub_source: 'fsadvisory.pk',
                 page_url: window.location.href,
                 campaign_url: window.location.href,
                 utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || '',

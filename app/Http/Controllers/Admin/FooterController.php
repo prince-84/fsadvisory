@@ -60,6 +60,11 @@ class FooterController extends Controller
                 foreach ($rawLinks as $lnk) {
                     $label = trim($lnk['label'] ?? '');
                     $url = trim($lnk['url'] ?? '');
+                    if (!empty($url)) {
+                        // Normalize domain links to relative path so it seamlessly works on local, staging, and production
+                        $normalizedUrl = preg_replace('#^https?://(www\.)?fsadvisory\.pk(/.*)?$#i', '$2', $url);
+                        $url = empty($normalizedUrl) ? '/' : $normalizedUrl;
+                    }
                     if ($label !== '' || $url !== '') {
                         $cleanLinks[] = [
                             'label' => $label,

@@ -14,7 +14,7 @@
 }
 
 .blogsHero {
-    background: linear-gradient(135deg, #102a1c 0%, #1a4731 100%);
+    background: linear-gradient(135deg, #8c6e3b 0%, #BFA16A 100%);
     color: #ffffff;
     padding: 60px 0 50px 0;
     text-align: center;
@@ -113,7 +113,7 @@
     position: absolute;
     top: 14px;
     left: 14px;
-    background: #1a4731;
+    background: #BFA16A;
     color: #ffffff;
     padding: 4px 12px;
     border-radius: 999px;
@@ -149,7 +149,7 @@
 }
 
 .blogCard:hover .blogCardTitle {
-    color: #1a4731;
+    color: #BFA16A;
 }
 
 .blogCardExcerpt {
@@ -167,7 +167,7 @@
 .blogCardLink {
     font-size: 14px;
     font-weight: 700;
-    color: #1a4731;
+    color: #BFA16A;
     display: inline-flex;
     align-items: center;
     gap: 6px;

@@ -19,13 +19,23 @@ class Community extends Model implements Auditable
         'status',
         'order',
         'is_active',
+        'h1',
+        'tagline',
+        'short_content',
+        'full_content',
+        'featured_projects',
+        'faqs',
+        'faq_heading',
+        'faq_subtitle',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
-        'order'     => 'integer',
-        'city_id'   => 'integer',
-        'page_id'   => 'integer',
+        'is_active'         => 'boolean',
+        'order'             => 'integer',
+        'city_id'           => 'integer',
+        'page_id'           => 'integer',
+        'featured_projects' => 'array',
+        'faqs'              => 'array',
     ];
 
     protected $appends = [
@@ -38,6 +48,14 @@ class Community extends Model implements Auditable
     public function city()
     {
         return $this->belongsTo(City::class, 'city_id');
+    }
+
+    /**
+     * Projects linked to this community.
+     */
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'community_id');
     }
 
     /**

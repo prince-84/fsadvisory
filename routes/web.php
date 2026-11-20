@@ -20,12 +20,18 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
-// Global Favicon Fallback Routes (ensures /favicon.ico and /favicon.png always serve public/favicon.png for sitemap.xml & view-source)
+// Global Favicon Fallback Routes (ensures /favicon.ico and /favicon.png always serve updated FS favicon for sitemap.xml & view-source)
 Route::get('/favicon.ico', function () {
-    $path = public_path('favicon.png');
-    return response()->file($path, [
+    $path = public_path('favicon.ico');
+    if (file_exists($path)) {
+        return response()->file($path, [
+            'Content-Type' => 'image/x-icon',
+            'Cache-Control' => 'no-cache, must-revalidate, max-age=0',
+        ]);
+    }
+    return response()->file(public_path('favicon.png'), [
         'Content-Type' => 'image/png',
-        'Cache-Control' => 'no-cache, must-revalidate',
+        'Cache-Control' => 'no-cache, must-revalidate, max-age=0',
     ]);
 });
 Route::get('/favicon.png', function () {
@@ -117,10 +123,6 @@ Route::get('/terms', function () {
     return redirect('/terms-and-conditions');
 });
 
-Route::get('/disclaimer', function () {
-    return view('disclaimer');
-})->name('disclaimer');
-
 /*
 |--------------------------------------------------------------------------
 | Admin CMS (/admin)
@@ -152,6 +154,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::patch('/pages/{page}/toggle-navbar', [AdminPageController::class, 'toggleNavbar'])->name('pages.toggle-navbar');
             Route::patch('/pages/{page}/toggle-published', [AdminPageController::class, 'togglePublished'])->name('pages.toggle-published');
             Route::patch('/pages/{page}/status', [AdminPageController::class, 'updateStatus'])->name('pages.status');
+            Route::post('/pages/{page}/sections/{sectionKey}/visibility', [AdminPageController::class, 'toggleSectionVisibility'])->name('pages.section-visibility');
             Route::post('/pages/{page}/reorder-sections', [AdminPageController::class, 'reorderSections'])->name('pages.reorder-sections');
             Route::post('/upload-content-image', [AdminPageController::class, 'uploadContentImage'])->name('upload-content-image');
 
@@ -167,6 +170,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
             // Cities CMS (Dedicated City Pages Manager)
             Route::get('/cities', [AdminCityController::class, 'index'])->name('cities.index');
+            Route::get('/cities/create', [AdminCityController::class, 'create'])->name('cities.create');
             Route::post('/cities', [AdminCityController::class, 'store'])->name('cities.store');
             Route::get('/cities/{city}/edit', [AdminCityController::class, 'edit'])->name('cities.edit');
             Route::put('/cities/{city}', [AdminCityController::class, 'update'])->name('cities.update');
@@ -175,6 +179,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
             // Neighbourhood / Community CMS (Dedicated Community Pages Manager)
             Route::get('/communities', [AdminCommunityController::class, 'index'])->name('communities.index');
+            Route::get('/communities/create', [AdminCommunityController::class, 'create'])->name('communities.create');
             Route::post('/communities', [AdminCommunityController::class, 'store'])->name('communities.store');
             Route::get('/communities/{community}/edit', [AdminCommunityController::class, 'edit'])->name('communities.edit');
             Route::put('/communities/{community}', [AdminCommunityController::class, 'update'])->name('communities.update');
@@ -306,8 +311,27 @@ Route::get('/developer/{slug}', function ($slug) {
     return view('developers.show', compact('developer'));
 })->where('slug', '^[a-zA-Z0-9_\-\/% ]+$')->name('developers.public.show');
 
-// Dedicated Public Property / Project Routes (/project/{slug})
-Route::get('/project', fn() => redirect('/#communities'));
+// Dedicated Public Projects Main Page (/projects)
+Route::get('/projects', function () {
+    $page = \App\Models\Page::with(['sections' => fn($q) => $q->orderBy('order')])
+        ->where('slug', 'projects')
+        ->first();
+
+    $projects = \App\Models\Project::where('is_active', true)
+        ->where(function($q) {
+            $q->whereNull('status')->orWhere('status', '!=', 'draft');
+        })
+        ->whereDoesntHave('page', function($q) {
+            $q->where('status', 'draft')->orWhere('is_published', false);
+        })
+        ->with('page')
+        ->orderBy('order', 'asc')
+        ->get();
+
+    return view('projects.index', compact('page', 'projects'));
+})->name('projects.public.index');
+
+Route::get('/project', fn() => redirect('/projects', 301));
 
 Route::get('/project/{slug}', function ($slug) {
     $cleanSlug = ltrim(urldecode($slug), '/');
@@ -373,58 +397,45 @@ Route::get('/city', fn() => redirect('/'));
 Route::get('/city/{slug}', function ($slug) {
     $cleanSlug = ltrim(urldecode($slug), '/');
 
-    // Redirect underscore variants (e.g. /city/lahore_city -> /city/lahore-city)
-    if (str_contains($cleanSlug, '_')) {
-        return redirect('/city/' . str_replace('_', '-', $cleanSlug), 301);
+    // Redirect spaces or underscore variants (e.g. /city/lahore_city -> /city/lahore-city)
+    if (str_contains($cleanSlug, '_') || str_contains($cleanSlug, ' ')) {
+        return redirect('/city/' . \Illuminate\Support\Str::slug($cleanSlug), 301);
     }
+
+    $hyphenSlug = \Illuminate\Support\Str::slug($cleanSlug);
 
     $city = \App\Models\City::where('slug', $cleanSlug)
         ->orWhere('slug', '/' . $cleanSlug)
         ->orWhere('slug', 'city/' . $cleanSlug)
         ->orWhere('slug', '/city/' . $cleanSlug)
+        ->orWhere('slug', $hyphenSlug)
+        ->orWhere('slug', '/' . $hyphenSlug)
+        ->orWhere('slug', 'city/' . $hyphenSlug)
+        ->orWhere('slug', '/city/' . $hyphenSlug)
         ->first();
 
     if ($city) {
-        if (!$city->is_active || $city->status === 'draft') {
+        if ((!$city->is_active || $city->status === 'draft') && !auth()->check()) {
             abort(404);
         }
 
-        $page = $city->page ?: \App\Models\Page::where('slug', $cleanSlug)
-            ->orWhere('slug', '/' . $cleanSlug)
-            ->orWhere('slug', 'city/' . $cleanSlug)
-            ->orWhere('slug', '/city/' . $cleanSlug)
-            ->first();
-
-        if ($page) {
-            if (!$page->is_published || $page->status === 'draft') {
-                abort(404);
-            }
-            if (view()->exists('communities.' . $cleanSlug)) {
-                return view('communities.' . $cleanSlug, compact('page', 'city'));
-            }
-            if (view()->exists($cleanSlug)) {
-                return view($cleanSlug, compact('page', 'city'));
-            }
-            return view('dynamic-page', compact('page', 'city'));
-        }
-
-        return view('dynamic-page', compact('city'));
+        $page = $city->page;
+        return view('cities.show', compact('city', 'page'));
     }
 
     // Check if Page belongs to City
     $page = \App\Models\Page::where('slug', $cleanSlug)
         ->orWhere('slug', '/' . $cleanSlug)
-        ->orWhere('slug', 'city/' . $cleanSlug)
-        ->orWhere('slug', '/city/' . $cleanSlug)
+        ->orWhere('slug', $hyphenSlug)
         ->first();
 
     if ($page) {
         $city = \App\Models\City::where('page_id', $page->id)->first();
         if ($city) {
-            if (!$city->is_active || $city->status === 'draft' || !$page->is_published || $page->status === 'draft') {
+            if ((!$city->is_active || $city->status === 'draft') && !auth()->check()) {
                 abort(404);
             }
-            return view('dynamic-page', compact('page', 'city'));
+            return view('cities.show', compact('city', 'page'));
         }
     }
 
@@ -437,58 +448,45 @@ Route::get('/area', fn() => redirect('/#communities'));
 Route::get('/area/{slug}', function ($slug) {
     $cleanSlug = ltrim(urldecode($slug), '/');
 
-    // Redirect underscore variants (e.g. /area/jamshed_road -> /area/jamshed-road)
-    if (str_contains($cleanSlug, '_')) {
-        return redirect('/area/' . str_replace('_', '-', $cleanSlug), 301);
+    // Redirect spaces or underscore variants (e.g. /area/test third -> /area/test-third)
+    if (str_contains($cleanSlug, '_') || str_contains($cleanSlug, ' ')) {
+        return redirect('/area/' . \Illuminate\Support\Str::slug($cleanSlug), 301);
     }
+
+    $hyphenSlug = \Illuminate\Support\Str::slug($cleanSlug);
 
     $community = \App\Models\Community::where('slug', $cleanSlug)
         ->orWhere('slug', '/' . $cleanSlug)
         ->orWhere('slug', 'area/' . $cleanSlug)
         ->orWhere('slug', '/area/' . $cleanSlug)
+        ->orWhere('slug', $hyphenSlug)
+        ->orWhere('slug', '/' . $hyphenSlug)
+        ->orWhere('slug', 'area/' . $hyphenSlug)
+        ->orWhere('slug', '/area/' . $hyphenSlug)
         ->first();
 
     if ($community) {
-        if (!$community->is_active || $community->status === 'draft') {
+        if ((!$community->is_active || $community->status === 'draft') && !auth()->check()) {
             abort(404);
         }
 
-        $page = $community->page ?: \App\Models\Page::where('slug', $cleanSlug)
-            ->orWhere('slug', '/' . $cleanSlug)
-            ->orWhere('slug', 'area/' . $cleanSlug)
-            ->orWhere('slug', '/area/' . $cleanSlug)
-            ->first();
-
-        if ($page) {
-            if (!$page->is_published || $page->status === 'draft') {
-                abort(404);
-            }
-            if (view()->exists('communities.' . $cleanSlug)) {
-                return view('communities.' . $cleanSlug, compact('page', 'community'));
-            }
-            if (view()->exists($cleanSlug)) {
-                return view($cleanSlug, compact('page', 'community'));
-            }
-            return view('dynamic-page', compact('page', 'community'));
-        }
-
-        return view('dynamic-page', compact('community'));
+        $page = $community->page;
+        return view('communities.show', compact('community', 'page'));
     }
 
     // Check if Page belongs to Community
     $page = \App\Models\Page::where('slug', $cleanSlug)
         ->orWhere('slug', '/' . $cleanSlug)
-        ->orWhere('slug', 'area/' . $cleanSlug)
-        ->orWhere('slug', '/area/' . $cleanSlug)
+        ->orWhere('slug', $hyphenSlug)
         ->first();
 
     if ($page) {
         $community = \App\Models\Community::where('page_id', $page->id)->first();
         if ($community) {
-            if (!$community->is_active || $community->status === 'draft' || !$page->is_published || $page->status === 'draft') {
+            if ((!$community->is_active || $community->status === 'draft') && !auth()->check()) {
                 abort(404);
             }
-            return view('dynamic-page', compact('page', 'community'));
+            return view('communities.show', compact('community', 'page'));
         }
     }
 

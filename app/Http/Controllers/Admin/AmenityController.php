@@ -34,30 +34,41 @@ class AmenityController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'icon' => ['required', 'file'],
+            'icon' => ['nullable', 'file'],
         ], [
             'name.required' => 'Amenity name is required.',
-            'icon.required' => 'SVG icon file is required.',
         ]);
-
-        $file = $request->file('icon');
-
-        // Strict SVG validation
-        if (!$this->isValidSvgFile($file)) {
-            return back()->withInput()->with('error', 'Only SVG files (.svg) are allowed for amenities icon.');
-        }
 
         $uploadDir = public_path('uploads/amenities');
         if (!file_exists($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
 
-        $cleanName = Str::slug($request->input('name'));
-        $filename = time() . '_' . $cleanName . '.svg';
-        $file->move($uploadDir, $filename);
+        $relativePath = '/uploads/amenities/auto-check.svg';
+        $svgContent = file_exists(public_path('uploads/amenities/auto-check.svg'))
+            ? file_get_contents(public_path('uploads/amenities/auto-check.svg'))
+            : null;
 
-        $relativePath = '/uploads/amenities/' . $filename;
-        $svgContent = @file_get_contents($uploadDir . '/' . $filename) ?: null;
+        if ($request->hasFile('icon')) {
+            $file = $request->file('icon');
+
+            // Allow SVG, PNG, JPG, JPEG, WEBP, ICO
+            if (!$this->isValidIconFile($file)) {
+                return back()->withInput()->with('error', 'Only SVG files (.svg) are allowed for amenities icon.');
+            }
+
+            $cleanName = Str::slug($request->input('name'));
+            $ext = strtolower($file->getClientOriginalExtension());
+            $filename = time() . '_' . $cleanName . '.' . $ext;
+            $file->move($uploadDir, $filename);
+
+            $relativePath = '/uploads/amenities/' . $filename;
+            // Store SVG content only for SVG files, sanitized to UTF-8
+            $svgContent = ($ext === 'svg') ? $this->readSvgAsUtf8($uploadDir . '/' . $filename) : null;
+            if ($svgContent) {
+                file_put_contents($uploadDir . '/' . $filename, $svgContent);
+            }
+        }
 
         $maxOrder = (int) Amenity::max('order');
 
@@ -98,7 +109,7 @@ class AmenityController extends Controller
 
         if ($request->hasFile('icon')) {
             $file = $request->file('icon');
-            if (!$this->isValidSvgFile($file)) {
+            if (!$this->isValidIconFile($file)) {
                 return back()->withInput()->with('error', 'Only SVG files (.svg) are allowed.');
             }
 
@@ -107,8 +118,8 @@ class AmenityController extends Controller
                 mkdir($uploadDir, 0777, true);
             }
 
-            // Remove old file if exists
-            if (!empty($amenity->icon)) {
+            // Remove old file if exists (and not auto-check)
+            if (!empty($amenity->icon) && !str_contains($amenity->icon, 'auto-check')) {
                 $oldPath = public_path(ltrim($amenity->icon, '/'));
                 if (file_exists($oldPath) && is_file($oldPath)) {
                     @unlink($oldPath);
@@ -116,11 +127,15 @@ class AmenityController extends Controller
             }
 
             $cleanName = Str::slug($amenity->name);
-            $filename = time() . '_' . $cleanName . '.svg';
+            $ext = strtolower($file->getClientOriginalExtension());
+            $filename = time() . '_' . $cleanName . '.' . $ext;
             $file->move($uploadDir, $filename);
 
             $amenity->icon = '/uploads/amenities/' . $filename;
-            $amenity->svg_content = @file_get_contents($uploadDir . '/' . $filename) ?: null;
+            $amenity->svg_content = ($ext === 'svg') ? $this->readSvgAsUtf8($uploadDir . '/' . $filename) : null;
+            if ($amenity->svg_content) {
+                file_put_contents($uploadDir . '/' . $filename, $amenity->svg_content);
+            }
         }
 
         $amenity->save();
@@ -172,8 +187,8 @@ class AmenityController extends Controller
     {
         $name = $amenity->name;
 
-        // Delete physical file
-        if (!empty($amenity->icon)) {
+        // Delete physical file (and not auto-check)
+        if (!empty($amenity->icon) && !str_contains($amenity->icon, 'auto-check')) {
             $path = public_path(ltrim($amenity->icon, '/'));
             if (file_exists($path) && is_file($path)) {
                 @unlink($path);
@@ -202,26 +217,53 @@ class AmenityController extends Controller
     }
 
     /**
-     * Strict check to ensure file is genuinely an SVG vector.
+     * Only genuine SVG files are allowed (.svg extension + <svg tag, UTF-16 safe).
      */
-    private function isValidSvgFile($file): bool
+    private function isValidIconFile($file): bool
     {
         if (!$file || !$file->isValid()) {
             return false;
         }
 
-        // Check extension
-        $ext = strtolower($file->getClientOriginalExtension());
-        if ($ext !== 'svg') {
+        if (strtolower($file->getClientOriginalExtension()) !== 'svg') {
             return false;
         }
 
-        // Check content for SVG tag
-        $content = @file_get_contents($file->getRealPath());
-        if (!$content || !str_contains($content, '<svg')) {
-            return false;
+        $content = $this->readSvgAsUtf8($file->getRealPath());
+
+        return $content !== null && stripos($content, '<svg') !== false;
+    }
+
+    /**
+     * Read an SVG file and return clean UTF-8 string.
+     * Handles UTF-16 LE/BE BOM, strips null bytes, re-encodes if needed.
+     */
+    private function readSvgAsUtf8(string $path): ?string
+    {
+        $raw = @file_get_contents($path);
+        if (!$raw) return null;
+
+        // Detect UTF-16 LE BOM (\xFF\xFE) or UTF-16 BE BOM (\xFE\xFF)
+        if (substr($raw, 0, 2) === "\xFF\xFE") {
+            $raw = mb_convert_encoding(substr($raw, 2), 'UTF-8', 'UTF-16LE');
+        } elseif (substr($raw, 0, 2) === "\xFE\xFF") {
+            $raw = mb_convert_encoding(substr($raw, 2), 'UTF-8', 'UTF-16BE');
+        } elseif (substr($raw, 0, 3) === "\xEF\xBB\xBF") {
+            // UTF-8 BOM — just strip BOM
+            $raw = substr($raw, 3);
         }
 
-        return true;
+        // Strip any remaining null bytes
+        $raw = str_replace("\x00", '', $raw);
+
+        // Ensure valid UTF-8; replace invalid sequences
+        if (!mb_check_encoding($raw, 'UTF-8')) {
+            $raw = mb_convert_encoding($raw, 'UTF-8', 'auto');
+        }
+
+        // Final null byte strip after conversion
+        $raw = str_replace("\x00", '', $raw);
+
+        return $raw ?: null;
     }
 }

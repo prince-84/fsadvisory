@@ -39,12 +39,13 @@
 }
 
 .blogDetailHeroContainer {
-    max-width: 1200px;
+    max-width: 1440px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 36px;
     position: relative;
     z-index: 2;
+    box-sizing: border-box;
 }
 
 .blogCategoryBadge {
@@ -82,15 +83,15 @@
 }
 
 .blogDetailContainer {
-    max-width: 1200px;
+    max-width: 1440px;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 36px;
     box-sizing: border-box;
 }
 
 .blogMainGrid {
     display: grid;
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: minmax(0, 1fr) 380px;
     gap: 40px;
     align-items: start;
 }
@@ -99,18 +100,18 @@
     min-width: 0;
 }
 
-/* Short Content Lead Paragraphs (Above Long Content) */
+/* Short Content Lead Paragraphs (Above Long Content - matching site standards) */
 .blogShortContentLead {
-    font-size: 17.5px;
-    line-height: 1.85;
-    color: #1e293b;
-    margin-top: 24px;
-    margin-bottom: 6px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #111111;
+    margin-top: 18px;
+    margin-bottom: 14px;
     font-weight: 400;
 }
 
 .blogShortContentLead p {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .blogShortContentLead p:last-child {
@@ -202,27 +203,28 @@
 }
 
 .saimaTocList a:hover {
-    color: #1a4731 !important;
+    color: #BFA16A !important;
     text-decoration: underline !important;
     transform: translateX(3px);
 }
 
-/* Rich Blog Article Content Styles */
+/* Rich Blog Article Content Styles (Standardized with Project & Site Pages) */
 .blogArticleContent {
-    font-size: 17px;
-    line-height: 1.85;
-    color: #2b2b2b;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #111111;
 }
 
 .blogArticleContent h1,
 .blogArticleContent h2 {
     font-family: var(--font-display, 'Outfit', sans-serif);
-    font-size: 34px;
-    font-weight: 700;
-    color: #1a4731;
-    margin: 36px 0 16px 0;
-    line-height: 1.35;
-    letter-spacing: -0.01em;
+    font-size: 26px !important;
+    font-weight: 700 !important;
+    color: #BFA16A !important;
+    margin-top: 28px !important;
+    margin-bottom: 12px !important;
+    line-height: 1.35 !important;
+    letter-spacing: -0.2px !important;
     scroll-margin-top: 100px;
 }
 
@@ -230,72 +232,111 @@
 .blogArticleContent > h1:first-child,
 .blogArticleContent > h2:first-child,
 .blogArticleContent > h3:first-child,
-.blogArticleContent > p:first-child:has(h1),
-.blogArticleContent > p:first-child:has(h2),
-.blogArticleContent > div:first-child:has(h2) {
+.blogArticleContent > p:first-child:has(h1, h2, h3),
+.blogArticleContent > div:first-child:has(h1, h2, h3) {
     margin-top: 10px !important;
 }
 
 .blogArticleContent h3 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 30px 0 14px 0;
+    font-family: var(--font-display, 'Outfit', sans-serif);
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #BFA16A !important;
+    margin-top: 22px !important;
+    margin-bottom: 10px !important;
+    line-height: 1.4 !important;
     scroll-margin-top: 100px;
 }
 
 .blogArticleContent h4 {
-    font-size: 19px;
-    font-weight: 700;
-    color: #334155;
-    margin: 24px 0 10px 0;
+    font-family: var(--font-display, 'Outfit', sans-serif);
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    color: #BFA16A !important;
+    margin-top: 18px !important;
+    margin-bottom: 8px !important;
+    line-height: 1.4 !important;
     scroll-margin-top: 100px;
 }
 
-.blogArticleContent p {
-    margin-bottom: 22px;
-    color: #374151;
+.blogArticleContent h5,
+.blogArticleContent h6 {
+    font-family: var(--font-display, 'Outfit', sans-serif);
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: #BFA16A !important;
+    margin-top: 16px !important;
+    margin-bottom: 6px !important;
+    line-height: 1.4 !important;
+    scroll-margin-top: 100px;
 }
 
-.blogArticleContent ul {
+/* Ensure ALL inner elements of headings (spans, b, strong, a, etc.) remain brand gold #BFA16A */
+.blogArticleContent h1 *,
+.blogArticleContent h2 *,
+.blogArticleContent h3 *,
+.blogArticleContent h4 *,
+.blogArticleContent h5 *,
+.blogArticleContent h6 * {
+    color: #BFA16A !important;
+}
+
+.blogArticleContent p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #111111;
+    margin-bottom: 14px;
+}
+
+.blogArticleContent ul:not(.saimaTocList) {
     list-style-type: disc !important;
     list-style-position: outside !important;
-    margin: 16px 0 24px 0 !important;
-    padding-left: 30px !important;
+    margin: 10px 0 16px 0 !important;
+    padding-left: 26px !important;
 }
 
-.blogArticleContent ol {
+.blogArticleContent ol:not(.saimaTocList) {
     list-style-type: decimal !important;
     list-style-position: outside !important;
-    margin: 16px 0 24px 0 !important;
-    padding-left: 30px !important;
+    margin: 10px 0 16px 0 !important;
+    padding-left: 26px !important;
 }
 
 .blogArticleContent li {
     display: list-item !important;
-    margin-bottom: 10px !important;
-    line-height: 1.8 !important;
-    color: #374151 !important;
+    margin-bottom: 6px !important;
+    line-height: 1.6 !important;
+    color: #111111 !important;
+    font-size: 15px !important;
 }
 
 .blogArticleContent ul ul {
     list-style-type: circle !important;
-    margin: 8px 0 8px 0 !important;
-    padding-left: 24px !important;
+    margin: 6px 0 6px 0 !important;
+    padding-left: 22px !important;
+}
+
+.blogArticleContent ul ol,
+.blogArticleContent ol ul,
+.blogArticleContent ol ol {
+    margin: 6px 0 6px 0 !important;
+    padding-left: 22px !important;
 }
 
 .blogArticleContent img {
     max-width: 100%;
-    border-radius: 12px;
-    margin: 24px 0;
+    height: auto;
+    border-radius: 8px;
+    margin: 24px auto;
+    display: block;
     box-shadow: 0 4px 14px rgba(0,0,0,0.06);
 }
 
 .blogArticleContent blockquote {
-    border-left: 4px solid #1a4731;
+    border-left: 4px solid #BFA16A;
     background: #f8fafc;
     padding: 16px 22px;
-    margin: 24px 0;
+    margin: 20px 0;
     border-radius: 0 8px 8px 0;
     font-style: italic;
     color: #475569;
@@ -333,7 +374,7 @@
 .blogFaqIcon {
     width: 20px;
     height: 20px;
-    color: #1a4731;
+    color: #BFA16A;
     transition: transform 0.25s ease;
     flex-shrink: 0;
 }
@@ -357,7 +398,6 @@
 /* Right Sticky Sidebar (Exact Project Style) */
 .saimaSidebarCol {
     min-width: 0;
-    height: 100%;
     align-self: stretch;
     position: relative;
 }
@@ -366,28 +406,12 @@
     position: -webkit-sticky;
     position: sticky;
     top: 95px;
-    max-height: calc(100vh - 110px);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
     z-index: 20;
-}
-
-.saimaStickySidebar::-webkit-scrollbar {
-    width: 4px;
-}
-
-.saimaStickySidebar::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.saimaStickySidebar::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Book an Appointment Card */
@@ -430,8 +454,8 @@
 }
 
 .saimaInput:focus {
-    border-color: #1a4731;
-    box-shadow: 0 0 0 3px rgba(26, 71, 49, 0.15);
+    border-color: #BFA16A;
+    box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.15);
 }
 
 .saimaTextarea {
@@ -451,12 +475,12 @@
 }
 
 .saimaTextarea:focus {
-    border-color: #1a4731;
-    box-shadow: 0 0 0 3px rgba(26, 71, 49, 0.15);
+    border-color: #BFA16A;
+    box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.15);
 }
 
 .saimaSubmitBtn {
-    background-color: #1a4731 !important;
+    background-color: #BFA16A !important;
     color: #ffffff !important;
     font-size: 15px;
     font-weight: 700;
@@ -468,13 +492,13 @@
     width: 100%;
     text-transform: uppercase;
     transition: all 0.25s ease;
-    box-shadow: 0 4px 12px rgba(26, 71, 49, 0.25);
+    box-shadow: 0 4px 12px rgba(191, 161, 106, 0.25);
 }
 
 .saimaSubmitBtn:hover {
-    background-color: #123322 !important;
+    background-color: #aa8d58 !important;
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(26, 71, 49, 0.35);
+    box-shadow: 0 6px 18px rgba(191, 161, 106, 0.35);
 }
 
 .saimaSubmitBtn:active {
@@ -573,9 +597,9 @@
 
 /* FAQ Accordion Section (Clean section below 2-column article grid) */
 .blogFaqSection {
-    margin-top: 60px;
-    padding-top: 50px;
-    border-top: 1px solid #e2e8f0;
+    margin-top: 48px;
+    padding-top: 40px;
+    border-top: 1px solid #e5e7eb;
     max-width: 960px;
     margin-left: auto;
     margin-right: auto;
@@ -583,11 +607,12 @@
 
 .blogFaqHeading {
     font-family: var(--font-display, 'Outfit', sans-serif);
-    font-size: 30px;
-    font-weight: 800;
-    color: #1a4731;
-    margin: 0 0 24px 0;
-    letter-spacing: -0.01em;
+    font-size: 26px;
+    font-weight: 700;
+    color: #BFA16A;
+    margin: 0 0 20px 0;
+    line-height: 1.35;
+    letter-spacing: -0.2px;
 }
 
 @media (max-width: 991px) {
@@ -601,18 +626,43 @@
     .saimaStickySidebar {
         position: static;
         top: auto;
-        max-height: none;
-        overflow-y: visible;
     }
 }
 
 @media (max-width: 768px) {
+    .blogDetailContainer,
+    .blogDetailHeroContainer {
+        padding: 0 20px;
+    }
     .blogDetailTitle {
         font-size: 30px;
     }
     .blogDetailHero {
         padding: 85px 0 75px 0;
         min-height: 290px;
+    }
+    .blogArticleContent h1,
+    .blogArticleContent h2 {
+        font-size: 22px !important;
+        margin-top: 22px !important;
+        margin-bottom: 10px !important;
+    }
+    .blogArticleContent h3 {
+        font-size: 18px !important;
+        margin-top: 18px !important;
+        margin-bottom: 8px !important;
+    }
+    .blogArticleContent h4 {
+        font-size: 16px !important;
+    }
+    .blogArticleContent p,
+    .blogArticleContent li,
+    .blogShortContentLead {
+        font-size: 14.5px !important;
+        line-height: 1.6 !important;
+    }
+    .blogFaqHeading {
+        font-size: 22px !important;
     }
 }
 </style>
@@ -670,85 +720,21 @@
 
                 </div>
 
-                <!-- Right Column: Sticky Sidebar (Appointment Form & Latest Projects) -->
+                <!-- Right Column: Sticky Sidebar (WhatsApp & Call Buttons, Appointment Form & Custom Searches) -->
                 <aside class="saimaSidebarCol">
-                    <div class="saimaStickySidebar">
-
-                        <!-- Form Card: Book an Appointment -->
-                        <div class="saimaApptCard">
-                            <h3 class="saimaApptTitle">BOOK AN APPOINTMENT</h3>
-                            <form id="saimaAppointmentForm" class="saimaApptForm">
-                                <input type="text" name="name" class="saimaInput" placeholder="Name" required>
-                                <div class="phoneUnifiedContainer" style="margin-bottom: 12px; height: 42px !important; background: #fff !important; border: 1px solid #dcdcdc !important;">
-                                    <div class="countryTriggerWrapper">
-                                        <button type="button" class="countryTriggerBtn" id="blogCountryBtn" aria-label="Country selector" style="height: 100%;">
-                                            <span class="flagSlot" id="blogFlagSlot"></span>
-                                            <span class="caretDown"></span>
-                                        </button>
-                                        <ul class="countryDropdownMenu" id="blogCountryDropdown" style="display: none;"></ul>
-                                    </div>
-                                    <input type="tel" name="phone" id="blogPhoneInput" class="phoneInputField" value="+971 " required>
-                                </div>
-                                <input type="email" name="email" class="saimaInput" placeholder="Email" required>
-                                <textarea name="comment" class="saimaTextarea" placeholder="Leave a comment here"></textarea>
-                                <button type="submit" class="saimaSubmitBtn">SUBMIT</button>
-                                <div id="saimaFormSuccess" class="saimaSuccessMsg">
-                                    Thank you! Your appointment request has been submitted successfully.
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Latest Projects Card (Dynamic Saima Projects) -->
-                        @php
-                            $sidebarProjects = \App\Models\Project::where('is_active', true)
-                                ->where(function($q) {
-                                    $q->whereNull('status')->orWhere('status', '!=', 'draft');
-                                })
-                                ->orderBy('order', 'asc')
-                                ->orderBy('id', 'desc')
-                                ->take(5)
-                                ->get();
-                        @endphp
-                        @if($sidebarProjects->isNotEmpty())
-                        <div class="saimaProjectsWidget">
-                            <h4 class="saimaProjectsHeader">Latest Projects</h4>
-                            <div class="saimaProjectList">
-                                @foreach($sidebarProjects as $sp)
-                                <a href="{{ $sp->url }}" class="saimaProjectItem">
-                                    <img src="{{ $sp->image_url ?: asset('logo_saima.png') }}" alt="{{ $sp->title }}" class="saimaProjectThumb" style="object-fit:cover;">
-                                    <div class="saimaProjectMeta">
-                                        <span class="saimaProjectItemTitle">{{ $sp->title }}</span>
-                                        <span class="saimaProjectItemDesc">{{ $sp->location ?? 'Karachi, Pakistan' }}</span>
-                                    </div>
-                                </a>
-                                @endforeach
-                            </div>
-                        </div>
-                        @endif
-
-                    </div>
+                    @include('partials.sidebar-form-widget', ['sbPageTitle' => $blog->title])
                 </aside>
 
             </div>
 
-            <!-- 4. Optional FAQs Accordion (Outside 2-column grid: side form will not appear beside it) -->
+            <!-- 4. Optional FAQs Accordion (Standardized with Home Page styling) -->
             @if(is_array($blog->faqs) && count($blog->faqs) > 0)
-                <section class="blogFaqSection">
-                    <h2 class="blogFaqHeading">Frequently Asked Questions</h2>
-                    @foreach($blog->faqs as $fIndex => $faq)
-                        @if(!empty($faq['question']))
-                            <div class="blogFaqItem {{ $fIndex === 0 ? 'active' : '' }}" onclick="toggleBlogFaq(this)">
-                                <div class="blogFaqQuestion">
-                                    <span>{{ $faq['question'] }}</span>
-                                    <svg class="blogFaqIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                                </div>
-                                <div class="blogFaqAnswer">
-                                    {!! nl2br(e($faq['answer'] ?? '')) !!}
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
-                </section>
+                <div style="margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+                    @include('partials.faq', [
+                        'customFaqs' => $blog->faqs,
+                        'customHeading' => 'Frequently Asked Questions'
+                    ])
+                </div>
             @endif
 
         </div>
@@ -871,7 +857,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 key_requirement: apptForm.querySelector('textarea[name="comment"]')?.value || '',
                 comment: apptForm.querySelector('textarea[name="comment"]')?.value || '',
                 source: 'Website',
-                sub_source: 'saima project',
+                sub_source: 'fsadvisory.pk',
                 page_url: window.location.href,
                 campaign_url: window.location.href,
                 utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || '',

@@ -110,8 +110,8 @@
 }
 
 .BashayerHeader-module__rUi-TW__dropdownItem:hover {
-  color: #1a4731;
-  background: #1a473133;
+  color: #BFA16A;
+  background: #BFA16A33;
   padding-left: 24px;
 }
 
@@ -130,8 +130,8 @@
 
 .BashayerHeader-module__rUi-TW__listPropBtn:hover {
   color: #fff;
-  background: #1a4731;
-  box-shadow: 0 4px 14px #1a473159;
+  background: #BFA16A;
+  box-shadow: 0 4px 14px #BFA16A59;
 }
 
 .BashayerHeader-module__rUi-TW__langTrigger {
@@ -181,8 +181,8 @@
 }
 
 .BashayerHeader-module__rUi-TW__langOption:hover {
-  color: #1a4731;
-  background: #1a473133;
+  color: #BFA16A;
+  background: #BFA16A33;
 }
 
 .BashayerHeader-module__rUi-TW__mobileToggle {
@@ -256,7 +256,7 @@
 }
 
 .BashayerHeader-module__rUi-TW__mobileSubList {
-  border-left: 2px solid #1a4731;
+  border-left: 2px solid #BFA16A;
   flex-direction: column;
   gap: 10px;
   margin-top: 8px;
@@ -274,14 +274,14 @@
 }
 
 .BashayerHeader-module__rUi-TW__mobileSubItem:hover {
-  color: #1a4731;
+  color: #BFA16A;
 }
 
 .BashayerHeader-module__rUi-TW__listPropBtnMobile {
   color: #fff;
   cursor: pointer;
   text-align: center;
-  background: #1a4731;
+  background: #BFA16A;
   border: none;
   border-radius: 6px;
   width: 100%;
@@ -574,7 +574,7 @@
 }
 
 .BashayerHero-module__W-a4YG__prevBtn:hover, .BashayerHero-module__W-a4YG__nextBtn:hover {
-  background: #1a4731;
+  background: #BFA16A;
 }
 
 .BashayerHero-module__W-a4YG__prevBtn {
@@ -629,7 +629,7 @@
   letter-spacing: .5px;
   cursor: pointer;
   text-transform: uppercase;
-  background-color: #d9232d;
+  background-color: #BFA16A;
   border: none;
   border-radius: 4px;
   padding: 14px 32px;
@@ -640,9 +640,9 @@
 }
 
 .BashayerHero-module__W-a4YG__brochureBtn:hover {
-  background-color: #b71a23;
+  background-color: #aa8d58;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px #1a473166;
+  box-shadow: 0 6px 18px #BFA16A66;
 }
 
 .BashayerHero-module__W-a4YG__badgeRow {
@@ -712,7 +712,7 @@
 }
 
 .BashayerHero-module__W-a4YG__inputField:focus {
-  border-color: #1a4731;
+  border-color: #BFA16A;
 }
 
 .BashayerHero-module__W-a4YG__recaptchaBox {
@@ -756,7 +756,7 @@
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
-  background: #1a4731;
+  background: #BFA16A;
   border: none;
   border-radius: 4px;
   width: 100%;
@@ -768,7 +768,7 @@
 }
 
 .BashayerHero-module__W-a4YG__submitBtn:hover {
-  background: #123322;
+  background: #aa8d58;
   transform: translateY(-1px);
 }
 
@@ -841,7 +841,7 @@
 
 .BashayerHighlights-module__VrEGWG__highlightCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px #1a47311f;
+  box-shadow: 0 6px 18px #BFA16A1f;
 }
 
 .BashayerHighlights-module__VrEGWG__iconWrapper {
@@ -857,7 +857,7 @@
 .BashayerHighlights-module__VrEGWG__accentCircle {
   opacity: 1 !important;
   z-index: 1 !important;
-  background: #1a4731 !important;
+  background: #BFA16A !important;
   border-radius: 50% !important;
   width: 38px !important;
   height: 38px !important;
@@ -969,7 +969,7 @@
 
 .BashayerAboutVideo-module__Jx6bxq__brownBackdrop {
   z-index: 1;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
   position: absolute;
@@ -1001,7 +1001,7 @@
   color: #fff;
   cursor: pointer;
   z-index: 5;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border: none;
   border-radius: 50%;
   justify-content: center;
@@ -1019,7 +1019,7 @@
 }
 
 .BashayerAboutVideo-module__Jx6bxq__playButton:hover {
-  background-color: #123322;
+  background-color: #aa8d58;
   transform: translate(-50%, -50%)scale(1.1);
 }
 
@@ -1086,13 +1086,13 @@
 }
 
 .BashayerAmenities-module__-3DDUq__card:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px #1a47311f;
+  box-shadow: 0 6px 18px #BFA16A1f;
 }
 
 .BashayerAmenities-module__-3DDUq__iconBox {
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border-radius: 6px;
   flex-shrink: 0;
   justify-content: center;
@@ -1497,7 +1497,7 @@
 
 .BashayerFloorPlans-module__9s47uG__tabActive {
   color: #fff;
-  background: #1a4731;
+  background: #BFA16A;
 }
 
 .BashayerFloorPlans-module__9s47uG__planCard {
@@ -1529,7 +1529,7 @@
 }
 
 .BashayerFloorPlans-module__9s47uG__planTagline {
-  color: #1a4731;
+  color: #BFA16A;
   margin: 0 0 16px;
   font-size: 15px;
   font-weight: 600;
@@ -1560,7 +1560,7 @@
 }
 
 .BashayerFloorPlans-module__9s47uG__specIcon {
-  color: #1a4731;
+  color: #BFA16A;
 }
 
 .BashayerFloorPlans-module__9s47uG__specLabel {
@@ -1586,7 +1586,7 @@
 .BashayerFloorPlans-module__9s47uG__downloadBtn {
   color: #fff;
   cursor: pointer;
-  background: #1a4731;
+  background: #BFA16A;
   border: none;
   border-radius: 4px;
   align-items: center;
@@ -1599,7 +1599,7 @@
 }
 
 .BashayerFloorPlans-module__9s47uG__downloadBtn:hover {
-  background: #123322;
+  background: #aa8d58;
   transform: translateY(-1px);
 }
 
@@ -1619,9 +1619,9 @@
 }
 
 .BashayerFloorPlans-module__9s47uG__zoomBtn:hover {
-  color: #1a4731;
+  color: #BFA16A;
   background: #f4f0eb;
-  border-color: #1a4731;
+  border-color: #BFA16A;
 }
 
 .BashayerFloorPlans-module__9s47uG__imageCol {
@@ -1758,7 +1758,7 @@
 }
 
 .BashayerArticle-module__8IGG3W__checkIcon {
-  color: #1a4731;
+  color: #BFA16A;
   flex-shrink: 0;
   margin-top: 3px;
 }
@@ -1778,7 +1778,7 @@
 }
 
 .BashayerArticle-module__8IGG3W__paragraph a:hover {
-  color: var(--color-primary, #1a4731);
+  color: var(--color-primary, #BFA16A);
 }
 
 .BashayerArticle-module__8IGG3W__tableWrapper {
@@ -1878,8 +1878,8 @@
 
 .BashayerPaymentPlan-module__l_jaHq__toggleActive {
   color: #fff;
-  background: #1a4731;
-  box-shadow: 0 2px 8px #1a47314d;
+  background: #BFA16A;
+  box-shadow: 0 2px 8px #BFA16A4d;
 }
 
 .BashayerPaymentPlan-module__l_jaHq__tableCard {
@@ -1897,7 +1897,7 @@
 
 .BashayerPaymentPlan-module__l_jaHq__planTable th {
   text-align: left;
-  color: #1a4731;
+  color: #BFA16A;
   text-transform: uppercase;
   letter-spacing: .5px;
   background: #f8fafc;
@@ -1919,7 +1919,7 @@
 }
 
 .BashayerPaymentPlan-module__l_jaHq__percentageCol {
-  color: #1a4731;
+  color: #BFA16A;
   font-weight: 700;
 }
 
@@ -1939,9 +1939,9 @@
 }
 
 .BashayerPaymentPlan-module__l_jaHq__gridCard:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px #1a47311f;
+  box-shadow: 0 8px 24px #BFA16A1f;
 }
 
 .BashayerPaymentPlan-module__l_jaHq__percentNum {
@@ -1954,7 +1954,7 @@
 }
 
 .BashayerPaymentPlan-module__l_jaHq__installmentTitle {
-  color: #1a4731;
+  color: #BFA16A;
   text-transform: uppercase;
   margin: 0 0 6px;
   font-size: 14.5px;
@@ -2031,9 +2031,9 @@
 }
 
 .BashayerPaymentMethods-module__d5EDbq__paymentCard:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px #1a47311f;
+  box-shadow: 0 8px 24px #BFA16A1f;
 }
 
 .BashayerPaymentMethods-module__d5EDbq__iconWrapper {
@@ -2426,7 +2426,7 @@
 }
 
 .BashayerFaq-module__ZBVFYq__faqItem:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
 }
 
 .BashayerFaq-module__ZBVFYq__questionBtn {
@@ -2446,7 +2446,7 @@
 }
 
 .BashayerFaq-module__ZBVFYq__icon {
-  color: #1a4731;
+  color: #BFA16A;
   flex-shrink: 0;
   transition: transform .25s;
 }
@@ -2552,7 +2552,7 @@
 
 .BashayerContact-module__dOSqya__cardTitleSmall {
   letter-spacing: 2px;
-  color: #1a4731;
+  color: #BFA16A;
   text-align: center;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -2587,8 +2587,8 @@
 
 .BashayerContact-module__dOSqya__inputField:focus {
   background: #fff;
-  border-color: #1a4731;
-  box-shadow: 0 0 0 3px #1a473126;
+  border-color: #BFA16A;
+  box-shadow: 0 0 0 3px #BFA16A26;
 }
 
 .BashayerContact-module__dOSqya__submitBtn {
@@ -2596,7 +2596,7 @@
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border: none;
   border-radius: 6px;
   width: 100%;
@@ -2605,13 +2605,13 @@
   font-size: 15px;
   font-weight: 700;
   transition: all .25s;
-  box-shadow: 0 3px 12px #1a473159;
+  box-shadow: 0 3px 12px #BFA16A59;
 }
 
 .BashayerContact-module__dOSqya__submitBtn:hover {
-  background-color: #123322;
+  background-color: #aa8d58;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px #1a473173;
+  box-shadow: 0 6px 18px #BFA16A73;
 }
 
 .BashayerContact-module__dOSqya__successMessage {
@@ -2727,7 +2727,7 @@
 }
 
 .Footer-module__S6Hkya__linkItem:hover {
-  color: #1a4731;
+  color: #BFA16A;
   transform: translateX(3px);
 }
 
@@ -2751,7 +2751,7 @@
 }
 
 .Footer-module__S6Hkya__contactLink:hover {
-  color: #1a4731;
+  color: #BFA16A;
 }
 
 .Footer-module__S6Hkya__contactItemStatic {
@@ -2849,7 +2849,7 @@
 .ScrollToTop-module__bPaVnG__scrollTopBtn:hover {
   background: var(--color-primary-hover);
   transform: translateY(-3px)scale(1.05);
-  box-shadow: 0 6px 20px #1a473173;
+  box-shadow: 0 6px 20px #BFA16A73;
 }
 
 /* [project]/src/components/ListPropertyModal.module.css [app-client] (css) */
@@ -3083,7 +3083,7 @@
 
 .BashayerBrochureModal-module__uT98ua__titleSmall {
   letter-spacing: 2px;
-  color: #1a4731;
+  color: #BFA16A;
   text-align: center;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -3117,8 +3117,8 @@
 
 .BashayerBrochureModal-module__uT98ua__inputField:focus {
   background: #fff;
-  border-color: #1a4731;
-  box-shadow: 0 0 0 3px #1a473126;
+  border-color: #BFA16A;
+  box-shadow: 0 0 0 3px #BFA16A26;
 }
 
 .BashayerBrochureModal-module__uT98ua__submitBtn {
@@ -3126,7 +3126,7 @@
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border: none;
   border-radius: 6px;
   width: 100%;
@@ -3138,7 +3138,7 @@
 }
 
 .BashayerBrochureModal-module__uT98ua__submitBtn:hover {
-  background-color: #123322;
+  background-color: #aa8d58;
   transform: translateY(-1px);
 }
 

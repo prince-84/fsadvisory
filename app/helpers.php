@@ -150,9 +150,18 @@ if (! function_exists('page_section')) {
         try {
             $page = page_data($pageSlug);
             if ($page) {
-                $val = $page->sectionField($sectionKey, $fieldKey);
-                if ($val !== null && $val !== '') {
-                    return $val;
+                $sec = $page->section($sectionKey);
+                if ($sec && $sec->is_active) {
+                    $content = $sec->content ?? [];
+                    if (is_array($content) && array_key_exists($fieldKey, $content)) {
+                        $val = $content[$fieldKey];
+                        if ($val !== null && $val !== '') {
+                            return $val;
+                        }
+                        if ($val === '' && (is_string($default) || $default === null)) {
+                            return '';
+                        }
+                    }
                 }
             }
         } catch (\Throwable $e) {
@@ -282,7 +291,8 @@ if (! function_exists('get_navbar_items')) {
                     return collect();
                 }
 
-                $dbProjects = $query->orderBy('order', 'asc')->get();
+                // Latest 5 projects (ordered by id desc so newly added project always appears at the top)
+                $dbProjects = $query->orderBy('id', 'desc')->take(10)->get();
 
                 foreach ($dbProjects as $dp) {
                     $pSlug = trim($dp->slug ?: ($dp->page->slug ?? ''), '/');
@@ -323,13 +333,13 @@ if (! function_exists('get_navbar_items')) {
                 return false;
             }
             return true;
-        })->values();
+        })->values()->take(5);
     }
 }
 
 if (! function_exists('get_navbar_projects')) {
     /**
-     * Retrieve active projects for the Projects navbar dropdown,
+     * Retrieve latest 5 active projects for the Projects navbar dropdown,
      * strictly excluding the currently viewed property/page.
      */
     function get_navbar_projects(?string $currentSlug = null, $currentPageId = null): \Illuminate\Support\Collection
@@ -340,12 +350,71 @@ if (! function_exists('get_navbar_projects')) {
 
 if (! function_exists('get_navbar_commercial')) {
     /**
-     * Retrieve active commercial properties for the Commercial navbar dropdown,
+     * Retrieve latest 5 active commercial properties for the Commercial navbar dropdown,
      * strictly excluding the currently viewed property/page.
      */
     function get_navbar_commercial(?string $currentSlug = null, $currentPageId = null): \Illuminate\Support\Collection
     {
         return get_navbar_items('commercial', $currentSlug, $currentPageId);
+    }
+}
+
+if (! function_exists('get_navbar_developers')) {
+    /**
+     * Retrieve latest 5 active developers for the Developers navbar dropdown,
+     * strictly excluding the currently viewed developer page.
+     */
+    function get_navbar_developers(?string $currentSlug = null): \Illuminate\Support\Collection
+    {
+        $items = collect();
+
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('developers')) {
+                $query = \App\Models\Developer::where('is_active', true)
+                    ->where(function ($q) {
+                        $q->whereNull('status')->orWhere('status', '!=', 'draft');
+                    })
+                    ->orderBy('id', 'desc')
+                    ->take(10);
+
+                $dbDevelopers = $query->get();
+
+                foreach ($dbDevelopers as $dev) {
+                    $dSlug = trim($dev->slug, '/');
+                    $cleanSlug = ltrim(preg_replace('#^developer/#', '', $dSlug), '/');
+                    if (empty($cleanSlug)) continue;
+                    $url = '/developer/' . $cleanSlug;
+                    $items->push((object)[
+                        'id' => $dev->id,
+                        'title' => $dev->name,
+                        'name' => $dev->name,
+                        'slug' => $cleanSlug,
+                        'url' => $url,
+                        'type' => 'developer',
+                    ]);
+                }
+            }
+        } catch (\Throwable $e) {
+            // ignore
+        }
+
+        $reqSlug = trim(request()->path(), '/');
+        $cleanReqSlug = ltrim(preg_replace('#^developer/#', '', $reqSlug), '/');
+        $cleanParamSlug = ltrim(preg_replace('#^developer/#', '', trim((string)$currentSlug, '/')), '/');
+        $rawExclude = [
+            trim((string)$currentSlug, '/'),
+            $cleanParamSlug,
+            $reqSlug,
+            $cleanReqSlug,
+        ];
+        $excludeSlugs = array_values(array_unique(array_filter($rawExclude, fn($s) => $s !== '' && $s !== '/')));
+
+        return $items->filter(function ($item) use ($excludeSlugs) {
+            if (in_array(trim($item->slug, '/'), $excludeSlugs, true)) {
+                return false;
+            }
+            return true;
+        })->values()->take(5);
     }
 }
 

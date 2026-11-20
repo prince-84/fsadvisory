@@ -18,7 +18,7 @@
         text-decoration: none;
     }
     .cms-action-btn:hover {
-        color: #1a4731;
+        color: #BFA16A;
         background-color: #f1f5f9;
         transform: translateY(-1px);
     }
@@ -117,14 +117,14 @@
 
     /* Active Tab (Screenshot 1 Style: soft light blue pill with chevron) */
     .adm-edit-layout > .adm-tabs .adm-tab.is-active {
-        background: #f0f9ff !important;
-        color: #0284c7 !important;
+        background: #faf6f0 !important;
+        color: #BFA16A !important;
         font-weight: 600 !important;
         border-radius: 10px !important;
     }
 
     .adm-edit-layout > .adm-tabs .adm-tab.is-active svg {
-        stroke: #0284c7 !important;
+        stroke: #BFA16A !important;
     }
 
     .adm-edit-layout > .adm-tabs .adm-tab.is-active::after {
@@ -135,8 +135,8 @@
         transform: translateY(-50%) rotate(45deg);
         width: 6px;
         height: 6px;
-        border-top: 2px solid #0284c7;
-        border-right: 2px solid #0284c7;
+        border-top: 2px solid #BFA16A;
+        border-right: 2px solid #BFA16A;
     }
 
     /* Right Form Area */
@@ -233,9 +233,9 @@
     .adm-edit-layout .adm-textarea:focus,
     .adm-edit-layout .adm-select:focus {
         background: #ffffff !important;
-        border-color: #0284c7 !important;
+        border-color: #BFA16A !important;
         outline: none !important;
-        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1) !important;
+        box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.18) !important;
     }
 
     .adm-edit-layout .adm-field {
@@ -303,12 +303,12 @@
         <!-- Top URL Card Banner matching Screenshot 1 -->
         <div style="background:#ffffff; border-radius:14px; border:1px solid #f1f5f9; box-shadow:0 1px 3px rgba(0,0,0,0.03); padding:14px 20px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center; gap:12px; font-size:14px;">
             <div style="display:flex; align-items:center; gap:10px;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#BFA16A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
                     <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                     <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                 </svg>
                 <span style="font-weight:600; color:#475569;">Page URL:</span>
-                <span style="color:#0284c7; font-weight:500;">{{ url('/') }}/<strong id="slugLivePreview" style="color:#0284c7;">new-property</strong></span>
+                <span style="color:#BFA16A; font-weight:500;">{{ url('/') }}/<strong id="slugLivePreview" style="color:#BFA16A;">new-property</strong></span>
             </div>
             <button type="button" onclick="toggleAddCardForm()" style="background: none; border: none; font-size: 22px; line-height: 1; color: #94a3b8; cursor: pointer; padding: 0 4px;" title="Close">&times;</button>
         </div>
@@ -445,7 +445,7 @@
                         <!-- Navbar Dropdown Options -->
                         <div class="adm-field" style="margin-bottom: 20px; padding: 14px 18px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
                             <div style="font-weight: 700; color: #1e293b; font-size: 13.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a4731" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#BFA16A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="3" y1="12" x2="21" y2="12"></line>
                                     <line x1="3" y1="6" x2="21" y2="6"></line>
                                     <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -454,11 +454,11 @@
                             </div>
                             <div style="display: flex; gap: 24px; flex-wrap: wrap;">
                                 <label class="adm-check" style="cursor: pointer; display: flex; align-items: center; gap: 8px; margin: 0; user-select: none;">
-                                    <input type="checkbox" name="show_in_projects" value="1" id="add_prop_show_in_projects" checked style="width: 17px; height: 17px; accent-color: #1a4731; cursor: pointer;">
+                                    <input type="checkbox" name="show_in_projects" value="1" id="add_prop_show_in_projects" checked style="width: 17px; height: 17px; accent-color: #BFA16A; cursor: pointer;">
                                     <span style="font-weight: 600; color: #334155; font-size: 13px;">Show in Projects Dropdown</span>
                                 </label>
                                 <label class="adm-check" style="cursor: pointer; display: flex; align-items: center; gap: 8px; margin: 0; user-select: none;">
-                                    <input type="checkbox" name="show_in_commercial" value="1" id="add_prop_show_in_commercial" style="width: 17px; height: 17px; accent-color: #1a4731; cursor: pointer;">
+                                    <input type="checkbox" name="show_in_commercial" value="1" id="add_prop_show_in_commercial" style="width: 17px; height: 17px; accent-color: #BFA16A; cursor: pointer;">
                                     <span style="font-weight: 600; color: #334155; font-size: 13px;">Show in Commercial Dropdown</span>
                                 </label>
                             </div>
@@ -470,19 +470,20 @@
                         <!-- Neighbourhood / Community -->
                         <div class="adm-field" style="margin-bottom: 20px;">
                             <label class="adm-label">Neighbourhood/Community <span style="font-weight: 400; color: #64748b; font-size: 12px;">(Select Community)</span></label>
-                            <select name="location" id="add_prop_location" class="adm-select" style="background: #ffffff; cursor: pointer;">
+                            <select name="community_id" id="add_prop_community_id" class="adm-select" style="background: #ffffff; cursor: pointer;" onchange="syncAddPropLocation(this)">
                                 <option value="">-- Select Neighbourhood/Community --</option>
                                 @forelse($communities ?? [] as $comm)
                                     @php
                                         $locValue = $comm->name . ($comm->city ? ', ' . $comm->city->name : '');
                                     @endphp
-                                    <option value="{{ $locValue }}">
+                                    <option value="{{ $comm->id }}" data-location="{{ $locValue }}">
                                         {{ $locValue }}
                                     </option>
                                 @empty
                                     <option value="" disabled>No communities found. Please add a community from sidebar first.</option>
                                 @endforelse
                             </select>
+                            <input type="hidden" name="location" id="add_prop_location" value="">
                         </div>
 
                         <!-- Developer -->
@@ -505,7 +506,7 @@
                         <div class="adm-field" style="margin-bottom: 22px;">
                             <label class="adm-label" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
                                 <span style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: #1e293b;">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a4731" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#BFA16A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                                         <line x1="7" y1="7" x2="7.01" y2="7"></line>
                                     </svg>
@@ -557,11 +558,11 @@
                         <!-- Page Nav & Publish Options -->
                         <div style="display: flex; gap: 24px; align-items: center; margin-top: 18px; padding-top: 14px; border-top: 1px solid #f1f5f9;">
                             <label style="display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: #334155; cursor: pointer;">
-                                <input type="checkbox" name="in_navbar" value="1" checked style="width: 16px; height: 16px; accent-color: #1a4731;">
+                                <input type="checkbox" name="in_navbar" value="1" checked style="width: 16px; height: 16px; accent-color: #BFA16A;">
                                 <strong>Show in Navigation Menu</strong>
                             </label>
                             <label style="display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: #334155; cursor: pointer;">
-                                <input type="checkbox" name="is_published" value="1" checked style="width: 16px; height: 16px; accent-color: #1a4731;">
+                                <input type="checkbox" name="is_published" value="1" checked style="width: 16px; height: 16px; accent-color: #BFA16A;">
                                 <strong>Published (Publicly accessible)</strong>
                             </label>
                         </div>
@@ -586,7 +587,7 @@
                                         <input type="file" name="section_files[hero][bg_image]" accept="image/*" class="adm-input" onchange="previewAddImage(this, 'preview_add_hero_img', 'input_add_hero_img')">
                                     </div>
                                     <input type="text" name="sections[hero][bg_image]" id="input_add_hero_img" value="" class="adm-input" placeholder="Or enter image path / URL (e.g. /images/hero/slide-1.jpg)" oninput="document.getElementById('preview_add_hero_img').src = this.value || '/images/placeholder.svg'">
-                                    <div class="adm-help" style="color: #1a4731; font-weight: 600;">✓ Jo image yahan Hero Banner pr upload/set hogi, wahi image Property Card pr bhi automatically lag jayegi.</div>
+                                    <div class="adm-help" style="color: #BFA16A; font-weight: 600;">✓ Hero banner image will automatically sync with the property card.</div>
                                 </div>
                             </div>
                         </div>
@@ -633,7 +634,7 @@
                                     <span class="adm-hl-icon-preview" style="width: 32px; height: 32px; border-radius: 6px; background: #fff; border: 1px solid #cbd5e1; display: none; align-items: center; justify-content: center; flex-shrink: 0;">
                                         <img src="" style="width: 20px; height: 20px; object-fit: contain;">
                                     </span>
-                                    <select class="adm-select add-hl-select" name="sections[highlights][items][0][label]" onchange="applyAddHighlightChoice(this)" style="font-size: 11.5px; padding: 5px 8px; border-radius: 6px; background: #f0f9ff; border-color: #bae6fd; width: 100%;">
+                                    <select class="adm-select add-hl-select" name="sections[highlights][items][0][label]" onchange="applyAddHighlightChoice(this)" style="font-size: 11.5px; padding: 5px 8px; border-radius: 6px; background: #faf6f0; border-color: #bae6fd; width: 100%;">
                                         <option value="">-- Choose Amenity --</option>
                                         @if(isset($allAmenities) && $allAmenities->isNotEmpty())
                                             @foreach($allAmenities as $am)
@@ -651,7 +652,7 @@
                                     <span class="adm-hl-icon-preview" style="width: 32px; height: 32px; border-radius: 6px; background: #fff; border: 1px solid #cbd5e1; display: none; align-items: center; justify-content: center; flex-shrink: 0;">
                                         <img src="" style="width: 20px; height: 20px; object-fit: contain;">
                                     </span>
-                                    <select class="adm-select add-hl-select" name="sections[highlights][items][1][label]" onchange="applyAddHighlightChoice(this)" style="font-size: 11.5px; padding: 5px 8px; border-radius: 6px; background: #f0f9ff; border-color: #bae6fd; width: 100%;">
+                                    <select class="adm-select add-hl-select" name="sections[highlights][items][1][label]" onchange="applyAddHighlightChoice(this)" style="font-size: 11.5px; padding: 5px 8px; border-radius: 6px; background: #faf6f0; border-color: #bae6fd; width: 100%;">
                                         <option value="">-- Choose Amenity --</option>
                                         @if(isset($allAmenities) && $allAmenities->isNotEmpty())
                                             @foreach($allAmenities as $am)
@@ -732,7 +733,7 @@
                                     <div class="adm-am-icon-wrap" style="width: 36px; height: 36px; border-radius: 6px; background: #faf8f5; border: 1px solid #cbd5e1; display: none; align-items: center; justify-content: center; flex-shrink: 0;">
                                         <img src="" style="width: 22px; height: 22px; object-fit: contain;">
                                     </div>
-                                    <select class="adm-select add-amenity-select" name="sections[amenities][items][0][name]" onchange="applyProjectAmenity(this)" style="flex: 1; min-width: 120px; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 6px; background: #f0f9ff; border-color: #bae6fd;">
+                                    <select class="adm-select add-amenity-select" name="sections[amenities][items][0][name]" onchange="applyProjectAmenity(this)" style="flex: 1; min-width: 120px; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 6px; background: #faf6f0; border-color: #bae6fd;">
                                         <option value="">-- Choose Amenity --</option>
                                         @if(isset($allAmenities))
                                             @foreach($allAmenities as $am)
@@ -802,7 +803,7 @@
                         <div class="adm-field">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
                                 <label class="adm-label" style="margin-bottom: 0;">Page Article &amp; Community Body (Headings, Paragraphs, Images)</label>
-                                <label for="proj_add_content_file_btn" class="adm-btn" onmousedown="$('#add_content_wysiwyg').summernote('saveRange'); window.currentActiveSummernote = $('#add_content_wysiwyg');" style="background: #1a4731; color: #ffffff; padding: 6px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                <label for="proj_add_content_file_btn" class="adm-btn" onmousedown="$('#add_content_wysiwyg').summernote('saveRange'); window.currentActiveSummernote = $('#add_content_wysiwyg');" style="background: #BFA16A; color: #ffffff; padding: 6px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                                     Choose File &amp; Insert Image
                                 </label>
@@ -1038,7 +1039,7 @@
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <button type="button" class="adm-btn adm-btn-secondary" onclick="toggleAddCardForm()" style="padding: 9px 18px; border-radius: 8px; font-size: 13px;">Cancel</button>
-                    <button type="submit" class="adm-btn adm-btn-primary" style="background: #1a4731; border-color: #1a4731; color: #fff; padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 13.5px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 6px rgba(26,71,49,0.2);">
+                    <button type="submit" class="adm-btn adm-btn-primary" style="background: #BFA16A; border-color: #BFA16A; color: #fff; padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 13.5px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 6px rgba(26,71,49,0.2);">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                         Save Changes
                     </button>
@@ -1082,7 +1083,7 @@
                                 {{ $loop->iteration }}
                             </td>
                             <td style="padding:16px 12px; font-size:14.5px; color:#334155; font-weight:500;">
-                                <a href="{{ route('admin.projects.edit', $project) }}" style="font-weight:600; color:#1e293b; text-decoration:none;" onmouseover="this.style.color='#0284c7'" onmouseout="this.style.color='#1e293b'">{{ $project->title }}</a>
+                                <a href="{{ route('admin.projects.edit', $project) }}" style="font-weight:600; color:#1e293b; text-decoration:none;" onmouseover="this.style.color='#BFA16A'" onmouseout="this.style.color='#1e293b'">{{ $project->title }}</a>
                                 <span style="font-size:12px; color:#94a3b8; display:block; margin-top:3px; font-family:Consolas, Monaco, monospace;">
                                     /project/{{ ltrim(preg_replace('#^project/#', '', ltrim($project->page->slug ?? $project->slug ?? '', '/')), '/') }}
                                 </span>
@@ -1251,11 +1252,11 @@
                     </div>
                     <div style="display: flex; gap: 24px; flex-wrap: wrap;">
                         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: 600; color: #334155;">
-                            <input type="checkbox" name="show_in_projects" id="edit_show_in_projects" value="1" style="width: 16px; height: 16px; accent-color: #1a4731; cursor: pointer;">
+                            <input type="checkbox" name="show_in_projects" id="edit_show_in_projects" value="1" style="width: 16px; height: 16px; accent-color: #BFA16A; cursor: pointer;">
                             Show in Projects Dropdown
                         </label>
                         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: 600; color: #334155;">
-                            <input type="checkbox" name="show_in_commercial" id="edit_show_in_commercial" value="1" style="width: 16px; height: 16px; accent-color: #1a4731; cursor: pointer;">
+                            <input type="checkbox" name="show_in_commercial" id="edit_show_in_commercial" value="1" style="width: 16px; height: 16px; accent-color: #BFA16A; cursor: pointer;">
                             Show in Commercial Dropdown
                         </label>
                     </div>
@@ -1266,7 +1267,7 @@
                 <div style="grid-column: span 2; margin-top: 4px;">
                     <label style="display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; font-weight: 700; color: #1e293b; margin-bottom: 6px; text-transform: uppercase;">
                         <span style="display: flex; align-items: center; gap: 6px;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a4731" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BFA16A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                                 <line x1="7" y1="7" x2="7.01" y2="7"></line>
                             </svg>
@@ -1449,7 +1450,7 @@
                 <span class="adm-hl-icon-preview" style="width: 32px; height: 32px; border-radius: 6px; background: #fff; border: 1px solid #cbd5e1; display: none; align-items: center; justify-content: center; flex-shrink: 0;">
                     <img src="" style="width: 20px; height: 20px; object-fit: contain;">
                 </span>
-                <select class="adm-select add-hl-select" name="sections[highlights][items][${newId}][label]" onchange="applyAddHighlightChoice(this)" style="font-size: 11.5px; padding: 5px 8px; border-radius: 6px; background: #f0f9ff; border-color: #bae6fd; width: 100%;">
+                <select class="adm-select add-hl-select" name="sections[highlights][items][${newId}][label]" onchange="applyAddHighlightChoice(this)" style="font-size: 11.5px; padding: 5px 8px; border-radius: 6px; background: #faf6f0; border-color: #bae6fd; width: 100%;">
                     <option value="">-- Choose Amenity --</option>
                     ${amenitiesOptHtml}
                 </select>
@@ -1517,7 +1518,7 @@
                 <div class="adm-am-icon-wrap" style="width: 36px; height: 36px; border-radius: 6px; background: #faf8f5; border: 1px solid #cbd5e1; display: none; align-items: center; justify-content: center; flex-shrink: 0;">
                     <img src="" style="width: 22px; height: 22px; object-fit: contain;">
                 </div>
-                <select class="adm-select add-amenity-select" name="sections[amenities][items][${idx}][name]" onchange="applyProjectAmenity(this)" style="flex: 1; min-width: 120px; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 6px; background: #f0f9ff; border-color: #bae6fd;">
+                <select class="adm-select add-amenity-select" name="sections[amenities][items][${idx}][name]" onchange="applyProjectAmenity(this)" style="flex: 1; min-width: 120px; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 6px; background: #faf6f0; border-color: #bae6fd;">
                     ${amenitiesOptions}
                 </select>
                 <input type="hidden" name="sections[amenities][items][${idx}][icon]" value="">
@@ -1879,7 +1880,7 @@
     const ATTR_STYLES = {
         'New':      { bg: '#ecfdf5', border: '#a7f3d0', text: '#065f46', activeBg: '#059669' },
         'Offer':    { bg: '#fffbeb', border: '#fde68a', text: '#92400e', activeBg: '#d97706' },
-        'Off plan': { bg: '#f1f5f9', border: '#cbd5e1', text: '#334155', activeBg: '#1a4731' },
+        'Off plan': { bg: '#f1f5f9', border: '#cbd5e1', text: '#334155', activeBg: '#BFA16A' },
         'Ready':    { bg: '#eff6ff', border: '#bfdbfe', text: '#1e40af', activeBg: '#2563eb' }
     };
 
@@ -1948,7 +1949,7 @@
         }
 
         createSelectedBadgeEl(attr, idx) {
-            const styleConf = ATTR_STYLES[attr] || { activeBg: '#1a4731' };
+            const styleConf = ATTR_STYLES[attr] || { activeBg: '#BFA16A' };
             const el = document.createElement('div');
             el.className = 'draggable-badge is-selected';
             el.draggable = true;
@@ -2027,7 +2028,7 @@
     function handleBadgeDragOver(e) {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
-        e.currentTarget.style.borderColor = '#1a4731';
+        e.currentTarget.style.borderColor = '#BFA16A';
         e.currentTarget.style.background = '#f0fdf4';
     }
 
@@ -2077,6 +2078,13 @@
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
         window.addBadgeManager = new BadgeManager('add', ['Off plan']);
         window.editBadgeManager = new BadgeManager('edit', []);
+    }
+
+    // Sync location hidden field when community selected
+    function syncAddPropLocation(sel) {
+        const opt = sel.options[sel.selectedIndex];
+        const locField = document.getElementById('add_prop_location');
+        if (locField) locField.value = opt ? (opt.getAttribute('data-location') || '') : '';
     }
 </script>
 @endsection

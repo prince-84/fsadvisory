@@ -33,15 +33,31 @@ class CommunityController extends Controller
     }
 
     /**
+     * Show form for creating a new Neighbourhood / Community.
+     */
+    public function create()
+    {
+        $cities = City::where('is_active', true)->orderBy('name', 'asc')->get();
+        $assignedProjects = collect();
+        return view('admin.communities.create', compact('cities', 'assignedProjects'));
+    }
+
+    /**
      * Store a newly created Neighbourhood / Community and its linked Detail Page.
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'city_id'     => ['nullable', 'exists:cities,id'],
-            'slug'        => ['nullable', 'string', 'max:255'],
-            'status'      => ['nullable', 'string', 'in:publish,draft,sold_out'],
+            'name'          => ['required', 'string', 'max:255'],
+            'city_id'       => ['nullable', 'exists:cities,id'],
+            'slug'          => ['nullable', 'string', 'max:255'],
+            'status'        => ['nullable', 'string', 'in:publish,draft,sold_out'],
+            'h1'            => ['nullable', 'string', 'max:255'],
+            'tagline'       => ['nullable', 'string', 'max:255'],
+            'short_content' => ['nullable', 'string'],
+            'full_content'  => ['nullable', 'string'],
+            'cover_image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:15360'],
+            'faqs'          => ['nullable', 'array'],
         ]);
 
         $name = trim($validated['name']);
@@ -52,15 +68,24 @@ class CommunityController extends Controller
         $cleanRawSlug = ltrim(preg_replace('#^area/#', '', ltrim($rawSlug, '/')), '/');
         $slug = Str::slug($cleanRawSlug ?: $name);
 
-        $status = $request->input('status', 'publish');
+        $status = $request->input('status', 'draft');
         if (!in_array($status, ['publish', 'draft', 'sold_out'])) {
-            $status = 'publish';
+            $status = 'draft';
         }
         $isActive = ($status !== 'draft');
 
-        // Hero Background Image Handling
+        // Cover / Hero Background Image Handling
         $heroBgImage = '';
-        if ($request->hasFile('hero_image_file')) {
+        if ($request->hasFile('cover_image_file')) {
+            $file = $request->file('cover_image_file');
+            $uploadDir = public_path('images/communities');
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            $filename = time() . '_cover_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadDir, $filename);
+            $heroBgImage = '/images/communities/' . $filename;
+        } elseif ($request->hasFile('hero_image_file')) {
             $file = $request->file('hero_image_file');
             $uploadDir = public_path('images/communities');
             if (!file_exists($uploadDir)) {
@@ -234,21 +259,40 @@ class CommunityController extends Controller
             $contactSec->update(['content' => $ctContent]);
         }
 
+        // Handle FAQs
+        $faqs = [];
+        if ($request->has('faqs') && is_array($request->input('faqs'))) {
+            foreach ($request->input('faqs') as $faq) {
+                $q = trim($faq['question'] ?? ($faq['q'] ?? ''));
+                $a = trim($faq['answer'] ?? ($faq['a'] ?? ''));
+                if ($q !== '') {
+                    $faqs[] = ['question' => $q, 'answer' => $a];
+                }
+            }
+        }
+
         // 4. Create Community record
         $community = Community::create([
-            'city_id'   => $cityId,
-            'name'      => $name,
-            'slug'      => $uniqueSlug,
-            'page_id'   => $page->id,
-            'image'     => $heroBgImage,
-            'status'    => $status,
-            'order'     => ((int) Community::max('order')) + 1,
-            'is_active' => $isActive,
+            'city_id'           => $cityId,
+            'name'              => $name,
+            'slug'              => $uniqueSlug,
+            'page_id'           => $page->id,
+            'image'             => $heroBgImage,
+            'status'            => $status,
+            'order'             => ((int) Community::max('order')) + 1,
+            'is_active'         => $isActive,
+            'h1'                => $request->input('h1'),
+            'tagline'           => $request->input('tagline'),
+            'short_content'     => $request->input('short_content'),
+            'full_content'      => $request->input('full_content'),
+            'faq_heading'       => $request->input('faq_heading'),
+            'faq_subtitle'      => $request->input('faq_subtitle'),
+            'faqs'              => $faqs,
+            'featured_projects' => array_values(array_filter(array_map('intval', (array)$request->input('featured_projects', [])))),
         ]);
 
-        $activeTab = $request->input('active_tab', 'general');
-        return redirect()->route('admin.communities.edit', ['community' => $community->id, 'tab' => $activeTab])
-            ->with('success', "Neighbourhood/Community '{$name}' created successfully! Changes are saved.");
+        return redirect()->route('admin.communities.index')
+            ->with('success', "Neighbourhood/Community '{$name}' created successfully!");
     }
 
     /**
@@ -266,7 +310,13 @@ class CommunityController extends Controller
         $allProjects = Project::with('page')->orderBy('order', 'asc')->get();
         $cities = City::where('is_active', true)->orderBy('name', 'asc')->get();
 
-        return view('admin.communities.edit', compact('community', 'page', 'sections', 'selectedProjectIds', 'faqItems', 'allProjects', 'cities'));
+        // Projects assigned to this community via community_id (selected from dropdown)
+        $assignedProjects = Project::where('community_id', $community->id)
+            ->orderBy('order', 'asc')
+            ->orderBy('title', 'asc')
+            ->get();
+
+        return view('admin.communities.edit', compact('community', 'page', 'sections', 'selectedProjectIds', 'faqItems', 'allProjects', 'cities', 'assignedProjects'));
     }
 
     /**
@@ -275,10 +325,16 @@ class CommunityController extends Controller
     public function update(Request $request, Community $community)
     {
         $validated = $request->validate([
-            'name'    => ['required', 'string', 'max:255'],
-            'city_id' => ['nullable', 'exists:cities,id'],
-            'slug'    => ['nullable', 'string', 'max:255'],
-            'status'  => ['nullable', 'string', 'in:publish,draft,sold_out'],
+            'name'          => ['required', 'string', 'max:255'],
+            'city_id'       => ['nullable', 'exists:cities,id'],
+            'slug'          => ['nullable', 'string', 'max:255'],
+            'status'        => ['nullable', 'string', 'in:publish,draft,sold_out'],
+            'h1'            => ['nullable', 'string', 'max:255'],
+            'tagline'       => ['nullable', 'string', 'max:255'],
+            'short_content' => ['nullable', 'string'],
+            'full_content'  => ['nullable', 'string'],
+            'cover_image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:15360'],
+            'faqs'          => ['nullable', 'array'],
         ]);
 
         $name = trim($validated['name']);
@@ -289,9 +345,9 @@ class CommunityController extends Controller
         $cleanRawSlug = ltrim(preg_replace('#^area/#', '', ltrim($rawSlug, '/')), '/');
         $slug = Str::slug($cleanRawSlug ?: $name);
 
-        $status = $request->input('status', 'publish');
+        $status = $request->input('status', 'draft');
         if (!in_array($status, ['publish', 'draft', 'sold_out'])) {
-            $status = 'publish';
+            $status = 'draft';
         }
         $isActive = ($status !== 'draft');
 
@@ -302,12 +358,55 @@ class CommunityController extends Controller
         }
 
         // Update Community
+        // Handle cover image
+        $coverImage = $community->image;
+        if ($request->hasFile('cover_image_file')) {
+            $file = $request->file('cover_image_file');
+            $uploadDir = public_path('images/communities');
+            if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
+            $filename = time() . '_cover_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadDir, $filename);
+            $coverImage = '/images/communities/' . $filename;
+        }
+
+        // Handle FAQs
+        $faqs = [];
+        if ($request->has('faqs') && is_array($request->input('faqs'))) {
+            foreach ($request->input('faqs') as $faq) {
+                $q = trim($faq['question'] ?? ($faq['q'] ?? ''));
+                $a = trim($faq['answer'] ?? ($faq['a'] ?? ''));
+                if ($q !== '') {
+                    $faqs[] = ['question' => $q, 'answer' => $a];
+                }
+            }
+        }
+
+        // Handle Featured Projects
+        $featProjs = $request->input('featured_projects', []);
+        if (is_string($featProjs)) $featProjs = json_decode($featProjs, true) ?: [];
+        $cleanFeaturedProjs = is_array($featProjs) ? array_values(array_filter(array_map('intval', $featProjs))) : [];
+
         $community->update([
-            'city_id'   => $cityId,
-            'name'      => $name,
-            'slug'      => $slug,
-            'status'    => $status,
-            'is_active' => $isActive,
+            'city_id'           => $cityId,
+            'name'              => $name,
+            'slug'              => $slug,
+            'status'            => $status,
+            'is_active'         => $isActive,
+            'image'             => $coverImage,
+            'h1'                => $request->input('h1'),
+            'tagline'           => $request->input('tagline'),
+            'short_content'     => $request->input('short_content'),
+            'full_content'      => $request->input('full_content'),
+            'faq_heading'       => $request->input('faq_heading'),
+            'faq_subtitle'      => $request->input('faq_subtitle'),
+            'faqs'              => $faqs,
+            'featured_projects' => $cleanFeaturedProjs,
+        ]);
+
+        // Auto sync updated Community Name & City location to all linked projects
+        $freshLocationString = $name . ($cityName ? ', ' . $cityName : '');
+        \App\Models\Project::where('community_id', $community->id)->update([
+            'location' => $freshLocationString
         ]);
 
         // Update Page
@@ -327,7 +426,10 @@ class CommunityController extends Controller
             $heroSec = $page->sections()->where('section_key', 'hero')->first();
             if ($heroSec) {
                 $hContent = $heroSec->content ?? [];
-                if ($request->hasFile('hero_image_file')) {
+                if ($coverImage !== $community->getOriginal('image')) {
+                    $hContent['bg_image'] = $coverImage;
+                    $community->update(['image' => $coverImage]);
+                } elseif ($request->hasFile('hero_image_file')) {
                     $file = $request->file('hero_image_file');
                     $uploadDir = public_path('images/communities');
                     if (!file_exists($uploadDir)) {
@@ -339,8 +441,13 @@ class CommunityController extends Controller
                     $community->update(['image' => '/images/communities/' . $filename]);
                 } else {
                     $bgImg = $request->input('sections.hero.bg_image', '');
-                    $hContent['bg_image'] = $bgImg;
-                    $community->update(['image' => $bgImg ?: null]);
+                    if (!empty($bgImg)) {
+                        $hContent['bg_image'] = $bgImg;
+                        $community->update(['image' => $bgImg]);
+                    } elseif (!empty($coverImage)) {
+                        $hContent['bg_image'] = $coverImage;
+                        $community->update(['image' => $coverImage]);
+                    }
                 }
                 $hContent['title'] = $request->input('sections.hero.title', '');
                 $hContent['subtitle'] = $request->input('sections.hero.subtitle', '');
@@ -366,15 +473,15 @@ class CommunityController extends Controller
             $commSec = $page->sections()->where('section_key', 'communities')->first();
             if ($commSec) {
                 $commContent = $commSec->content ?? [];
-                $commContent['heading'] = $request->input('sections.communities.heading', '');
-                $commContent['subtitle'] = $request->input('sections.communities.subtitle', '');
-                if ($request->has('selected_project_ids')) {
+                $commContent['heading'] = $request->input('sections.communities.heading', '') ?: ($commContent['heading'] ?? 'Featured Projects');
+                $commContent['subtitle'] = $request->input('sections.communities.subtitle', '') ?: ($commContent['subtitle'] ?? '');
+                if ($request->has('featured_projects')) {
+                    $commContent['selected_ids'] = $cleanFeaturedProjs;
+                    $commContent['project_ids'] = $cleanFeaturedProjs;
+                } elseif ($request->has('selected_project_ids')) {
                     $cleanSelectedIds = array_values(array_filter(array_map('intval', (array)$request->input('selected_project_ids'))));
                     $commContent['selected_ids'] = $cleanSelectedIds;
                     $commContent['project_ids'] = $cleanSelectedIds;
-                } else {
-                    $commContent['selected_ids'] = [];
-                    $commContent['project_ids'] = [];
                 }
                 $commSec->update(['content' => $commContent]);
             }
@@ -477,9 +584,9 @@ class CommunityController extends Controller
      */
     public function updateStatus(Request $request, Community $community)
     {
-        $status = $request->input('status', 'publish');
+        $status = $request->input('status', 'draft');
         if (!in_array($status, ['publish', 'draft', 'sold_out'])) {
-            $status = 'publish';
+            $status = 'draft';
         }
         $isActive = ($status !== 'draft');
 

@@ -5,28 +5,11 @@
     $icnLow = strtolower($icn);
     $keyLow = strtolower(trim($key ?? ''));
 @endphp
-@if($icn && (file_exists(public_path(ltrim($icn, '/'))) || str_starts_with($icn, '/uploads/') || str_starts_with($icn, 'http') || str_starts_with($icn, '/images/')))
+@if($icn && (str_starts_with($icn, '/') || str_starts_with($icn, 'http') || file_exists(public_path(ltrim($icn, '/')))))
     @php
-        $localSvgPath = public_path(ltrim(parse_url($icn, PHP_URL_PATH) ?? '', '/'));
-        $inlinedSvg = null;
-        if (str_ends_with(strtolower($localSvgPath), '.svg') && file_exists($localSvgPath)) {
-            $rawSvg = @file_get_contents($localSvgPath);
-            if ($rawSvg) {
-                $clean = preg_replace('/<\?xml.*?\?>/i', '', $rawSvg);
-                $clean = preg_replace('/<!DOCTYPE.*?>/i', '', $clean);
-                if (preg_match('/stroke\s*=\s*["\'][^"\']+["\']/', $clean)) {
-                    $clean = preg_replace('/stroke\s*=\s*["\'][^"\']+["\']/', 'stroke="#ffffff"', $clean);
-                }
-                $clean = preg_replace('/fill\s*=\s*["\'](?!none)[^"\']+["\']/', 'fill="#ffffff"', $clean);
-                $inlinedSvg = preg_replace('/<svg\b([^>]*)>/i', '<svg$1 width="20" height="20" style="width:20px;height:20px;color:#ffffff;stroke:#ffffff;display:block;margin:auto;">', $clean);
-            }
-        }
+        $imgSrc = str_starts_with($icn, 'http') ? $icn : asset(ltrim($icn, '/'));
     @endphp
-    @if($inlinedSvg)
-        {!! $inlinedSvg !!}
-    @else
-        <img src="{{ str_starts_with($icn, 'http') ? $icn : asset(ltrim($icn, '/')) }}" alt="{{ $label ?? 'Icon' }}" style="width:20px;height:20px;max-width:20px;max-height:20px;object-fit:contain;filter:brightness(0) invert(1) !important;-webkit-filter:brightness(0) invert(1) !important;display:block;margin:auto;">
-    @endif
+    <img src="{{ $imgSrc }}" alt="{{ $label ?? 'Icon' }}" style="width: 100%; height: 100%; object-fit: contain; display: block;">
 @elseif($icnLow === 'building')
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#ffffff;display:block;margin:auto;">
         <path d="M3 21h18"/>

@@ -46,9 +46,11 @@ class AppServiceProvider extends ServiceProvider
                 $pageId = $viewData['page']->id ?? null;
                 $view->with('navbarProjects', get_navbar_projects($pageSlug, $pageId));
                 $view->with('navbarCommercial', get_navbar_commercial($pageSlug, $pageId));
+                $view->with('navbarDevelopers', get_navbar_developers($pageSlug));
             } catch (\Throwable $e) {
                 $view->with('navbarProjects', collect());
                 $view->with('navbarCommercial', collect());
+                $view->with('navbarDevelopers', collect());
             }
         });
     }

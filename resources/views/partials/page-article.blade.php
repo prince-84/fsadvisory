@@ -11,7 +11,7 @@
     $apptTitle = page_section('content', 'appt_title', 'BOOK AN APPOINTMENT', $page->slug);
 
     if (!empty(trim($articleSummernote ?? ''))) {
-        $readMoreBtnHtml = '<button type="button" id="readMoreToggleBtn" onclick="toggleArticleReadMore()" class="saimaReadMoreBtn" style="display: inline-flex; align-items: center; vertical-align: baseline; margin-left: 8px; cursor: pointer; color: #1a4731; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; background: none; border: none; padding: 0;"><span id="readMoreLabel">Read More</span> <svg id="readMoreArrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 3px; vertical-align: middle;"><polyline points="6 9 12 15 18 9"></polyline></svg></button>';
+        $readMoreBtnHtml = '<button type="button" id="readMoreToggleBtn" onclick="toggleArticleReadMore()" class="saimaReadMoreBtn" style="display: inline-flex; align-items: center; vertical-align: baseline; margin-left: 8px; cursor: pointer; color: #BFA16A; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; background: none; border: none; padding: 0;"><span id="readMoreLabel">Read More</span> <svg id="readMoreArrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 3px; vertical-align: middle;"><polyline points="6 9 12 15 18 9"></polyline></svg></button>';
 
         $trimmedIntro = rtrim($articleIntro);
         if (str_ends_with($trimmedIntro, '</p>')) {
@@ -160,9 +160,10 @@
     list-style: inherit !important;
     display: list-item !important;
     margin-bottom: 10px !important;
-    font-size: 17px !important;
-    line-height: 1.8 !important;
-    color: #111111 !important;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    font-size: 14.5px !important;
+    line-height: 1.6 !important;
+    color: #2B2B2B !important;
 }
 
 .saimaArticleContentCol p,
@@ -183,26 +184,43 @@
 .saimaSummernoteExpanded i,
 .saimaSummernoteExpanded em,
 .saimaSummernoteExpanded span {
-    color: #111111 !important;
+    color: #2B2B2B !important;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
 }
 
 .saimaArticleContentCol p,
 .saimaSummernoteExpanded p {
-    font-size: 17px !important;
-    line-height: 1.8 !important;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    font-size: 14.5px !important;
+    font-weight: 400 !important;
+    color: #2B2B2B !important;
+    line-height: 1.6 !important;
 }
 
 .saimaArticleContentCol h2,
 .saimaArticleH2,
 .saimaSummernoteExpanded h2 {
-    color: #1a4731 !important;
+    color: #BFA16A !important;
+}
+
+.saimaArticleContentCol a,
+.saimaSummernoteExpanded a {
+    color: #BFA16A !important;
+    text-decoration: underline !important;
+    font-weight: 600 !important;
+    transition: color 0.2s ease !important;
+}
+
+.saimaArticleContentCol a:hover,
+.saimaSummernoteExpanded a:hover {
+    color: #aa8c55 !important;
 }
 
 .saimaReadMoreBtn {
     background: transparent;
     border: none;
     padding: 0;
-    color: #1a4731;
+    color: #BFA16A;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
@@ -266,8 +284,8 @@
 }
 
 .saimaInput:focus {
-    border-color: #1a4731;
-    box-shadow: 0 0 0 3px rgba(26, 71, 49, 0.15);
+    border-color: #BFA16A;
+    box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.15);
 }
 
 .saimaTextarea {
@@ -287,13 +305,13 @@
 }
 
 .saimaTextarea:focus {
-    border-color: #1a4731;
-    box-shadow: 0 0 0 3px rgba(26, 71, 49, 0.15);
+    border-color: #BFA16A;
+    box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.15);
 }
 
 .saimaSubmitBtn {
     width: 100%;
-    background: #1a4731;
+    background: #BFA16A;
     color: #ffffff;
     border: none;
     border-radius: 6px;
@@ -378,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 key_requirement: form.querySelector('textarea[name="comment"]')?.value || '',
                 comment: form.querySelector('textarea[name="comment"]')?.value || '',
                 source: 'Website',
-                sub_source: 'saima project',
+                sub_source: 'fsadvisory.pk',
                 page_url: window.location.href,
                 campaign_url: window.location.href,
                 utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || '',

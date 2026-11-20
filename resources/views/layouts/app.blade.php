@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="theme-color" content="#1a4731">
+    <meta name="theme-color" content="#BFA16A">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @php
     $activePage = page_data();
@@ -45,7 +45,9 @@
     <!-- OpenGraph -->
     <meta property="og:title" content="{{ $pageMetaTitle }}">
     <meta property="og:description" content="{{ $pageMetaDesc }}">
+    <meta property="og:url" content="{{ $pageCanonicalUrl }}">
     <meta property="og:image" content="{{ $pageOgImage }}">
+    <meta property="og:image:secure_url" content="{{ $pageOgImage }}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="FS Real Estate Advisory">
 
@@ -60,51 +62,105 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
-    <link rel="shortcut icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v={{ file_exists(public_path('favicon.ico')) ? filemtime(public_path('favicon.ico')) : time() }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
-    <script>
-        if (!sessionStorage.getItem('saima_favicon_v2')) {
-            fetch('{{ asset("favicon.ico") }}', { cache: 'reload', credentials: 'same-origin' }).catch(function(){});
-            fetch('{{ asset("favicon.png") }}', { cache: 'reload', credentials: 'same-origin' }).catch(function(){});
-            sessionStorage.setItem('saima_favicon_v2', '1');
-        }
-    </script>
+    @include('partials.favicon')
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="{{ asset('css/saima.css') }}?v={{ time() }}">
 
-    <!-- Sitewide Green Theme (All current and new pages) -->
-    <style id="sitewide-green-theme">
+    <!-- Sitewide Brand Theme (#BFA16A Gold & White Navbar) -->
+    <style id="sitewide-gold-theme">
     :root {
-        --color-primary: #1a4731 !important;
-        --color-primary-hover: #123322 !important;
+        --color-primary: #BFA16A !important;
+        --color-primary-hover: #aa8d58 !important;
     }
 
-    /* 1. Header & Navigation */
+    /* 1. Header & Navigation (White Background #FFFFFF) */
+    .header,
+    #siteHeader,
+    header.header,
+    header.sticky-header,
+    header[class*="Header"].sticky-header,
+    .sticky-header,
+    .GolfHeader-module__ZF_nIG__header {
+        background: #FFFFFF !important;
+        background-color: #FFFFFF !important;
+        box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08) !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+    }
+
+    /* Navbar text default color on White background */
+    .header .navLink,
+    #siteHeader .navLink,
+    .GolfHeader-module__ZF_nIG__navLink {
+        color: #171717 !important;
+        font-weight: 600 !important;
+    }
+    .header .navLink svg,
+    #siteHeader .navLink svg {
+        stroke: #171717 !important;
+    }
+
+    /* Requirement 2: Navbar text hover color -> #BFA16A */
+    .header .navLink:hover,
+    #siteHeader .navLink:hover,
+    .header .navLink:focus,
+    .header #navProjectsBtn:hover,
+    .header #navCommercialBtn:hover,
+    .header #navDevelopersBtn:hover,
+    #siteHeader #navDevelopersBtn:hover,
+    .header .navLink:hover svg,
+    #siteHeader .navLink:hover svg,
+    .dropdownItem:hover,
+    .mobileNavLink:hover,
+    .GolfHeader-module__ZF_nIG__navLink:hover {
+        color: #BFA16A !important;
+        stroke: #BFA16A !important;
+    }
+
+    /* Requirement 3: Active page nav link underline -> #BFA16A */
+    .navLink::after,
+    .header .navLink::after,
+    #siteHeader .navLink::after,
+    .GolfHeader-module__ZF_nIG__navLink::after {
+        background-color: #BFA16A !important;
+        background: #BFA16A !important;
+        height: 2.5px !important;
+    }
+    .navLinkActive,
+    .header .navLinkActive,
+    #siteHeader .navLinkActive,
+    .GolfHeader-module__ZF_nIG__navItemActive a {
+        color: #BFA16A !important;
+    }
+    .navLinkActive svg,
+    .header .navLinkActive svg,
+    #siteHeader .navLinkActive svg {
+        stroke: #BFA16A !important;
+    }
+    .navLinkActive::after,
+    .header .navLinkActive::after,
+    #siteHeader .navLinkActive::after {
+        width: 100% !important;
+        background-color: #BFA16A !important;
+        background: #BFA16A !important;
+    }
+
+    /* Mobile toggle icon visible on white header */
+    .mobileToggle svg {
+        stroke: #171717 !important;
+    }
+
+    /* Requirement 1: All Buttons across Website -> background: #BFA16A */
+    button:not(#navProjectsBtn):not(#navCommercialBtn):not(#navDevelopersBtn):not(#mobileProjectsToggle):not(#mobileCommercialToggle):not(#mobileDevelopersToggle):not(.mobileToggle):not(.mobileCloseBtn):not(.countryTriggerBtn):not(.faqQuestion):not([class*="faq"]):not(.modalCloseBtn),
+    button[type="submit"],
+    input[type="submit"],
+    a.btn-get-started,
     .btn-get-started,
     .header .btn-get-started,
-    .mobileNavList .btn-get-started {
-        background: #1a4731 !important;
-        border-color: #1a4731 !important;
-    }
-    .btn-get-started:hover,
-    .header .btn-get-started:hover,
-    .mobileNavList .btn-get-started:hover {
-        background: #123322 !important;
-        box-shadow: 0 4px 12px rgba(26, 71, 49, 0.4) !important;
-    }
-    .navLink::after {
-        background-color: #1a4731 !important;
-    }
-    .dropdownItem:hover {
-        background: rgba(26, 71, 49, 0.08) !important;
-        color: #1a4731 !important;
-    }
-
-    /* 2. Hero Section & Callbacks */
+    .mobileNavList .btn-get-started,
+    .cardBookBtn,
+    .cardCustom .cardBookBtn,
+    .showMoreProjectsBtn,
     .heroBookBtn,
     .heroBtnRow .heroBookBtn,
     #hero .heroBookBtn,
@@ -112,13 +168,38 @@
     [class*="heroSection"] [class*="brochureBtn"],
     [class*="Hero"] [class*="brochureBtn"],
     [class*="__btnRow"] [class*="brochureBtn"],
-    [class*="btnRow"] button {
-        background-color: #d9232d !important;
-        background: #d9232d !important;
+    [class*="btnRow"] button,
+    .heroCard .submitBtn,
+    .submitBtn,
+    .contactSubmitBtn,
+    .saimaSubmitBtn,
+    .devCardBtn,
+    a.devCardBtn,
+    .investmentActionBtn,
+    .scrollTopBtn,
+    .modalSubmitBtn,
+    .sparkleBtn,
+    .footer form button[type="submit"],
+    .brandCol form button[type="submit"],
+    .open-list-modal {
+        background: #BFA16A !important;
+        background-color: #BFA16A !important;
+        border-color: #BFA16A !important;
         color: #ffffff !important;
-        border: none !important;
-        box-shadow: 0 4px 12px rgba(217, 35, 45, 0.35) !important;
+        box-shadow: 0 4px 14px rgba(191, 161, 106, 0.35) !important;
     }
+
+    /* All Buttons Hover State */
+    button:not(#navProjectsBtn):not(#navCommercialBtn):not(#navDevelopersBtn):not(#mobileProjectsToggle):not(#mobileCommercialToggle):not(#mobileDevelopersToggle):not(.mobileToggle):not(.mobileCloseBtn):not(.countryTriggerBtn):not(.faqQuestion):not([class*="faq"]):not(.modalCloseBtn):hover,
+    button[type="submit"]:hover,
+    input[type="submit"]:hover,
+    a.btn-get-started:hover,
+    .btn-get-started:hover,
+    .header .btn-get-started:hover,
+    .mobileNavList .btn-get-started:hover,
+    .cardCustom:hover .cardBookBtn,
+    .cardBookBtn:hover,
+    .showMoreProjectsBtn:hover,
     .heroBookBtn:hover,
     .heroBtnRow .heroBookBtn:hover,
     #hero .heroBookBtn:hover,
@@ -126,218 +207,399 @@
     [class*="heroSection"] [class*="brochureBtn"]:hover,
     [class*="Hero"] [class*="brochureBtn"]:hover,
     [class*="__btnRow"] [class*="brochureBtn"]:hover,
-    [class*="btnRow"] button:hover {
-        background-color: #b71a23 !important;
-        background: #b71a23 !important;
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 18px rgba(217, 35, 45, 0.5) !important;
-    }
-    .heroCard .submitBtn,
-    .submitBtn,
-    .saimaSubmitBtn {
-        background: #1a4731 !important;
-        box-shadow: 0 2px 8px rgba(26, 71, 49, 0.3) !important;
-    }
+    [class*="btnRow"] button:hover,
     .heroCard .submitBtn:hover,
     .submitBtn:hover,
-    .saimaSubmitBtn:hover {
-        background: #123322 !important;
-        box-shadow: 0 4px 14px rgba(26, 71, 49, 0.45) !important;
+    .contactSubmitBtn:hover,
+    .saimaSubmitBtn:hover,
+    .devCardBtn:hover,
+    a.devCardBtn:hover,
+    .investmentActionBtn:hover,
+    .scrollTopBtn:hover,
+    .modalSubmitBtn:hover,
+    .cardCustom:hover .sparkleBtn,
+    .footer form button[type="submit"]:hover,
+    .brandCol form button[type="submit"]:hover,
+    .open-list-modal:hover {
+        background: #aa8d58 !important;
+        background-color: #aa8d58 !important;
+        border-color: #aa8d58 !important;
+        color: #ffffff !important;
+        box-shadow: 0 6px 18px rgba(191, 161, 106, 0.5) !important;
     }
+
+    /* Nav Dropdown text buttons must remain transparent */
+    .header #navProjectsBtn,
+    .header #navCommercialBtn,
+    .header #navDevelopersBtn,
+    #siteHeader #navProjectsBtn,
+    #siteHeader #navCommercialBtn,
+    #siteHeader #navDevelopersBtn,
+    #navProjectsBtn,
+    #navCommercialBtn,
+    #navDevelopersBtn,
+    #mobileProjectsToggle,
+    #mobileCommercialToggle,
+    #mobileDevelopersToggle {
+        background: none !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: #171717 !important;
+    }
+    .header #navProjectsBtn:hover,
+    .header #navCommercialBtn:hover,
+    .header #navDevelopersBtn:hover,
+    #siteHeader #navProjectsBtn:hover,
+    #siteHeader #navCommercialBtn:hover,
+    #siteHeader #navDevelopersBtn:hover,
+    #navProjectsBtn:hover,
+    #navCommercialBtn:hover,
+    #navDevelopersBtn:hover {
+        color: #BFA16A !important;
+    }
+
+    /* All Icons across Website -> #BFA16A */
+    .iconCircle,
+    .channelCard .iconCircle,
+    .channelCardStatic .iconCircle,
+    [class*="iconCircle"],
+    .contactFeatureIcon,
+    .featureIcon,
+    .contactFeatureItem svg,
+    .contactInfoCol svg,
+    .accentCircle,
+    [class*="__accentCircle"],
+    .iconWrapper,
+    [class*="__iconWrapper"],
+    .checkIconGreen,
+    .contactIcon,
+    .devCardBtn svg,
+    .showMoreIcon {
+        color: #BFA16A !important;
+    }
+
+    .iconCircle,
+    .channelCard .iconCircle,
+    .channelCardStatic .iconCircle,
+    [class*="iconCircle"] {
+        background: rgba(191, 161, 106, 0.16) !important;
+        color: #BFA16A !important;
+    }
+    .iconCircle svg,
+    .channelCard .iconCircle svg,
+    .channelCardStatic .iconCircle svg {
+        stroke: #BFA16A !important;
+        color: #BFA16A !important;
+    }
+    .channelCard:hover .iconCircle {
+        background: #BFA16A !important;
+        color: #ffffff !important;
+    }
+    .channelCard:hover .iconCircle svg {
+        stroke: #ffffff !important;
+        color: #ffffff !important;
+    }
+
+    .accentCircle,
+    [class*="__accentCircle"] {
+        background: #BFA16A !important;
+    }
+    .accentCircle svg,
+    .accentCircle img,
+    .svgIcon svg {
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+    }
+    .contactFeatureItem svg,
+    .contactFeatureIcon {
+        color: #BFA16A !important;
+        stroke: #BFA16A !important;
+    }
+    .checkIconGreen {
+        background: rgba(191, 161, 106, 0.14) !important;
+        color: #BFA16A !important;
+    }
+
+    /* Input focus border */
     .phoneUnifiedContainer:focus-within,
     .inputField:focus,
     .textareaField:focus,
     .contactInputField:focus,
     .contactTextareaField:focus,
-    .saimaFormInput:focus {
-        border-color: #1a4731 !important;
-        box-shadow: 0 0 0 3px rgba(26, 71, 49, 0.18) !important;
+    .saimaFormInput:focus,
+    .modalInputField:focus,
+    .modalSelectField:focus,
+    .modalTextareaField:focus {
+        border-color: #BFA16A !important;
+        box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.22) !important;
     }
 
-    /* 3. Highlights & Metrics Section */
-    .iconWrapper,
-    [class*="__iconWrapper"] {
-        position: relative !important;
-        width: 44px !important;
-        height: 44px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        flex-shrink: 0 !important;
-    }
-    .accentCircle,
-    [class*="__accentCircle"] {
-        position: absolute !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        width: 38px !important;
-        height: 38px !important;
-        border-radius: 50% !important;
-        background: #1a4731 !important;
-        opacity: 1 !important;
-        z-index: 1 !important;
-    }
-    .svgIcon,
-    [class*="__svgIcon"] {
-        position: relative !important;
-        z-index: 2 !important;
-        color: #ffffff !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
-        height: 100% !important;
-    }
-    .svgIcon img,
-    [class*="__svgIcon"] img,
-    .highlightCard img,
-    [class*="__highlightCard"] img {
-        width: 20px !important;
-        height: 20px !important;
-        max-width: 20px !important;
-        max-height: 20px !important;
-        object-fit: contain !important;
-        filter: brightness(0) invert(1) !important;
-        -webkit-filter: brightness(0) invert(1) !important;
-        display: block !important;
-        margin: auto !important;
-    }
-    .svgIcon svg,
-    [class*="__svgIcon"] svg,
-    .highlightCard svg,
-    [class*="__highlightCard"] svg {
-        width: 20px !important;
-        height: 20px !important;
-        max-width: 20px !important;
-        max-height: 20px !important;
-        stroke: #ffffff !important;
-        color: #ffffff !important;
-        display: block !important;
-        margin: auto !important;
-    }
-
-    /* 4. Featured Communities / Projects */
-    .sparkleBtn {
-        background: #1a4731 !important;
-        box-shadow: 0 4px 14px rgba(26, 71, 49, 0.45) !important;
-    }
-    .cardCustom:hover .sparkleBtn {
-        background: #123322 !important;
-    }
-    .planBadge {
-        color: #1a4731 !important;
-    }
-
-    /* 5. Section Headers */
+    /* Section Headers */
     .section-header h2::before,
     .section-header h2::after {
-        background: #1a4731 !important;
+        background: #BFA16A !important;
     }
 
-    /* 6. Investment Potential Section */
-    .investmentLocationBadge {
-        color: #1a4731 !important;
-    }
-    .investmentActionBtn {
-        background-color: #1a4731 !important;
-        box-shadow: 0 2px 8px rgba(26, 71, 49, 0.25) !important;
-    }
-    .investmentActionBtn:hover {
-        background-color: #123322 !important;
-        box-shadow: 0 4px 14px rgba(26, 71, 49, 0.35) !important;
-    }
-    .checkIconGreen {
-        background: rgba(26, 71, 49, 0.14) !important;
-        color: #1a4731 !important;
+    /* All Titles, Headings, H1, H2, H3, H4, H5, H6 Across ENTIRE Website -> #BFA16A */
+    h1, h2, h3, h4, h5, h6,
+    h1 *, h2 *, h3 *, h4 *, h5 *, h6 *,
+    article h1, article h2, article h3, article h4, article h5, article h6,
+    article h1 *, article h2 *, article h3 *, article h4 *, article h5 *, article h6 *,
+    .locMainTitle,
+    .locMainTitle *,
+    .fsProjectHeroTitle,
+    .fsProjectHeroTitle *,
+    .fsHeroTitleDark,
+    .fsHeroTitleGold,
+    .note-editable h1, .note-editable h2, .note-editable h3, .note-editable h4, .note-editable h5, .note-editable h6,
+    .note-editable h1 *, .note-editable h2 *, .note-editable h3 *, .note-editable h4 *, .note-editable h5 *, .note-editable h6 *,
+    .section-header h2,
+    .overviewSection h1,
+    .overviewSection h2,
+    .overviewSection h3,
+    .overviewSection h4,
+    .overviewSection h5,
+    .overviewSection h6,
+    .blogContainer h1,
+    .blogContainer h2,
+    .blogContainer h3,
+    .blogContainer h4,
+    .blogContainer h5,
+    .blogContainer h6,
+    .overviewMainTitle,
+    .overviewSubHeading,
+    .saimaH2,
+    .saimaH3,
+    .saimaH4,
+    .saimaHighlightHead,
+    .saimaContentCol h1,
+    .saimaContentCol h2,
+    .saimaContentCol h3,
+    .saimaContentCol h4,
+    .saimaContentCol h5,
+    .saimaContentCol h6,
+    .saimaDynamicContent h1,
+    .saimaDynamicContent h2,
+    .saimaDynamicContent h3,
+    .saimaDynamicContent h4,
+    .saimaDynamicArticleContent h1,
+    .saimaDynamicArticleContent h2,
+    .saimaDynamicArticleContent h3,
+    .saimaDynamicArticleContent h4,
+    .saimaLongContentBody h1,
+    .saimaLongContentBody h2,
+    .saimaLongContentBody h3,
+    .saimaLongContentBody h4,
+    .saimaShortContent h1,
+    .saimaShortContent h2,
+    .saimaShortContent h3,
+    .saimaShortContent h4,
+    .devEditorialBody h1,
+    .devEditorialBody h2,
+    .devEditorialBody h3,
+    .devEditorialBody h4,
+    .contactHeroTitle,
+    .contactInfoHeading,
+    .channelTitle,
+    .contactFeatureTitle,
+    .featureTitle,
+    .faqMainHeading,
+    .faqItemOpen .faqQuestion,
+    .highlightTitle,
+    .amenitiesTitle,
+    .galleryTitle,
+    .paymentTitle,
+    .saimaApptTitle,
+    .saimaTocTitle,
+    .saimaProjectTag,
+    .saimaReadMoreBtn {
+        color: #BFA16A !important;
     }
 
-    /* 7. FAQ Section */
-    .faqItemOpen {
-        border-color: #1a4731 !important;
-        box-shadow: 0 4px 15px rgba(26, 71, 49, 0.12) !important;
+    /* Mobile Drawer & Overlay Layering (Fixes Entire Website Mobile Nav) */
+    .mobileDrawerOverlay,
+    div[class*="mobileDrawerOverlay"],
+    #mobileBackdrop {
+        position: fixed !important;
+        inset: 0 !important;
+        background: rgba(0, 0, 0, 0.72) !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        z-index: 100000 !important;
     }
-    .faqItemOpen .faqQuestion {
-        color: #1a4731 !important;
+    .mobileDrawer,
+    aside[class*="mobileDrawer"],
+    div[class*="mobileDrawer"],
+    #mobileDrawer,
+    .GolfHeader-module__ZF_nIG__mobileDrawer {
+        z-index: 100005 !important;
+        background: #111827 !important;
+        box-shadow: -8px 0 30px rgba(0, 0, 0, 0.5) !important;
     }
-    .faqItemOpen .faqIcon {
-        background: #1a4731 !important;
+    @media (max-width: 768px) {
+        .header,
+        #siteHeader,
+        .GolfHeader-module__ZF_nIG__header {
+            border-bottom: none !important;
+            box-shadow: none !important;
+        }
+        .mobileDrawer,
+        #mobileDrawer {
+            width: 320px !important;
+            max-width: 86vw !important;
+        }
     }
 
-    /* 8. Contact Section & Channels */
+    /* Inner spans/strongs in headings */
+    .overviewSection h1 *,
+    .overviewSection h2 *,
+    .overviewSection h3 *,
+    .overviewSection h4 *,
+    .blogContainer h1 *,
+    .blogContainer h2 *,
+    .blogContainer h3 *,
+    .blogContainer h4 *,
+    .saimaContentCol h1 *,
+    .saimaContentCol h2 *,
+    .saimaContentCol h3 *,
+    .saimaContentCol h4 *,
+    .saimaDynamicContent h1 *,
+    .saimaDynamicContent h2 *,
+    .saimaDynamicContent h3 *,
+    .saimaDynamicContent h4 *,
+    .saimaDynamicArticleContent h1 *,
+    .saimaDynamicArticleContent h2 *,
+    .saimaDynamicArticleContent h3 *,
+    .saimaDynamicArticleContent h4 *,
+    .saimaLongContentBody h1 *,
+    .saimaLongContentBody h2 *,
+    .saimaLongContentBody h3 *,
+    .saimaLongContentBody h4 *,
+    .devEditorialBody h1 *,
+    .devEditorialBody h2 *,
+    .devEditorialBody h3 *,
+    .devEditorialBody h4 * {
+        color: #BFA16A !important;
+    }
+
+    /* Accent Badges & Highlights */
+    .accentCircle,
+    [class*="__accentCircle"] {
+        background: #BFA16A !important;
+    }
+    .investmentLocationBadge,
+    .planBadge,
+    .channelBadge,
     .contactTitleSmall,
     .contactSectionTag,
     .sectionTag,
     .channelAction,
     .highlightPara,
     .contactHighlightPara,
-    .channelBadge,
     .saimaProjectTag,
-    .saimaReadMoreBtn {
-        color: #1a4731 !important;
-    }
-    .channelBadge {
-        background: rgba(26, 71, 49, 0.08) !important;
-    }
-    .formCard,
-    .contactFormCard,
-    .saimaSidebarCard {
-        border-color: #1a4731 !important;
-    }
-    .channelCard:hover {
-        border-color: #1a4731 !important;
-        box-shadow: 0 10px 25px rgba(26, 71, 49, 0.15) !important;
-    }
-    .channelCard:hover .iconCircle {
-        background: #1a4731 !important;
-    }
-    .iconCircle {
-        color: #1a4731 !important;
-        background: rgba(26, 71, 49, 0.1) !important;
-    }
-
-    /* 9. Article & Dynamic Pages (TOC, Sticky Sidebar, Headings) */
-    .saimaHighlightHead,
-    .saimaArticleContent h2,
-    .saimaArticleContent h3 {
-        color: #1a4731 !important;
-    }
-    .saimaReadMoreBtn:hover {
-        color: #123322 !important;
-    }
-
-    /* 10. Scroll To Top & Modals */
-    .scrollTopBtn {
-        background: #1a4731 !important;
-    }
-    .scrollTopBtn:hover {
-        background: #123322 !important;
-        box-shadow: 0 6px 20px rgba(26, 71, 49, 0.45) !important;
-    }
-    .modalInputField:focus,
-    .modalSelectField:focus,
-    .modalTextareaField:focus {
-        border-color: #1a4731 !important;
-    }
-    .modalSubmitBtn {
-        background: #1a4731 !important;
-    }
-    .modalSubmitBtn:hover {
-        background: #123322 !important;
-    }
-
-    /* 11. Footer Elements */
-    .footer form button[type="submit"],
-    .brandCol form button[type="submit"] {
-        background: #1a4731 !important;
-    }
-    .footer form button[type="submit"]:hover,
-    .brandCol form button[type="submit"]:hover {
-        background: #123322 !important;
-    }
+    .saimaReadMoreBtn,
     .linkItem:hover,
     .contactLink:hover {
-        color: #1a4731 !important;
+        color: #BFA16A !important;
+    }
+    .checkIconGreen {
+        background: rgba(191, 161, 106, 0.14) !important;
+        color: #BFA16A !important;
+    }
+
+    /* FAQ (Clean White Cards, Light Brand Gold Border on Open) */
+    .faqItem {
+        background: #ffffff !important;
+        border: 1px solid #e5e7eb !important;
+        border-radius: 8px !important;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+        overflow: hidden !important;
+    }
+    .faqItem:hover {
+        border-color: #d1d5db !important;
+    }
+    .faqItemOpen {
+        border-color: #BFA16A !important;
+        box-shadow: 0 4px 18px rgba(191, 161, 106, 0.16) !important;
+    }
+    .faqQuestion,
+    button.faqQuestion {
+        background: transparent !important;
+        background-color: transparent !important;
+        color: #1a1a1a !important;
+        border: none !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+    .faqQuestion:hover,
+    button.faqQuestion:hover {
+        background: transparent !important;
+        background-color: transparent !important;
+        color: #BFA16A !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+    .faqItemOpen .faqQuestion,
+    .faqItemOpen button.faqQuestion {
+        color: #BFA16A !important;
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+    .faqIcon {
+        background: #f3f4f6 !important;
+        color: #555555 !important;
+    }
+    .faqIcon svg {
+        stroke: #555555 !important;
+    }
+    .faqQuestion:hover .faqIcon {
+        background: rgba(191, 161, 106, 0.15) !important;
+    }
+    .faqQuestion:hover .faqIcon svg {
+        stroke: #BFA16A !important;
+    }
+    .faqItemOpen .faqIcon {
+        background: #BFA16A !important;
+        color: #ffffff !important;
+    }
+    .faqItemOpen .faqIcon svg {
+        stroke: #ffffff !important;
+    }
+
+    /* Modals & Dropdown */
+    .dropdownItem:hover {
+        background: rgba(191, 161, 106, 0.1) !important;
+        color: #BFA16A !important;
+    }
+
+    /* All Content & Overview Hyperlinks on UI -> Golden #BFA16A */
+    .fsAboutDesc a,
+    .fsAboutDesc p a,
+    .saimaContentCol a,
+    .saimaShortContent a,
+    .saimaDynamicContent a,
+    .saimaLongContentBody a,
+    .saimaSummernoteBodyContent a,
+    .saimaSummernoteExpanded a,
+    .GolfAboutVideo-module__mC9tiq__description a,
+    article a:not(.btn):not(.saimaTocLink) {
+        color: #BFA16A !important;
+        text-decoration: underline !important;
+        font-weight: 600 !important;
+        transition: color 0.15s ease !important;
+    }
+    .fsAboutDesc a:hover,
+    .fsAboutDesc p a:hover,
+    .saimaContentCol a:hover,
+    .saimaShortContent a:hover,
+    .saimaDynamicContent a:hover,
+    .saimaLongContentBody a:hover,
+    .saimaSummernoteBodyContent a:hover,
+    .saimaSummernoteExpanded a:hover,
+    .GolfAboutVideo-module__mC9tiq__description a:hover,
+    article a:not(.btn):not(.saimaTocLink):hover {
+        color: #aa8d58 !important;
     }
     </style>
 
@@ -531,7 +793,7 @@
             e.preventDefault();
             const formData = new FormData(modalLeadForm);
             formData.append('source', 'Website');
-            formData.append('sub_source', 'saima project');
+            formData.append('sub_source', 'fsadvisory.pk');
             formData.append('page_url', window.location.href);
             formData.append('campaign_url', window.location.href);
             formData.append('utm_campaign', new URLSearchParams(window.location.search).get('utm_campaign') || '');

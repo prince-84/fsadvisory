@@ -381,16 +381,16 @@
             <h3 class="amenity-modal-title">Add Amenities</h3>
             <button type="button" class="amenity-modal-close" onclick="closeAddModal()">&times;</button>
         </div>
-        <form method="POST" action="{{ route('admin.amenities.store') }}" enctype="multipart/form-data" id="addAmenityForm" onsubmit="return validateSvgBeforeSubmit(this, 'add_icon_file')">
+        <form method="POST" action="{{ route('admin.amenities.store') }}" enctype="multipart/form-data" id="addAmenityForm" onsubmit="return validateIconBeforeSubmit(this, 'add_icon_file', false)">
             @csrf
             <div class="amenity-modal-body">
                 <div class="adm-field" style="margin-bottom: 18px;">
                     <label class="adm-label" for="add_name" style="font-weight: 600; color: #1e293b; margin-bottom: 6px;">Amenity Name <span style="color:#ef4444;">*</span></label>
-                    <input type="text" name="name" id="add_name" required class="adm-input" placeholder="e.g. Banquet Hall, Swimming Pool..." style="width: 100%; font-size: 13.5px; padding: 9px 12px; border-radius: 8px;">
+                    <input type="text" name="name" id="add_name" required class="adm-input" placeholder="e.g. Swimming Pool, Padel Court, Kids Play Area..." style="width: 100%; font-size: 13.5px; padding: 9px 12px; border-radius: 8px;">
                 </div>
 
                 <div class="adm-field">
-                    <label class="adm-label" style="font-weight: 600; color: #1e293b; margin-bottom: 6px;">Upload SVG Icon <span style="color:#ef4444;">*</span></label>
+                    <label class="adm-label" style="font-weight: 600; color: #1e293b; margin-bottom: 6px;">Upload SVG Icon <span style="font-weight: 400; font-size: 12px; color: #64748b;">(Optional &ndash; leave empty for auto green checkmark)</span></label>
                     
                     <div class="svg-drop-zone" id="add_drop_zone" onclick="document.getElementById('add_icon_file').click()">
                         <div class="svg-live-preview" id="add_svg_preview_box"></div>
@@ -402,11 +402,15 @@
                             </svg>
                             <span style="font-size: 13px; font-weight: 600; color: #0099ff;">Click to upload SVG</span>
                             <span style="font-size: 12px; color: #64748b; display: block; margin-top: 2px;">or drag and drop your .svg file here</span>
+                            <div style="margin-top: 10px; font-size: 12px; color: #BFA16A; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; background: #FAF5EB; border: 1px solid #DFCFB2; padding: 4px 10px; border-radius: 20px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#FAF5EB" stroke="#DFCFB2" stroke-width="1.2"/><path d="M7.5 12.5L10.5 15.5L16.5 9.5" stroke="#BFA16A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                Without logo: Auto brand gold checkmark will be assigned
+                            </div>
                         </div>
-                        <input type="file" name="icon" id="add_icon_file" accept=".svg,image/svg+xml" required style="display: none;" onchange="handleSvgFileSelected(this, 'add_svg_preview_box', 'add_drop_prompt')">
+                        <input type="file" name="icon" id="add_icon_file" accept=".svg,image/svg+xml" style="display: none;" onchange="handleIconFileSelected(this, 'add_svg_preview_box', 'add_drop_prompt')">
                     </div>
                     <div style="margin-top: 8px; display: flex; align-items: center; justify-content: space-between;">
-                        <span class="svg-note-badge">NOTE: Only SVG files (.svg) allowed</span>
+                        <span class="svg-note-badge">NOTE: SVG allowed or leave empty</span>
                         <span style="font-size: 11px; color: #94a3b8;">Auto-syncs to CMS dropdowns</span>
                     </div>
                 </div>
@@ -426,7 +430,7 @@
             <h3 class="amenity-modal-title">Edit Amenity</h3>
             <button type="button" class="amenity-modal-close" onclick="closeEditModal()">&times;</button>
         </div>
-        <form method="POST" action="" enctype="multipart/form-data" id="editAmenityForm" onsubmit="return validateSvgBeforeSubmit(this, 'edit_icon_file', false)">
+        <form method="POST" action="" enctype="multipart/form-data" id="editAmenityForm" onsubmit="return validateIconBeforeSubmit(this, 'edit_icon_file', false)">
             @csrf
             @method('PUT')
             <div class="amenity-modal-body">
@@ -449,7 +453,7 @@
                             <span style="font-size: 13px; font-weight: 600; color: #0099ff;">Click to replace with new SVG</span>
                             <span style="font-size: 12px; color: #64748b; display: block; margin-top: 2px;">Leave blank to keep existing icon</span>
                         </div>
-                        <input type="file" name="icon" id="edit_icon_file" accept=".svg,image/svg+xml" style="display: none;" onchange="handleSvgFileSelected(this, 'edit_svg_preview_box', 'edit_drop_prompt')">
+                        <input type="file" name="icon" id="edit_icon_file" accept=".svg,image/svg+xml" style="display: none;" onchange="handleIconFileSelected(this, 'edit_svg_preview_box', 'edit_drop_prompt')">
                     </div>
                     <div style="margin-top: 8px;">
                         <span class="svg-note-badge">NOTE: Only SVG files (.svg) allowed</span>
@@ -524,15 +528,15 @@
         document.getElementById('editAmenityModal').classList.remove('is-open');
     }
 
-    // Strict SVG File Handling & Instant Preview
-    function handleSvgFileSelected(input, previewBoxId, promptBoxId) {
+    // Icon File Handling & Instant Preview (SVG, PNG, JPG, WEBP, ICO)
+    function handleIconFileSelected(input, previewBoxId, promptBoxId) {
         const file = input.files && input.files[0];
         if (!file) return;
 
-        // Strict extension validation: .svg only!
-        const fileName = file.name.toLowerCase();
-        if (!fileName.endsWith('.svg')) {
-            alert('NOTE: Only SVG files (.svg) are allowed for amenities icon. Please select a valid .svg file.');
+        const allowed = ['svg'];
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (!allowed.includes(ext)) {
+            alert('Only SVG files (.svg) are allowed.');
             input.value = '';
             return;
         }
@@ -542,29 +546,35 @@
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            const content = e.target.result;
-            if (content.includes('<svg')) {
-                previewBox.innerHTML = content;
-                previewBox.style.display = 'flex';
-                promptBox.style.display = 'none';
+            const result = e.target.result;
+            if (ext === 'svg' && result.includes('<svg')) {
+                // Inline SVG preview
+                previewBox.innerHTML = result;
             } else {
-                alert('The selected file does not appear to be a valid SVG vector. Please choose another .svg file.');
-                input.value = '';
+                // Image preview for PNG/JPG/WEBP/ICO
+                previewBox.innerHTML = '<img src="' + result + '" style="width:100%;height:100%;object-fit:contain;" alt="">';
             }
+            previewBox.style.display = 'flex';
+            promptBox.style.display = 'none';
         };
-        reader.readAsText(file);
+        if (ext === 'svg') {
+            reader.readAsText(file);
+        } else {
+            reader.readAsDataURL(file);
+        }
     }
 
-    function validateSvgBeforeSubmit(form, fileInputId, isRequired = true) {
+    function validateIconBeforeSubmit(form, fileInputId, isRequired = true) {
         const input = document.getElementById(fileInputId);
         if (isRequired && (!input.files || !input.files[0])) {
-            alert('Please select an SVG icon file.');
+            alert('Please select an icon file.');
             return false;
         }
         if (input.files && input.files[0]) {
-            const fileName = input.files[0].name.toLowerCase();
-            if (!fileName.endsWith('.svg')) {
-                alert('NOTE: Only SVG files (.svg) are allowed.');
+            const allowed = ['svg'];
+            const ext = input.files[0].name.split('.').pop().toLowerCase();
+            if (!allowed.includes(ext)) {
+                alert('Only SVG files (.svg) are allowed.');
                 return false;
             }
         }
@@ -589,7 +599,7 @@
                 fileInput.files = e.dataTransfer.files;
                 const previewBoxId = zoneId === 'add_drop_zone' ? 'add_svg_preview_box' : 'edit_svg_preview_box';
                 const promptBoxId = zoneId === 'add_drop_zone' ? 'add_drop_prompt' : 'edit_drop_prompt';
-                handleSvgFileSelected(fileInput, previewBoxId, promptBoxId);
+                handleIconFileSelected(fileInput, previewBoxId, promptBoxId);
             }
         });
     });

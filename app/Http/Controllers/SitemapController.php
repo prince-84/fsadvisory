@@ -95,7 +95,7 @@ class SitemapController extends Controller
         $baseUrl = $this->getBaseUrl();
 
         // 1. Core pages latest updated_at
-        $latestCorePage = Page::whereIn('slug', ['', '/', 'home', 'about-us', 'contact-us', 'privacy-policy', 'terms-and-conditions', 'disclaimer'])
+        $latestCorePage = Page::whereIn('slug', ['', '/', 'home', 'about-us', 'contact-us', 'privacy-policy', 'terms-and-conditions'])
             ->orderBy('updated_at', 'desc')
             ->first();
         $coreLastmod = $this->formatDate($latestCorePage?->updated_at ?? now());
@@ -130,7 +130,7 @@ class SitemapController extends Controller
 
         // 6. Dynamic pages latest updated_at
         $excludedSlugs = array_merge(
-            ['', '/', 'home', 'about-us', 'contact-us', 'privacy-policy', 'terms-and-conditions', 'disclaimer'],
+            ['', '/', 'home', 'about-us', 'contact-us', 'privacy-policy', 'terms-and-conditions'],
             Page::projectSlugs(),
             City::pluck('slug')->all(),
             Community::pluck('slug')->all()
@@ -191,7 +191,7 @@ class SitemapController extends Controller
         $baseUrl = $this->getBaseUrl();
 
         // Query pages for exact timestamps
-        $pagesBySlug = Page::whereIn('slug', ['', '/', 'home', 'about-us', 'contact-us', 'privacy-policy', 'terms-and-conditions', 'disclaimer'])
+        $pagesBySlug = Page::whereIn('slug', ['', '/', 'home', 'about-us', 'contact-us', 'privacy-policy', 'terms-and-conditions'])
             ->get()
             ->keyBy(fn($p) => trim($p->slug, '/'));
 
@@ -223,12 +223,6 @@ class SitemapController extends Controller
             [
                 'path'       => 'privacy-policy',
                 'slug_key'   => 'privacy-policy',
-                'changefreq' => 'yearly',
-                'priority'   => '0.5',
-            ],
-            [
-                'path'       => 'disclaimer',
-                'slug_key'   => 'disclaimer',
                 'changefreq' => 'yearly',
                 'priority'   => '0.5',
             ],
@@ -449,7 +443,7 @@ class SitemapController extends Controller
     {
         $baseUrl = $this->getBaseUrl();
 
-        $coreSlugs = ['', '/', 'home', 'about-us', 'contact-us', 'privacy-policy', 'terms-and-conditions', 'disclaimer'];
+        $coreSlugs = ['', '/', 'home', 'about-us', 'contact-us', 'privacy-policy', 'terms-and-conditions'];
         $projectSlugs = Page::projectSlugs();
         $citySlugs = City::pluck('slug')->all();
         $commSlugs = Community::pluck('slug')->all();

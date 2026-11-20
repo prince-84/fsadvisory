@@ -57,7 +57,7 @@ class LeadController extends Controller
             'phone' => (string) ($request->input('phone') ?? $validated['phone'] ?? ''),
             'email' => (string) ($request->input('email') ?? $validated['email'] ?? ''),
             'source' => (string) ($request->input('source') ?: 'Website'),
-            'sub_source' => 'saima project',
+            'sub_source' => 'fsadvisory.pk',
             'utm_campaign' => (string) ($request->input('utm_campaign') ?: ($request->query('utm_campaign') ?: '')),
             'campaign_url' => (string) $pageUrl,
             'page_url' => (string) $pageUrl,

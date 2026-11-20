@@ -3165,3 +3165,110 @@ php artisan optimize:clear
 - **Database / Migrations**:
   - Migrations: None created or modified.
   - Database Tables: Schema unchanged.
+
+
+## Changelog — 2026-11-20 (Part 104: Live Dynamic Community & City Location Synchronization Across Property Cards & Project Detail Headers)
+
+### What Changed
+- **Dynamic Community & City Accessor on Project Model (`app/Models/Project.php`):**
+  - Added dynamic accessor `getLocationAttribute($value)` on `Project` model. When `community_id` is assigned to a project, it dynamically resolves the latest Community name and its linked City (`name, city.name`).
+- **Automated Location Synchronization on Community Updates (`app/Http/Controllers/Admin/CommunityController.php`):**
+  - In `CommunityController@update`, when a Community is assigned to a different City or its name changes, all linked projects in the `projects` table are automatically batch-updated with the fresh location string (`Community Name, City Name`).
+- **Automated Location Synchronization on City Updates (`app/Http/Controllers/Admin/CityController.php`):**
+  - In `CityController@update`, when a City is renamed or updated, all projects belonging to all communities within that City are automatically synchronized.
+- **Automated Location Resolution on Project Save & Update (`app/Http/Controllers/Admin/ProjectController.php`, `PageController.php`):**
+  - In both `ProjectController` and `PageController` (when editing a Project Detail page), saving or updating the project automatically determines the linked `community_id` and derives the formatted location string from the active Community model.
+- **Project Detail Page Header Location Prioritization (`resources/views/partials/page-about.blade.php`):**
+  - Updated `$projectComm` and `$projectCommName` in `page-about.blade.php` to directly prioritize `$projectComm->name . ($projectComm->city ? ', ' . $projectComm->city->name : '')`, ensuring that the header location sub-line immediately reflects any CMS community/city updates.
+- **Database Synchronization of Existing Projects:**
+  - Synchronized existing projects linked to community 27 (including *Saima Prestige Park*, *Saima Luxury Apartments*, *Saima ACE Avenue*, and *Saima Boulevard*) from stale `'test four, Islamabad'` to the active `'test four area, test first city'`.
+
+### Files Modified
+- app/Models/Project.php
+- app/Http/Controllers/Admin/CommunityController.php
+- app/Http/Controllers/Admin/CityController.php
+- app/Http/Controllers/Admin/ProjectController.php
+- app/Http/Controllers/Admin/PageController.php
+- resources/views/partials/page-about.blade.php
+- README.md
+
+
+## Changelog — 2026-11-20 (Part 105: City Detail Page Community Card Styling Parity with Area Page)
+
+### What Changed
+- **City Community Cards Parity (`resources/views/cities/show.blade.php`):**
+  - Updated `.cardCustom` height from `500px` to `460px`, `.bottomContent` padding to `35px 20px 22px`, `.cardTitle` to `21px`, `.cardLocation` to `13px`, `.devProjectsGrid` to `repeat(auto-fill, minmax(280px, 1fr))` with `24px` gap, and added `.topTags` / `.badgeTag` / `Sold out` badge markup matching `communities/show.blade.php`.
+  - Updated `.cardBtnRow .cardWaBtn` to transparent with `#BFA16A` border and gold hover, matching Area page cards identically.
+
+### Files Modified
+- resources/views/cities/show.blade.php
+- README.md
+
+
+## Changelog — 2026-11-20 (Part 106: Project Detail Section Title Visibility & Global CMS Clear/Save Rule)
+
+### What Changed
+- **Section Title Rendering on Project Detail Page (`resources/views/partials/page-payment-plan.blade.php`, `page-amenities.blade.php`):**
+  - Updated Payment Plan and Amenities section visibility guards to render when Section Title has text even if cards/images are empty, and hide cleanly when cleared.
+- **Global CMS Clear/Save Persistence (`app/Http/Controllers/Admin/PageController.php`, `app/helpers.php`, `resources/views/admin/pages/edit.blade.php`):**
+  - Persisted cleared form fields (`null`) as explicit empty strings (`''`) in `PageController` instead of `null`, synced legacy alias keys (`title`/`heading`), updated `page_section()` to respect explicitly cleared empty strings, and switched CMS default value fallbacks in `edit.blade.php` to `array_key_exists` so removing text and clicking Save removes it from both CMS inputs and frontend UI.
+
+### Files Modified
+- app/Http/Controllers/Admin/PageController.php
+- app/helpers.php
+- resources/views/admin/pages/edit.blade.php
+- resources/views/partials/page-payment-plan.blade.php
+- resources/views/partials/page-amenities.blade.php
+- README.md
+
+
+## Changelog — 2026-11-20 (Part 107: City & Community Clean Slug Reuse & Duplicate Blocking)
+
+### What Changed
+- **Strict Active-List Duplicate Blocking & Clean Slug Reuse (`app/Http/Controllers/Admin/CityController.php`, `CommunityController.php`):**
+  - Updated `store()` and `update()` in both `CityController` and `CommunityController` to check uniqueness strictly against existing active rows in `cities` / `communities` tables (blocking duplicates with a clear validation error instead of silently appending `-1` or `-17`).
+  - Kept clean slugs (`lahore`, `islamabad`, etc.) on `cities.slug` and `communities.slug`, isolating linked `pages.slug` (`city/{slug}` / `area/{slug}`) only when an unrelated page exists in `pages`.
+  - Updated `CommunityController@destroy()` to also delete linked page sections before deleting the page.
+  - Fixed existing slugs in DB: `lahore-17` -> `lahore` and `islamabad-1` -> `islamabad`.
+
+### Files Modified
+- app/Http/Controllers/Admin/CityController.php
+- app/Http/Controllers/Admin/CommunityController.php
+- README.md
+
+
+## Changelog — 2026-11-20 (Part 108: Summernote Normal Body Text Light-Black #2B2B2B & 14.5px Open Sans Alignment)
+
+### What Changed
+- **Summernote Normal Text Styling Parity (`article.blade.php`, `page-article.blade.php`, `page-article-summernote.blade.php`, `page-about.blade.php`, `communities/show.blade.php`, `cities/show.blade.php`, `admin/layouts/app.blade.php`):**
+  - Unified all Summernote normal paragraph/body text (both frontend UI and CMS `.note-editable` editor) to `#2B2B2B` light black, `14.5px` `'Open Sans'`, `line-height: 1.6`, `font-weight: 400`, matching `.fsFeaturesAmenitiesSubtitle` identically while preserving golden `#BFA16A` headings and links.
+
+### Files Modified
+- resources/views/partials/article.blade.php
+- resources/views/partials/page-article.blade.php
+- resources/views/partials/page-article-summernote.blade.php
+- resources/views/partials/page-about.blade.php
+- resources/views/communities/show.blade.php
+- resources/views/cities/show.blade.php
+- resources/views/admin/layouts/app.blade.php
+- README.md
+
+
+## Changelog — 2026-11-20 (Part 109: Lead Webhook sub_source Updated to fsadvisory.pk)
+
+### What Changed
+- **Lead Submission sub_source Standardization (`LeadController.php` & Frontend Form Handlers):**
+  - Updated the outgoing lead webhook payload and frontend form handlers from `sub_source: 'saima project'` to `sub_source: 'fsadvisory.pk'`. All leads dispatched to the CRM webhook now accurately carry `fsadvisory.pk` as their `sub_source`.
+
+### Files Modified
+- app/Http/Controllers/LeadController.php
+- public/js/communities/community-interactions.js
+- resources/views/about-us.blade.php
+- resources/views/blogs/show.blade.php
+- resources/views/contact-us.blade.php
+- resources/views/layouts/app.blade.php
+- resources/views/partials/article.blade.php
+- resources/views/partials/contact.blade.php
+- resources/views/partials/hero.blade.php
+- resources/views/partials/page-article.blade.php
+- README.md

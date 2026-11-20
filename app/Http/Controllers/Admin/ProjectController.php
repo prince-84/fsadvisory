@@ -49,6 +49,7 @@ class ProjectController extends Controller
             'delivery_date' => ['nullable', 'string', 'max:255'],
             'developer_id'  => ['nullable', 'exists:developers,id'],
             'developer'     => ['nullable', 'string', 'max:255'],
+            'community_id'  => ['nullable', 'exists:communities,id'],
             'payment_plan'  => ['nullable', 'string', 'max:255'],
             'image'         => ['nullable', 'string', 'max:500'],
             'image_file'    => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,avif', 'max:5120'],
@@ -59,9 +60,9 @@ class ProjectController extends Controller
             'show_in_commercial' => ['nullable', 'boolean'],
         ]);
 
-        $status = $request->input('status', 'publish');
+        $status = $request->input('status', 'draft');
         if (!in_array($status, ['publish', 'draft', 'sold_out'])) {
-            $status = 'publish';
+            $status = 'draft';
         }
         $isActive = ($status !== 'draft');
 
@@ -382,6 +383,25 @@ class ProjectController extends Controller
             }
         }
 
+        // Auto-detect community_id if not explicitly provided
+        $commId = !empty($validated['community_id']) ? (int)$validated['community_id'] : null;
+        if (!$commId && !empty($validated['location'])) {
+            $locText = trim($validated['location']);
+            $matchedComm = \App\Models\Community::all()->first(function($c) use ($locText) {
+                return strcasecmp($c->name, $locText) === 0 
+                    || str_starts_with(strtolower($locText), strtolower($c->name));
+            });
+            if ($matchedComm) {
+                $commId = $matchedComm->id;
+            }
+        }
+        if ($commId) {
+            $commModel = \App\Models\Community::with('city')->find($commId);
+            if ($commModel) {
+                $validated['location'] = $commModel->name . ($commModel->city ? ', ' . $commModel->city->name : '');
+            }
+        }
+
         // 3. Create Project Card (placed at the top of the list)
         Project::query()->increment('order');
         $project = Project::create([
@@ -394,6 +414,7 @@ class ProjectController extends Controller
             'badges'             => $badges,
             'developer_id'       => $devId ?: null,
             'developer'          => $devName ?: ($extractedDeveloper ?? null),
+            'community_id'       => $commId ?: null,
             'payment_plan'       => $extractedPaymentPlan ?? null,
             'image'              => $cardImage,
             'status'             => $status,
@@ -539,6 +560,7 @@ class ProjectController extends Controller
             'badges'        => ['nullable'],
             'developer_id'  => ['nullable', 'exists:developers,id'],
             'developer'     => ['nullable', 'string', 'max:255'],
+            'community_id'  => ['nullable', 'exists:communities,id'],
             'payment_plan'       => ['nullable', 'string', 'max:255'],
             'image'              => ['nullable', 'string', 'max:500'],
             'image_file'         => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,avif', 'max:5120'],
@@ -558,9 +580,14 @@ class ProjectController extends Controller
             $validated['image'] = '/images/projects/' . $filename;
             $newImage = $validated['image'];
             $imageUpdated = true;
-        } elseif ($request->filled('image') && $request->input('image') !== $project->image) {
-            $newImage = $validated['image'];
-            $imageUpdated = true;
+        } elseif ($request->filled('image')) {
+            if ($request->input('image') !== $project->image) {
+                $newImage = $validated['image'];
+                $imageUpdated = true;
+            }
+        } else {
+            // Preserve existing image if neither file nor string provided
+            $validated['image'] = $project->image;
         }
 
         if (empty($validated['slug'])) {
@@ -604,6 +631,26 @@ class ProjectController extends Controller
                 }
             } else {
                 $validated['developer_id'] = null;
+            }
+        }
+
+        if ($request->has('community_id')) {
+            $validated['community_id'] = $request->input('community_id') ?: null;
+            if ($validated['community_id']) {
+                $commModel = \App\Models\Community::with('city')->find($validated['community_id']);
+                if ($commModel) {
+                    $validated['location'] = $commModel->name . ($commModel->city ? ', ' . $commModel->city->name : '');
+                }
+            }
+        } elseif (!empty($validated['location'])) {
+            $locText = trim($validated['location']);
+            $matchedComm = \App\Models\Community::all()->first(function($c) use ($locText) {
+                return strcasecmp($c->name, $locText) === 0 
+                    || str_starts_with(strtolower($locText), strtolower($c->name));
+            });
+            if ($matchedComm) {
+                $validated['community_id'] = $matchedComm->id;
+                $validated['location'] = $matchedComm->name . ($matchedComm->city ? ', ' . $matchedComm->city->name : '');
             }
         }
 

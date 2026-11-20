@@ -38,11 +38,7 @@
 
     @include('partials.seo-head-scripts')
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
-    <link rel="shortcut icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v={{ file_exists(public_path('favicon.ico')) ? filemtime(public_path('favicon.ico')) : time() }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
+    @include('partials.favicon')
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -66,7 +62,7 @@
         background-color: #ffffff;
       }
 
-      /* Global Headings Green Color (#1a4731) */
+      /* Global Headings Green Color (#BFA16A) */
       article h1, article h2, article h3, article h4, article h5, article h6,
       article h1 *, article h2 *, article h3 *, article h4 *, article h5 *, article h6 *,
       .saimaContentCol h1, .saimaContentCol h2, .saimaContentCol h3, .saimaContentCol h4, .saimaContentCol h5, .saimaContentCol h6,
@@ -77,7 +73,7 @@
       .saimaLongContentBody h1 *, .saimaLongContentBody h2 *, .saimaLongContentBody h3 *, .saimaLongContentBody h4 *, .saimaLongContentBody h5 *, .saimaLongContentBody h6 *,
       .devContentArea h1, .devContentArea h2, .devContentArea h3, .devContentArea h4, .devContentArea h5, .devContentArea h6,
       .devContentArea h1 *, .devContentArea h2 *, .devContentArea h3 *, .devContentArea h4 *, .devContentArea h5 *, .devContentArea h6 * {
-        color: #1a4731 !important;
+        color: #BFA16A !important;
       }
 
       /* Compact Paragraph and Content Spacing */
@@ -239,7 +235,7 @@
           text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
       }
       .cardBookBtn {
-          background: #1a4731;
+          background: #BFA16A;
           color: #ffffff;
           font-size: 13px;
           font-weight: 800;
@@ -254,14 +250,14 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 4px 14px rgba(26, 71, 49, 0.45);
+          box-shadow: 0 4px 14px rgba(191, 161, 106, 0.45);
           border: 1.5px solid rgba(255, 255, 255, 0.25);
           transition: all 0.25s ease;
       }
       .cardCustom:hover .cardBookBtn {
-          background: #133825;
+          background: #aa8d58;
           transform: translateY(-2px);
-          box-shadow: 0 6px 18px rgba(26, 71, 49, 0.6);
+          box-shadow: 0 6px 18px rgba(191, 161, 106, 0.6);
       }
       .soldOutBadge {
           position: absolute;
@@ -345,8 +341,8 @@
           font-family: inherit;
       }
       .saimaInput:focus {
-          border-color: #1a4731;
-          box-shadow: 0 0 0 3px rgba(26, 71, 49, 0.15);
+          border-color: #BFA16A;
+          box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.15);
       }
       .saimaTextarea {
           width: 100%;
@@ -364,11 +360,11 @@
           font-family: inherit;
       }
       .saimaTextarea:focus {
-          border-color: #1a4731;
-          box-shadow: 0 0 0 3px rgba(26, 71, 49, 0.15);
+          border-color: #BFA16A;
+          box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.15);
       }
       .saimaSubmitBtn {
-          background-color: #1a4731 !important;
+          background-color: #BFA16A !important;
           color: #ffffff !important;
           font-size: 15px;
           font-weight: 700;
@@ -380,12 +376,12 @@
           width: 100%;
           text-transform: uppercase;
           transition: all 0.25s ease;
-          box-shadow: 0 4px 12px rgba(26, 71, 49, 0.25);
+          box-shadow: 0 4px 12px rgba(191, 161, 106, 0.25);
       }
       .saimaSubmitBtn:hover {
-          background-color: #123322 !important;
+          background-color: #aa8d58 !important;
           transform: translateY(-2px);
-          box-shadow: 0 6px 18px rgba(26, 71, 49, 0.35);
+          box-shadow: 0 6px 18px rgba(191, 161, 106, 0.35);
       }
       .saimaSuccessMsg {
           display: none;
@@ -493,7 +489,7 @@
     $navProjects = get_navbar_projects();
     $navCommercial = get_navbar_commercial();
 
-    // Featured Projects for this Developer
+    // Featured Projects for this Developer (Strictly selected in CMS only)
     $featuredProjectIds = is_array($developer->featured_projects) ? array_values(array_filter($developer->featured_projects)) : [];
     $featuredProjects = collect();
     if (!empty($featuredProjectIds)) {
@@ -507,14 +503,6 @@
             ->sortBy(function($model) use ($featuredProjectIds) {
                 return array_search($model->id, $featuredProjectIds);
             });
-    } elseif (!empty($developer->name)) {
-        $featuredProjects = \App\Models\Project::where('developer', $developer->name)
-            ->where('is_active', true)
-            ->where(function($q) {
-                $q->whereNull('status')->orWhere('status', '!=', 'draft');
-            })
-            ->with('page')
-            ->get();
     }
 
     // Latest Projects for the sidebar widget
@@ -535,7 +523,7 @@
 
     // Prepare short content with "Read More ↓" appended directly at the end of the text (INLINE on the same line)
     $rawShort = trim($developer->short_content ?? '');
-    $readMoreHtml = ' <a href="#longContent" class="devReadMoreLink" style="display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: #1a4731; font-size: 15px; text-decoration: none; border-bottom: 1.5px solid #1a4731; padding-bottom: 1px; white-space: nowrap; margin-left: 6px; cursor: pointer;">Read More <span style="font-size: 13px;">&darr;</span></a>';
+    $readMoreHtml = ' <a href="#longContent" class="devReadMoreLink" style="display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: #BFA16A; font-size: 15px; text-decoration: none; border-bottom: 1.5px solid #BFA16A; padding-bottom: 1px; white-space: nowrap; margin-left: 6px; cursor: pointer;">Read More <span style="font-size: 13px;">&darr;</span></a>';
     if (!empty($rawShort)) {
         if (preg_match('/<\/p>\s*$/i', $rawShort)) {
             $shortWithReadMore = preg_replace('/<\/p>\s*$/i', $readMoreHtml . '</p>', $rawShort);
@@ -552,24 +540,26 @@
         <header class="GolfHeader-module__ZF_nIG__header">
             <div class="container GolfHeader-module__ZF_nIG__headerContainer">
                 <a class="GolfHeader-module__ZF_nIG__logoLink" href="/">
-                    <img src="{{ asset('logo_saima.png') }}" alt="Saima Group" class="GolfHeader-module__ZF_nIG__logoImg" style="color:transparent; height: 50px; width: auto; max-height: 54px; object-fit: contain;"/>
+                    <img src="{{ asset('FS LOGO n FAVICON-06.svg') }}" alt="FS Real Estate Advisory" class="GolfHeader-module__ZF_nIG__logoImg" style="color:transparent; height: 50px; width: auto; max-height: 54px; object-fit: contain;"/>
                 </a>
                 <nav class="GolfHeader-module__ZF_nIG__nav">
                     <ul class="GolfHeader-module__ZF_nIG__navList">
                         <li class="GolfHeader-module__ZF_nIG__navItem"><a class="GolfHeader-module__ZF_nIG__navLink" href="/">HOME</a></li>
-                        @if($navProjects->isNotEmpty())
-                            <li class="GolfHeader-module__ZF_nIG__navItem">
-                                <button type="button" class="GolfHeader-module__ZF_nIG__navLink" style="background:none;border:none;cursor:pointer">
-                                    PROJECTS
+                        <li class="GolfHeader-module__ZF_nIG__navItem">
+                            <a href="/projects" class="GolfHeader-module__ZF_nIG__navLink" style="display:inline-flex;align-items:center;gap:4px">
+                                PROJECTS
+                                @if($navProjects->isNotEmpty())
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"></path></svg>
-                                </button>
+                                @endif
+                            </a>
+                            @if($navProjects->isNotEmpty())
                                 <div class="GolfHeader-module__ZF_nIG__dropdownMenu">
                                     @foreach($navProjects as $proj)
                                         <a class="GolfHeader-module__ZF_nIG__dropdownItem" href="{{ $proj->url }}">{{ $proj->title }}</a>
                                     @endforeach
                                 </div>
-                            </li>
-                        @endif
+                            @endif
+                        </li>
                         @if($navCommercial->isNotEmpty())
                             <li class="GolfHeader-module__ZF_nIG__navItem">
                                 <button type="button" class="GolfHeader-module__ZF_nIG__navLink" style="background:none;border:none;cursor:pointer">
@@ -584,9 +574,6 @@
                             </li>
                         @endif
                         <li class="GolfHeader-module__ZF_nIG__navItem"><a class="GolfHeader-module__ZF_nIG__navLink" href="/developers">DEVELOPERS</a></li>
-                        @if($featuredProjects->isNotEmpty())
-                            <li class="GolfHeader-module__ZF_nIG__navItem"><a href="#projects" class="GolfHeader-module__ZF_nIG__navLink">PROJECTS</a></li>
-                        @endif
                         @if(!empty($devFaqs))
                             <li class="GolfHeader-module__ZF_nIG__navItem"><a href="#faq" class="GolfHeader-module__ZF_nIG__navLink">FAQ</a></li>
                         @endif
@@ -606,16 +593,23 @@
             </button>
             <ul class="GolfHeader-module__ZF_nIG__mobileNavList">
                 <li><a class="GolfHeader-module__ZF_nIG__mobileNavLink" href="/">Home</a></li>
-                @if($navProjects->isNotEmpty())
-                    <li>
-                        <button type="button" class="GolfHeader-module__ZF_nIG__mobileNavLink">Projects<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" style="transform:none;transition:transform 0.2s"><path d="m6 9 6 6 6-6"></path></svg></button>
+                <li>
+                    @if($navProjects->isNotEmpty())
+                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                            <a href="/projects" class="GolfHeader-module__ZF_nIG__mobileNavLink" style="flex: 1;">Projects</a>
+                            <button type="button" class="GolfHeader-module__ZF_nIG__mobileNavLink" style="background: none; border: none; padding: 10px 14px; cursor: pointer;" onclick="const sl = this.parentElement.nextElementSibling; const isO = sl.style.display==='flex'; sl.style.display=isO?'none':'flex'; this.querySelector('svg').style.transform=isO?'none':'rotate(180deg)';">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" style="transform:none;transition:transform 0.2s"><path d="m6 9 6 6 6-6"></path></svg>
+                            </button>
+                        </div>
                         <div class="mobileSubList" style="display: none; padding-left: 14px; flex-direction: column; gap: 8px; margin-top: 8px;">
                             @foreach($navProjects as $proj)
                                 <a href="{{ $proj->url }}" class="mobileSubItem" style="color: rgba(255, 255, 255, 0.85); font-size: 14px; text-decoration: none; padding: 6px 0; display: block;">{{ $proj->title }}</a>
                             @endforeach
                         </div>
-                    </li>
-                @endif
+                    @else
+                        <a href="/projects" class="GolfHeader-module__ZF_nIG__mobileNavLink">Projects</a>
+                    @endif
+                </li>
                 @if($navCommercial->isNotEmpty())
                     <li>
                         <button type="button" class="GolfHeader-module__ZF_nIG__mobileNavLink">Commercial<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" style="transform:none;transition:transform 0.2s"><path d="m6 9 6 6 6-6"></path></svg></button>
@@ -627,9 +621,6 @@
                     </li>
                 @endif
                 <li><a class="GolfHeader-module__ZF_nIG__mobileNavLink" href="/developers">Developers</a></li>
-                @if($featuredProjects->isNotEmpty())
-                    <li><a href="#projects" class="GolfHeader-module__ZF_nIG__mobileNavLink">Projects</a></li>
-                @endif
                 @if(!empty($devFaqs))
                     <li><a href="#faq" class="GolfHeader-module__ZF_nIG__mobileNavLink">FAQ</a></li>
                 @endif
@@ -651,7 +642,7 @@
 
         <!-- 2. Main Top Layout: Left (Short Content + Project Cards) | Right Dynamic Sticky Sidebar (Scrollbar & generous height) -->
         <section style="padding: 55px 0 50px 0; background: #ffffff;">
-            <div class="container" style="max-width: 1240px; margin: 0 auto; padding: 0 20px;">
+            <div class="container" style="max-width: 1440px; margin: 0 auto; padding: 0 36px;">
                 <div class="devMainLayout">
                     
                     <!-- Left Column: Short Content & Featured Project Cards -->
@@ -669,7 +660,7 @@
                         <!-- Featured Project Cards -->
                         @if($featuredProjects->isNotEmpty())
                             <div id="projects" style="margin-top: 15px;">
-                                <h2 style="font-size: 26px; font-weight: 700; color: #1a4731; margin: 0 0 22px 0;">Featured Projects</h2>
+                                <h2 style="font-size: 26px; font-weight: 700; color: #BFA16A; margin: 0 0 22px 0;">Featured Projects</h2>
                                 <div class="devProjectsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
                                     @foreach($featuredProjects as $item)
                                         @php
@@ -677,7 +668,7 @@
                                             $cardHref = $item->url;
                                             $isSoldOut = ($item->status === 'sold_out') || ($item->page?->status === 'sold_out');
                                         @endphp
-                                        <a href="{{ $cardHref }}" class="cardCustom" style="text-decoration: none; cursor: pointer;" aria-label="{{ $item->title }}{{ !empty($item->developer) ? ' by ' . $item->developer : '' }}">
+                                        <div class="cardCustom" style="cursor: pointer;" onclick="window.location='{{ $cardHref }}'" role="link" tabindex="0" aria-label="{{ $item->title }}">
                                             <div class="topTags">
                                                 @if(!empty($item->badges) && is_array($item->badges))
                                                     @foreach($item->badges as $badge)
@@ -695,10 +686,19 @@
                                             <div class="bottomContent">
                                                 <h3 class="cardTitle">{{ $item->title }}</h3>
                                                 <p class="cardLocation">{{ $item->location ?? 'Saima, Pakistan' }}</p>
-                                                <div class="cardBookBtn">BOOK NOW</div>
+                                                @include('partials.project-card-actions', ['proj' => $item, 'href' => $cardHref])
                                             </div>
-                                        </a>
+                                        </div>
                                     @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        <!-- Long Content (sits beside the sticky form, ends right above FAQ) -->
+                        @if(!empty(trim($developer->full_content ?? '')))
+                            <div id="longContent" style="margin-top: 40px; min-width: 0; overflow-x: auto;">
+                                <div class="saimaContentCol saimaDynamicContent saimaLongContentBody devContentArea" style="font-size: 15px; line-height: 1.55; color: #374151;">
+                                    {!! $developer->full_content !!}
                                 </div>
                             </div>
                         @endif
@@ -714,86 +714,21 @@
                             </div>
                         @endif
 
-                        <!-- BOOK AN APPOINTMENT Form Card (No internal scrollbar - Clean & Straight) -->
-                        <div class="saimaApptCard">
-                            <h3 class="saimaApptTitle">BOOK AN APPOINTMENT</h3>
-                            <form id="saimaAppointmentForm" class="saimaApptForm">
-                                <input type="text" name="name" class="saimaInput" placeholder="Name" required>
-                                <input type="tel" name="phone" class="saimaInput" placeholder="Phone Number" required>
-                                <input type="email" name="email" class="saimaInput" placeholder="Email" required>
-                                <textarea name="comment" class="saimaTextarea" placeholder="Leave a comment here"></textarea>
-                                <button type="submit" class="saimaSubmitBtn">SUBMIT</button>
-                                <div id="saimaFormSuccess" class="saimaSuccessMsg">
-                                    Thank you! Your request has been received.
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Latest Projects Card (Below Form) -->
-                        @if($latestProjects->isNotEmpty())
-                            <div class="saimaProjectsWidget">
-                                <h4 class="saimaProjectsHeader">Latest Projects</h4>
-                                <div class="saimaProjectList">
-                                    @foreach($latestProjects->take(2) as $sp)
-                                        <a href="{{ $sp->url }}" class="saimaProjectItem">
-                                            <img src="{{ $sp->image_url }}" alt="{{ $sp->title }}" class="saimaProjectThumb">
-                                            <div class="saimaProjectMeta">
-                                                <div class="saimaProjectItemTitle">{{ $sp->title }}</div>
-                                                <div class="saimaProjectItemDesc">{{ $sp->location ?? 'Saima, Pakistan' }}</div>
-                                            </div>
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
+                        <!-- Sidebar Form Widget (WhatsApp, Call, Appointment Form & Custom Searches) -->
+                        @include('partials.sidebar-form-widget', ['sbPageTitle' => $developer->name])
                     </aside>
 
                 </div>
             </div>
         </section>
 
-        <!-- 3. Long Content Section (Full-Width White Container, starts as soon as cards end) -->
-        @if(!empty(trim($developer->full_content ?? '')))
-            <section id="longContent" style="padding: 45px 0 65px 0; background: #ffffff;">
-                <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-                    <div class="saimaContentCol saimaDynamicContent saimaLongContentBody devContentArea" style="font-size: 15px; line-height: 1.55; color: #374151;">
-                        {!! $developer->full_content !!}
-                    </div>
-                </div>
-            </section>
-        @endif
-
-        <!-- 4. FAQs Section (Accordion with Brand Green Header) -->
+        <!-- 4. FAQs Section (Standardized with Home Page styling) -->
         @if(!empty($devFaqs))
-            <section id="faq" class="GolfFaq-module__4nJd7q__faqSection" style="padding: 60px 0 70px 0; background: #ffffff;">
-                <div class="container" style="max-width: 920px; margin: 0 auto; padding: 0 20px;">
-                    <div style="text-align: center; margin-bottom: 35px;">
-                        <h2 style="font-size: 32px; font-weight: 700; color: #1a4731;">{{ $developer->faq_heading ?: 'Frequently Asked Questions' }}</h2>
-                        @php
-                            $faqSub = $developer->faq_subtitle;
-                            if ($faqSub === null) {
-                                $faqSub = 'Got questions about ' . $developer->name . '? Find helpful answers below.';
-                            }
-                        @endphp
-                        @if(!empty(trim($faqSub)))
-                            <p style="font-size: 15px; color: #666; margin-top: 8px;">{{ $faqSub }}</p>
-                        @endif
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        @foreach($devFaqs as $fIdx => $fItem)
-                            <div style="border: 1px solid #e0d7cb; border-radius: 8px; overflow: hidden; background: #fff;">
-                                <button type="button" onclick="const a = this.nextElementSibling; const s = this.querySelector('.faqArr'); const isOpen = a.style.display !== 'none'; a.style.display = isOpen ? 'none' : 'block'; s.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';" style="width: 100%; padding: 16px 20px; background: {{ $fIdx === 0 ? '#1a4731' : '#fcfaf8' }}; color: {{ $fIdx === 0 ? '#fff' : '#222' }}; font-weight: 700; font-size: 15px; border: none; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s ease;">
-                                    <span>{{ $fItem['q'] ?? $fItem['question'] ?? '' }}</span>
-                                    <span class="faqArr" style="font-size: 16px; transition: transform 0.2s ease; transform: {{ $fIdx === 0 ? 'rotate(180deg)' : 'rotate(0deg)' }};">▾</span>
-                                </button>
-                                <div style="display: {{ $fIdx === 0 ? 'block' : 'none' }}; padding: 16px 20px; background: #fff; font-size: 14.5px; line-height: 1.7; color: #444; border-top: 1px solid #f0ebe4;">
-                                    {!! $fItem['a'] ?? $fItem['answer'] ?? '' !!}
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </section>
+            @include('partials.faq', [
+                'customFaqs' => $devFaqs,
+                'customHeading' => $developer->faq_heading ?: 'Frequently Asked Questions',
+                'customSubtitle' => $developer->faq_subtitle !== null ? $developer->faq_subtitle : ('Got questions about ' . $developer->name . '? Find helpful answers below.')
+            ])
         @endif
 
         <!-- 5. Footer (100% Matching Dynamic Page) -->
@@ -851,3 +786,5 @@
     </script>
 </body>
 </html>
+
+

@@ -19,6 +19,7 @@ class Project extends Model implements Auditable
         'delivery_date',
         'developer',
         'developer_id',
+        'community_id',
         'payment_plan',
         'image',
         'badges',
@@ -35,6 +36,8 @@ class Project extends Model implements Auditable
         'show_in_commercial' => 'boolean',
         'order'              => 'integer',
         'page_id'            => 'integer',
+        'developer_id'       => 'integer',
+        'community_id'       => 'integer',
         'badges'             => 'array',
     ];
 
@@ -58,6 +61,29 @@ class Project extends Model implements Auditable
     public function developerRel()
     {
         return $this->belongsTo(Developer::class, 'developer_id');
+    }
+
+    /**
+     * The Community linked to this property.
+     */
+    public function community()
+    {
+        return $this->belongsTo(Community::class, 'community_id');
+    }
+
+    /**
+     * Get live formatted location from linked Community & City.
+     */
+    public function getLocationAttribute($value): ?string
+    {
+        if ($this->community_id) {
+            $comm = $this->relationLoaded('community') ? $this->community : $this->community()->with('city')->first();
+            if ($comm) {
+                return $comm->name . ($comm->city ? ', ' . $comm->city->name : '');
+            }
+        }
+
+        return $value;
     }
 
     /**

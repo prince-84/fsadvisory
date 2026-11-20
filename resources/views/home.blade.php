@@ -8,7 +8,7 @@
         if (\Illuminate\Support\Facades\Schema::hasTable('pages')) {
             $homePage = \App\Models\Page::where('slug', '/')->first();
             if ($homePage && \Illuminate\Support\Facades\Schema::hasTable('page_sections')) {
-                $sections = $homePage->sections()->where('is_active', true)->orderBy('order')->get();
+                $sections = $homePage->sections()->where('is_active', true)->where('is_visible', true)->orderBy('order')->get();
             }
         }
     } catch (\Throwable $e) {
@@ -41,8 +41,11 @@
             @case('faq')
                 @include('partials.faq')
                 @include('partials.home-blogs')
+                @include('partials.home-partners')
                 @break
             @case('contact')
+                @include('partials.home-cta-banner')
+                @include('partials.home-contact-options')
                 @include('partials.contact')
                 @break
         @endswitch
@@ -57,6 +60,9 @@
     @include('partials.overview-location')
     @include('partials.faq')
     @include('partials.home-blogs')
+    @include('partials.home-partners')
+    @include('partials.home-cta-banner')
+    @include('partials.home-contact-options')
     @include('partials.contact')
 @endif
 @endsection

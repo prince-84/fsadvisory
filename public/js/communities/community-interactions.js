@@ -650,7 +650,7 @@
           community: projName,
           property_type: 'Residential',
           source: 'Website',
-          sub_source: 'saima project',
+          sub_source: 'fsadvisory.pk',
           page_url: window.location.href,
           campaign_url: window.location.href,
           utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || '',

@@ -7,7 +7,7 @@
         if (\Illuminate\Support\Facades\Schema::hasTable('pages')) {
             $aboutPage = \App\Models\Page::where('slug', 'about-us')->first();
             if ($aboutPage && \Illuminate\Support\Facades\Schema::hasTable('page_sections')) {
-                $sections = $aboutPage->sections()->where('is_active', true)->orderBy('order')->get();
+                $sections = $aboutPage->sections()->where('is_active', true)->where('is_visible', true)->orderBy('order')->get();
             }
         }
     } catch (\Throwable $e) {
@@ -253,7 +253,7 @@
                                             $benText = is_array($ben) ? ($ben['text'] ?? '') : $ben;
                                         @endphp
                                         <div class="aboutBenefitItem">
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a4731" stroke-width="2">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#BFA16A" stroke-width="2">
                                                 <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
                                             </svg>
                                             <span>{{ strip_tags((string)$benText) }}</span>
@@ -352,7 +352,7 @@
                     email: formData.get('email') || '',
                     phone: formData.get('phone'),
                     source: 'Website',
-                    sub_source: 'saima project',
+                    sub_source: 'fsadvisory.pk',
                     page_url: window.location.href,
                     campaign_url: window.location.href,
                     utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || '',

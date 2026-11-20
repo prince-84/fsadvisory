@@ -4,45 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ ($page ?? null)?->meta_title ?: ((($page ?? null)?->title ?? ($project->title ?? ($city->name ?? ($community->name ?? 'Page')))) . ' | FS Real Estate Advisory') }}</title>
-    <link rel="canonical" href="{{ canonical_url() }}" />
+@php
+    $dpTitle = ($page ?? null)?->meta_title ?: ((($page ?? null)?->title ?? ($project->title ?? ($city->name ?? ($community->name ?? 'Property')))) . ' | FS Real Estate Advisory');
+    $dpDesc = ($page ?? null)?->meta_description ?: (($project ?? null)?->headline ?: 'Explore luxury real estate properties, floor plans, and investment opportunities with FS Real Estate Advisory.');
+    $dpCanonical = canonical_url();
     
-@if(($page ?? null)?->meta_description)
-        <meta name="description" content="{{ $page->meta_description }}">
+    // Determine preview image (og:image) for WhatsApp and Social share cards
+    $dpOgImage = '';
+    if (!empty($project?->image_url)) {
+        $dpOgImage = $project->image_url;
+    } elseif (!empty($project?->image)) {
+        $dpOgImage = (str_starts_with($project->image, 'http://') || str_starts_with($project->image, 'https://')) ? $project->image : asset(ltrim($project->image, '/'));
+    } elseif (!empty(($page ?? null)?->og_image)) {
+        $dpOgImage = str_starts_with($page->og_image, 'http') ? $page->og_image : asset(ltrim($page->og_image, '/'));
+    } else {
+        $dpHeroBg = page_section('hero', 'bg_image', null, $page->slug ?? null);
+        if (!empty($dpHeroBg) && $dpHeroBg !== '/hero.png') {
+            $dpOgImage = (str_starts_with($dpHeroBg, 'http://') || str_starts_with($dpHeroBg, 'https://')) ? $dpHeroBg : asset(ltrim($dpHeroBg, '/'));
+        } else {
+            $dpOgImage = asset('hero.png');
+        }
+    }
+@endphp
+    <title>{{ $dpTitle }}</title>
+    <link rel="canonical" href="{{ $dpCanonical }}" />
+    <meta name="description" content="{{ $dpDesc }}">
     
-@endif
 @if(($page ?? null)?->meta_keywords)
-        <meta name="keywords" content="{{ $page->meta_keywords }}">
-    
+    <meta name="keywords" content="{{ $page->meta_keywords }}">
 @endif
 @if(is_indexing_enabled())
     <meta name="robots" content="index, follow">
     <meta name="googlebot" content="index, follow">
-    @else
+@else
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
-    
 @endif
     <meta name="geo.region" content="PK">
     <meta name="geo.placename" content="Pakistan">
+
+    <!-- Open Graph / WhatsApp Preview Meta Tags -->
+    <meta property="og:title" content="{{ $dpTitle }}">
+    <meta property="og:description" content="{{ $dpDesc }}">
+    <meta property="og:url" content="{{ $dpCanonical }}">
+    <meta property="og:image" content="{{ $dpOgImage }}">
+    <meta property="og:image:secure_url" content="{{ $dpOgImage }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="FS Real Estate Advisory">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $dpTitle }}">
+    <meta name="twitter:description" content="{{ $dpDesc }}">
+    <meta name="twitter:image" content="{{ $dpOgImage }}">
 
     <!-- Header Schemas: Organization, Dynamic FAQPage & RealEstateAgent (JSON-LD) -->
     {!! render_header_schemas($page ?? null, null) !!}
 
     @include('partials.seo-head-scripts')
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
-    <link rel="shortcut icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v={{ file_exists(public_path('favicon.ico')) ? filemtime(public_path('favicon.ico')) : time() }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}?v={{ file_exists(public_path('favicon.png')) ? filemtime(public_path('favicon.png')) : time() }}">
-    <script>
-        if (!sessionStorage.getItem('saima_favicon_v2')) {
-            fetch('{{ asset("favicon.ico") }}', { cache: 'reload', credentials: 'same-origin' }).catch(function(){});
-            fetch('{{ asset("favicon.png") }}', { cache: 'reload', credentials: 'same-origin' }).catch(function(){});
-            sessionStorage.setItem('saima_favicon_v2', '1');
-        }
-    </script>
+    @include('partials.favicon')
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -86,7 +107,7 @@
         width: 38px !important;
         height: 38px !important;
         border-radius: 50% !important;
-        background: #1a4731 !important;
+        background: #BFA16A !important;
         opacity: 1 !important;
         z-index: 1 !important;
       }
@@ -129,33 +150,77 @@
       .slideActive {
         display: block !important;
       }
-      /* Global Hero Section: BOOK NOW Red Background */
+      /* Global Hero Section: BOOK NOW Brand Gold Background */
       .heroBookBtn,
       .heroBtnRow .heroBookBtn,
       #hero .heroBookBtn,
       section[id="hero"] .heroBookBtn,
+      .GolfHero-module__9JtUKq__brochureBtn,
       [class*="heroSection"] [class*="brochureBtn"],
       [class*="Hero"] [class*="brochureBtn"],
       [class*="__btnRow"] [class*="brochureBtn"],
       [class*="btnRow"] button {
-        background-color: #d9232d !important;
-        background: #d9232d !important;
+        background-color: #BFA16A !important;
+        background: #BFA16A !important;
         color: #ffffff !important;
         border: none !important;
-        box-shadow: 0 4px 12px rgba(217, 35, 45, 0.35) !important;
+        border-radius: 4px !important;
+        box-shadow: 0 4px 14px rgba(191, 161, 106, 0.35) !important;
+        transition: all 0.2s ease !important;
+        cursor: pointer !important;
       }
       .heroBookBtn:hover,
       .heroBtnRow .heroBookBtn:hover,
       #hero .heroBookBtn:hover,
       section[id="hero"] .heroBookBtn:hover,
+      .GolfHero-module__9JtUKq__brochureBtn:hover,
       [class*="heroSection"] [class*="brochureBtn"]:hover,
       [class*="Hero"] [class*="brochureBtn"]:hover,
       [class*="__btnRow"] [class*="brochureBtn"]:hover,
       [class*="btnRow"] button:hover {
-        background-color: #b71a23 !important;
-        background: #b71a23 !important;
+        background-color: #aa8d58 !important;
+        background: #aa8d58 !important;
         transform: translateY(-2px) !important;
-        box-shadow: 0 6px 18px rgba(217, 35, 45, 0.5) !important;
+        box-shadow: 0 6px 18px rgba(191, 161, 106, 0.5) !important;
+      }
+      /* Hero Call Back Form Button */
+      .GolfHero-module__9JtUKq__submitBtn,
+      .requestCard button[type="submit"],
+      [class*="requestCard"] button[type="submit"],
+      [class*="callForm"] button[type="submit"] {
+        background-color: #BFA16A !important;
+        background: #BFA16A !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 4px !important;
+        box-shadow: 0 4px 14px rgba(191, 161, 106, 0.35) !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px !important;
+        transition: all 0.2s ease !important;
+        cursor: pointer !important;
+      }
+      .GolfHero-module__9JtUKq__submitBtn:hover,
+      .requestCard button[type="submit"]:hover,
+      [class*="requestCard"] button[type="submit"]:hover,
+      [class*="callForm"] button[type="submit"]:hover {
+        background-color: #aa8d58 !important;
+        background: #aa8d58 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 18px rgba(191, 161, 106, 0.5) !important;
+      }
+      /* Slider Nav Buttons */
+      .GolfHero-module__9JtUKq__prevBtn,
+      .GolfHero-module__9JtUKq__nextBtn {
+        background: rgba(0, 0, 0, 0.45) !important;
+        border: 1px solid rgba(255, 255, 255, 0.35) !important;
+        color: #ffffff !important;
+        transition: all 0.2s ease !important;
+      }
+      .GolfHero-module__9JtUKq__prevBtn:hover,
+      .GolfHero-module__9JtUKq__nextBtn:hover {
+        background: #BFA16A !important;
+        border-color: #BFA16A !important;
+        color: #ffffff !important;
       }
       .tabHidden {
         display: none !important;
@@ -243,38 +308,420 @@
         }
       }
 
-      /* Dynamic Content & Article Headings Brand Green (#1a4731) */
+      /* All Headings Across ENTIRE Dynamic Page -> Brand Gold (#BFA16A) */
+      h1, h2, h3, h4, h5, h6,
+      h1 *, h2 *, h3 *, h4 *, h5 *, h6 *,
       article h1, article h2, article h3, article h4, article h5, article h6,
       article h1 *, article h2 *, article h3 *, article h4 *, article h5 *, article h6 *,
+      .locMainTitle, .locMainTitle *,
+      .fsProjectHeroTitle, .fsProjectHeroTitle *,
+      .fsHeroTitleDark, .fsHeroTitleGold,
+      .note-editable h1, .note-editable h2, .note-editable h3, .note-editable h4, .note-editable h5, .note-editable h6,
+      .note-editable h1 *, .note-editable h2 *, .note-editable h3 *, .note-editable h4 *,
       .saimaContentCol h1, .saimaContentCol h2, .saimaContentCol h3, .saimaContentCol h4, .saimaContentCol h5, .saimaContentCol h6,
       .saimaContentCol h1 *, .saimaContentCol h2 *, .saimaContentCol h3 *, .saimaContentCol h4 *, .saimaContentCol h5 *, .saimaContentCol h6 *,
       .saimaDynamicContent h1, .saimaDynamicContent h2, .saimaDynamicContent h3, .saimaDynamicContent h4, .saimaDynamicContent h5, .saimaDynamicContent h6,
       .saimaDynamicContent h1 *, .saimaDynamicContent h2 *, .saimaDynamicContent h3 *, .saimaDynamicContent h4 *, .saimaDynamicContent h5 *, .saimaDynamicContent h6 *,
       .saimaLongContentBody h1, .saimaLongContentBody h2, .saimaLongContentBody h3, .saimaLongContentBody h4, .saimaLongContentBody h5, .saimaLongContentBody h6,
       .saimaLongContentBody h1 *, .saimaLongContentBody h2 *, .saimaLongContentBody h3 *, .saimaLongContentBody h4 *, .saimaLongContentBody h5 *, .saimaLongContentBody h6 * {
-        color: #1a4731 !important;
+        color: #BFA16A !important;
+      }
+    
+      /* Universal White Navbar (#FFFFFF) for Project Detail Pages */
+      .GolfHeader-module__ZF_nIG__header,
+      header.GolfHeader-module__ZF_nIG__header,
+      header[class*="Header"],
+      .header,
+      #siteHeader {
+        position: sticky !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        background: #FFFFFF !important;
+        background-color: #FFFFFF !important;
+        z-index: 9999 !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06) !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+        padding: 12px 0 !important;
+      }
+
+      @media (max-width: 768px) {
+        .header,
+        #siteHeader,
+        .GolfHeader-module__ZF_nIG__header {
+          border-bottom: none !important;
+          box-shadow: none !important;
+        }
+        .mobileDrawerOverlay,
+        #mobileBackdrop {
+          z-index: 100000 !important;
+        }
+        .mobileDrawer,
+        #mobileDrawer {
+          z-index: 100005 !important;
+          width: 320px !important;
+          max-width: 86vw !important;
+        }
+      }
+      .GolfHeader-module__ZF_nIG__headerContainer {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+      }
+      .GolfHeader-module__ZF_nIG__navLink {
+        color: #171717 !important;
+        font-weight: 600 !important;
+        font-size: 13.5px !important;
+        letter-spacing: 0.3px !important;
+        text-decoration: none !important;
+        position: relative !important;
+        transition: color 0.2s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        text-transform: uppercase !important;
+      }
+      .GolfHeader-module__ZF_nIG__navLink svg {
+        stroke: #171717 !important;
+        color: #171717 !important;
+        transition: stroke 0.2s ease !important;
+      }
+      .GolfHeader-module__ZF_nIG__navLink:hover,
+      .GolfHeader-module__ZF_nIG__navItem:hover > .GolfHeader-module__ZF_nIG__navLink {
+        color: #BFA16A !important;
+      }
+      .GolfHeader-module__ZF_nIG__navLink:hover svg,
+      .GolfHeader-module__ZF_nIG__navItem:hover > .GolfHeader-module__ZF_nIG__navLink svg {
+        stroke: #BFA16A !important;
+        color: #BFA16A !important;
+      }
+      .GolfHeader-module__ZF_nIG__navLink::after {
+        content: "" !important;
+        position: absolute !important;
+        left: 0 !important;
+        bottom: -6px !important;
+        width: 0% !important;
+        height: 2.5px !important;
+        background: #BFA16A !important;
+        background-color: #BFA16A !important;
+        transition: width 0.25s ease !important;
+      }
+      .GolfHeader-module__ZF_nIG__navLink:hover::after,
+      .GolfHeader-module__ZF_nIG__navItemActive .GolfHeader-module__ZF_nIG__navLink::after {
+        width: 100% !important;
+      }
+      .GolfHeader-module__ZF_nIG__dropdownMenu {
+        background: #ffffff !important;
+        border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+        border-radius: 6px !important;
+      }
+      .GolfHeader-module__ZF_nIG__dropdownItem {
+        color: #222222 !important;
+        transition: all 0.2s ease !important;
+      }
+      .GolfHeader-module__ZF_nIG__dropdownItem:hover {
+        background: rgba(191, 161, 106, 0.1) !important;
+        color: #BFA16A !important;
+      }
+      .GolfHeader-module__ZF_nIG__mobileToggle svg {
+        stroke: #171717 !important;
+        color: #171717 !important;
+      }
+      .btn-get-started,
+      .GolfHeader-module__ZF_nIG__listPropBtnMobile {
+        background-color: #BFA16A !important;
+        background: #BFA16A !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 4px !important;
+        box-shadow: 0 4px 12px rgba(191, 161, 106, 0.3) !important;
+        transition: all 0.2s ease !important;
+      }
+      .btn-get-started:hover,
+      .GolfHeader-module__ZF_nIG__listPropBtnMobile:hover {
+        background-color: #aa8d58 !important;
+        background: #aa8d58 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 16px rgba(191, 161, 106, 0.45) !important;
+      }
+      .ScrollToTop-module__bPaVnG__scrollTopBtn {
+        background-color: #BFA16A !important;
+        background: #BFA16A !important;
+        color: #ffffff !important;
+      }
+      .ScrollToTop-module__bPaVnG__scrollTopBtn:hover {
+        background-color: #aa8d58 !important;
+        background: #aa8d58 !important;
+      }
+      .GolfHero-module__9JtUKq__heroSection {
+        padding: 60px 0 60px !important;
+      }
+      /* All Content & Overview Hyperlinks on UI -> Golden #BFA16A */
+      .fsAboutDesc a,
+      .fsAboutDesc p a,
+      .saimaContentCol a,
+      .saimaShortContent a,
+      .saimaDynamicContent a,
+      .saimaLongContentBody a,
+      .saimaSummernoteBodyContent a,
+      .saimaSummernoteExpanded a,
+      .GolfAboutVideo-module__mC9tiq__description a,
+      article a:not(.btn):not(.saimaTocLink) {
+        color: #BFA16A !important;
+        text-decoration: underline !important;
+        font-weight: 600 !important;
+        transition: color 0.15s ease !important;
+      }
+      .fsAboutDesc a:hover,
+      .fsAboutDesc p a:hover,
+      .saimaContentCol a:hover,
+      .saimaShortContent a:hover,
+      .saimaDynamicContent a:hover,
+      .saimaLongContentBody a:hover,
+      .saimaSummernoteBodyContent a:hover,
+      .saimaSummernoteExpanded a:hover,
+      .GolfAboutVideo-module__mC9tiq__description a:hover,
+      article a:not(.btn):not(.saimaTocLink):hover {
+        color: #aa8d58 !important;
       }
     </style>
 </head>
 <body>
+    <main style="min-height:100vh;background-color:#ffffff">
+    @include('partials.header')
 @php
-    $navProjects = get_navbar_projects($page->slug ?? null, $page->id ?? null);
-    $navCommercial = get_navbar_commercial($page->slug ?? null, $page->id ?? null);
-@endphp
-    <main style="min-height:100vh;background-color:#ffffff"><header class="GolfHeader-module__ZF_nIG__header "><div class="container GolfHeader-module__ZF_nIG__headerContainer"><a class="GolfHeader-module__ZF_nIG__logoLink" href="/"><img src="{{ asset('logo_saima.png') }}" alt="Saima Group" class="GolfHeader-module__ZF_nIG__logoImg" style="color:transparent; height: 50px; width: auto; max-height: 54px; object-fit: contain;"/></a><nav class="GolfHeader-module__ZF_nIG__nav"><ul class="GolfHeader-module__ZF_nIG__navList"><li class="GolfHeader-module__ZF_nIG__navItem"><a class="GolfHeader-module__ZF_nIG__navLink" href="/">HOME</a></li>@if($navProjects->isNotEmpty())<li class="GolfHeader-module__ZF_nIG__navItem"><button type="button" class="GolfHeader-module__ZF_nIG__navLink" style="background:none;border:none;cursor:pointer">PROJECTS<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><div class="GolfHeader-module__ZF_nIG__dropdownMenu ">@foreach($navProjects as $proj)<a class="GolfHeader-module__ZF_nIG__dropdownItem" href="{{ $proj->url }}">{{ $proj->title }}</a>@endforeach</div></li>@endif @if($navCommercial->isNotEmpty())<li class="GolfHeader-module__ZF_nIG__navItem"><button type="button" class="GolfHeader-module__ZF_nIG__navLink" style="background:none;border:none;cursor:pointer">COMMERCIAL<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><div class="GolfHeader-module__ZF_nIG__dropdownMenu ">@foreach($navCommercial as $proj)<a class="GolfHeader-module__ZF_nIG__dropdownItem" href="{{ $proj->url }}">{{ $proj->title }}</a>@endforeach</div></li>@endif<li class="GolfHeader-module__ZF_nIG__navItem"><a class="GolfHeader-module__ZF_nIG__navLink" href="/developers">DEVELOPERS</a></li><li class="GolfHeader-module__ZF_nIG__navItem"><a href="#floorplans" class="GolfHeader-module__ZF_nIG__navLink">FLOOR PLAN</a></li><li class="GolfHeader-module__ZF_nIG__navItem"><a href="#master" class="GolfHeader-module__ZF_nIG__navLink">MASTER PLAN</a></li><li class="GolfHeader-module__ZF_nIG__navItem"><a href="#paymentplan" class="GolfHeader-module__ZF_nIG__navLink">PAYMENT PLAN</a></li><li class="GolfHeader-module__ZF_nIG__navItem"><a href="#faq" class="GolfHeader-module__ZF_nIG__navLink">FAQ</a></li><li class="GolfHeader-module__ZF_nIG__navItem"><a class="GolfHeader-module__ZF_nIG__navLink" href="/contact-us">CONTACT US</a></li></ul></nav><button type="button" class="GolfHeader-module__ZF_nIG__mobileToggle" aria-label="Toggle navigation menu"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></button></div></header><div class="GolfHeader-module__ZF_nIG__mobileDrawer "><button type="button" class="GolfHeader-module__ZF_nIG__mobileCloseBtn" aria-label="Close menu"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button><ul class="GolfHeader-module__ZF_nIG__mobileNavList"><li><a class="GolfHeader-module__ZF_nIG__mobileNavLink" href="/">Home</a></li>@if($navProjects->isNotEmpty())<li><button type="button" class="GolfHeader-module__ZF_nIG__mobileNavLink">Projects<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true" style="transform:none;transition:transform 0.2s"><path d="m6 9 6 6 6-6"></path></svg></button>
-<div class="mobileSubList" style="display: none; padding-left: 14px; flex-direction: column; gap: 8px; margin-top: 8px;">
-  @foreach($navProjects as $proj)<a href="{{ $proj->url }}" class="mobileSubItem" style="color: rgba(255, 255, 255, 0.85); font-size: 14px; text-decoration: none; padding: 6px 0; display: block;">{{ $proj->title }}</a>@endforeach
-</div></li>@endif @if($navCommercial->isNotEmpty())<li><button type="button" class="GolfHeader-module__ZF_nIG__mobileNavLink">Commercial<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true" style="transform:none;transition:transform 0.2s"><path d="m6 9 6 6 6-6"></path></svg></button>
-<div class="mobileSubList" style="display: none; padding-left: 14px; flex-direction: column; gap: 8px; margin-top: 8px;">
-  @foreach($navCommercial as $proj)<a href="{{ $proj->url }}" class="mobileSubItem" style="color: rgba(255, 255, 255, 0.85); font-size: 14px; text-decoration: none; padding: 6px 0; display: block;">{{ $proj->title }}</a>@endforeach
-</div></li>@endif<li><a class="GolfHeader-module__ZF_nIG__mobileNavLink" href="/developers">Developers</a></li><li><a href="#floorplans" class="GolfHeader-module__ZF_nIG__mobileNavLink">Floor Plans</a></li><li><a href="#master" class="GolfHeader-module__ZF_nIG__mobileNavLink">Master Plan</a></li><li><a href="#paymentplan" class="GolfHeader-module__ZF_nIG__mobileNavLink">Payment Plan</a></li><li><a href="#faq" class="GolfHeader-module__ZF_nIG__mobileNavLink">FAQ</a></li><li><a class="GolfHeader-module__ZF_nIG__mobileNavLink" href="/contact-us">Contact Us</a></li><li style="margin-top:12px"><button type="button" class="GolfHeader-module__ZF_nIG__listPropBtnMobile">LIST YOUR PROPERTY</button></li></ul></div>
-@php
-    $orderedSections = $page->sections()->where('is_active', true)->orderBy('order', 'asc')->get();
+    $orderedSections = $page->sections()->where('is_active', true)->where('is_visible', true)->orderBy('order', 'asc')->get();
     $articleRendered = false;
     $communitiesRendered = false;
     $GLOBALS['communitiesRenderedGlobal'] = false;
+    $isProjectDetailPage = isset($project) || request()->is('project/*') || ($page && \App\Models\Project::where('page_id', $page->id)->exists());
+    if ((!isset($project) || !$project) && isset($page) && $page) {
+        $project = \App\Models\Project::where('page_id', $page->id)->orWhere('slug', $page->slug)->first();
+    }
 @endphp
-@foreach($orderedSections as $sec)
+
+@if($isProjectDetailPage)
+    {{-- ========================================================================= --}}
+    {{-- PROJECT DETAIL PAGE LAYOUT (EXACT SEQUENCE REQUESTED)                     --}}
+    {{-- 1. Hero Banner & Form                                                     --}}
+    {{-- 2. Project Highlights                                                     --}}
+    {{-- 3. Two-Column Wrapper (Starts after Highlights, Ends after Content)       --}}
+    {{--    Left Column: About Community -> Amenities -> Payment Plan -> Content    --}}
+    {{--    Right Column: Sticky Sidebar (WhatsApp, Call, Form & Custom Searches)  --}}
+    {{-- 4. Subsequent Sections: Gallery -> Master Plan -> Location -> FAQ -> Contact --}}
+    {{-- ========================================================================= --}}
+
+    {{-- 1. Hero Section --}}
+    @if($orderedSections->contains('section_key', 'hero'))
+        @php
+            $rawHeroTitle = page_section('hero', 'title', null, $page->slug);
+            $rawHeroSub = page_section('hero', 'subtitle', null, $page->slug);
+            $rawHeroBg = page_section('hero', 'bg_image', null, $page->slug);
+            $rawHeroBadge = page_section('hero', 'badge', null, $page->slug);
+            $hasHeroContent = !empty(trim((string)$rawHeroTitle)) 
+                || !empty(trim((string)$rawHeroSub)) 
+                || (!empty(trim((string)$rawHeroBg)) && $rawHeroBg !== '/hero.png')
+                || !empty(trim((string)$rawHeroBadge));
+        @endphp
+        @if($hasHeroContent)
+            @include('partials.project-hero', ['slug' => $page->slug, 'page' => $page, 'project' => $project])
+        @endif
+    @endif
+
+    {{-- 1b. Auto Project Name / Developer / Community (between Hero and Highlights) --}}
+    <section style="background:#f7f5f2; padding: 28px 0 8px 0;">
+        <div class="container" style="max-width:1440px; padding: 0 36px;">
+            @include('partials.page-about', ['embedded' => true, 'isProjectContext' => true, 'project' => $project, 'part' => 'header'])
+        </div>
+    </section>
+
+    {{-- 2. Project Highlights (Full Width) --}}
+    @if($orderedSections->contains('section_key', 'highlights'))
+        @include('partials.page-highlights')
+    @endif
+
+    {{-- 3. Two-Column Layout (Starts after Highlights, Ends after Content) --}}
+    <style>
+.fsProjectGrid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 40px; align-items: start; }
+.fsProjectMainCol { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.fsProjectSidebarCol { min-width: 0; align-self: stretch; position: relative; }
+.fsProjectSidebarCol .saimaStickySidebar { position: -webkit-sticky; position: sticky; top: var(--fsSbTop, 95px); max-height: none; overflow: visible; }
+.fsProjectSidebarCol .saimaStickySidebar::-webkit-scrollbar { display: none; }
+@media (max-width: 991px) {
+  .fsProjectGrid { grid-template-columns: 1fr; }
+  .fsProjectSidebarCol .saimaStickySidebar { position: static; max-height: none; overflow: visible; }
+}
+</style>
+<section id="projectMainSection" style="padding: 35px 0 55px 0; background-color: #ffffff;">
+        <div class="container" style="max-width:1440px; padding: 0 36px;">
+            <div class="fsProjectGrid">
+                <!-- Left Main Content Column: About, Amenities, Payment Plan, Content -->
+                <div class="fsProjectMainCol">
+                    @if($orderedSections->contains('section_key', 'about'))
+                        @include('partials.page-about', ['embedded' => true, 'isProjectContext' => true, 'project' => $project, 'part' => 'body'])
+                    @endif
+
+                    @if($orderedSections->contains('section_key', 'amenities'))
+                        @include('partials.page-amenities', ['embedded' => true])
+                    @endif
+
+                    @if($orderedSections->contains('section_key', 'payment_plan'))
+                        <div id="paymentplan">@include('partials.page-payment-plan', ['embedded' => true])</div>
+                    @endif
+
+                    @if($orderedSections->contains('section_key', 'floor_plan'))
+                        @php
+                            $fpHasContent = !empty(trim((string)page_section('floor_plan', 'title', '', $page->slug)))
+                                || !empty(trim(strip_tags((string)page_section('floor_plan', 'description', '', $page->slug))))
+                                || !empty(array_filter((array)page_section('floor_plan', 'plan_images', [], $page->slug)));
+                        @endphp
+                        @if($fpHasContent)
+                            <div id="floorplan">@include('partials.page-floor-plan')</div>
+                        @endif
+                    @endif
+
+                    @if($orderedSections->contains('section_key', 'content') || $orderedSections->contains('section_key', 'toc'))
+                        @php $articleRendered = true; @endphp
+                        <div id="mainContentArticle">
+                            @include('partials.article', ['embedded' => true, 'slug' => $page->slug, 'page' => $page])
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Right Sticky Sidebar: Starts after Highlights, Ends after Content -->
+                <aside class="fsProjectSidebarCol">
+                    @include('partials.sidebar-form-widget')
+                </aside>
+            </div>
+        </div>
+    </section>
+    <script>
+    (function(){
+        function fsAdjustSidebarTop(){
+            var sb = document.querySelector('.fsProjectSidebarCol .saimaStickySidebar');
+            if(!sb) return;
+            var h = sb.offsetHeight, vh = window.innerHeight;
+            var top = Math.min(95, vh - h - 20);
+            document.documentElement.style.setProperty('--fsSbTop', top + 'px');
+        }
+        window.addEventListener('load', fsAdjustSidebarTop);
+        window.addEventListener('resize', fsAdjustSidebarTop);
+        setTimeout(fsAdjustSidebarTop, 600);
+    })();
+    </script>
+
+    {{-- 4. Project Gallery (Full Width) --}}
+    @if($orderedSections->contains('section_key', 'gallery'))
+        @include('partials.project-gallery', ['slug' => $page->slug])
+    @endif
+
+    {{-- 5. Master Plan (Full Width) --}}
+    @if($orderedSections->contains('section_key', 'master_plan'))
+        @php
+            $mpImg = page_section('master_plan', 'image', '', $page->slug);
+            $mpTitle = page_section('master_plan', 'title', '', $page->slug);
+            $hasMasterPlan = !empty($mpImg) && (str_starts_with($mpImg, 'http') || file_exists(public_path(ltrim($mpImg, '/'))));
+        @endphp
+        @if($hasMasterPlan)
+        <section id="master" style="padding: 60px 0; background: #ffffff;">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <h2 style="font-size: 32px; font-weight: 700; color: #1a1a1a;">{!! $mpTitle ?: 'Master Plan' !!}</h2>
+                </div>
+                <div style="max-width: 1100px; margin: 0 auto; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; padding: 15px;">
+                    <div style="width: 100%; aspect-ratio: 16 / 9; max-height: 580px; border-radius: 6px; overflow: hidden; background: #fbfaf8; position: relative;">
+                        <img src="{{ $mpImg }}" alt="{!! $mpTitle ?: 'Master Plan' !!}" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; border-radius: 6px;">
+                    </div>
+                </div>
+            </div>
+        </section>
+        @endif
+    @endif
+
+    {{-- 6. Location & Connectivity (Full Width) --}}
+    @if($orderedSections->contains('section_key', 'location') || $orderedSections->contains('section_key', 'overview_location'))
+        @php
+            $locImg = page_section('location', 'image', '', $page->slug);
+            $locCategories = page_section('location', 'categories', [], $page->slug);
+            $locCategories = array_values(array_filter((array)$locCategories, fn($c) => is_array($c) && !empty($c['name'])));
+            $locSub = trim((string)page_section('location', 'subtitle', '', $page->slug));
+            $locItems = page_section('location', 'items', [], $page->slug);
+            $locItems = array_values(array_filter((array)$locItems, fn($i) => is_array($i) && !empty($i['name'])));
+            $hasLocImg = !empty($locImg) && (str_starts_with($locImg, 'http') || file_exists(public_path(ltrim($locImg, '/'))));
+            $hasLocationContent = !empty($locCategories) || !empty($locItems) || (!empty($locSub) && $hasLocImg);
+        @endphp
+        @if($hasLocationContent)
+        <section class="GolfLocation-module__HavC9G__locationSection" id="location">
+            <div class="container">
+                <style>
+                .fsLocRow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+                .fsLocText { text-align: left; }
+                @media (max-width: 900px) { .fsLocRow { grid-template-columns: 1fr; gap: 24px; } }
+                </style>
+                <div class="fsLocRow">
+                    <div class="fsLocText">
+                        <h2 style="font-size: 32px; font-weight: 700; color: #1a1a1a; margin: 0 0 12px 0;">{!! page_section('location', 'title', 'Location & Attractions', $page->slug) !!}</h2>
+                        @if(!empty($locSub))
+                        <p style="font-size: 15px; color: #666; margin: 0; line-height: 1.7;">{{ $locSub }}</p>
+                        @endif
+                    </div>
+                    @if(!empty($locCategories))
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        @foreach($locCategories as $cIdx => $cat)
+                            <div style="border: 1px solid #e0d7cb; border-radius: 8px; overflow: hidden; background: #fff;">
+                                <button type="button" onclick="const p = this.nextElementSibling; p.style.display = (p.style.display === 'none' ? 'block' : 'none');" style="width: 100%; padding: 14px 18px; background: {{ $cIdx === 0 ? '#BFA16A' : '#f7f4f0' }}; color: {{ $cIdx === 0 ? '#fff' : '#333' }}; font-weight: 700; font-size: 15px; border: none; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                                    <span>{{ $cat['name'] ?? '' }}</span>
+                                    <span style="font-size: 18px;">▾</span>
+                                </button>
+                                <div style="display: {{ $cIdx === 0 ? 'block' : 'none' }}; padding: 12px 18px;">
+                                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+                                        @foreach($cat['items'] ?? [] as $cItm)
+                                             <li style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 6px; font-size: 14px;">
+                                                <span style="font-weight: 600; color: #222;">{{ $cItm['name'] ?? '' }}</span>
+                                                <span style="color: #BFA16A; font-weight: 700; font-size: 13px;">{{ $cItm['time'] ?? '' }}</span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    @endif
+                </div>
+                @if($hasLocImg)
+                <div style="position: relative; border-radius: 10px; overflow: hidden; min-height: 380px; margin-top: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                    <img src="{{ $locImg }}" alt="{!! page_section('location', 'title', 'Location', $page->slug) !!}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                @endif
+            </div>
+        </section>
+        @endif
+    @endif
+
+    {{-- 7. FAQ Accordion (Full Width) --}}
+    @if($orderedSections->contains('section_key', 'faq'))
+        @include('partials.faq', ['page' => $page, 'slug' => $page->slug])
+    @endif
+
+    {{-- 8. Contact & Booking CTA (Full Width) --}}
+    @if($orderedSections->contains('section_key', 'contact'))
+        @php
+            $hasContactContent = !empty(trim((string)page_section('contact', 'heading', page_section('contact', 'title', '', $page->slug), $page->slug)))
+                || !empty(trim((string)page_section('contact', 'subtitle', '', $page->slug)))
+                || !empty(trim((string)page_section('contact', 'phone', '', $page->slug)))
+                || !empty(trim((string)page_section('contact', 'email', '', $page->slug)))
+                || !empty(trim((string)page_section('contact', 'pretitle', '', $page->slug)));
+        @endphp
+        @if($hasContactContent)
+            @include('partials.contact')
+        @endif
+    @endif
+
+@else
+    {{-- Non-project page default sequential loop --}}
+    @foreach($orderedSections as $sec)
     @if($sec->section_key === 'hero')
         @php
             $rawHeroTitle = page_section('hero', 'title', null, $page->slug);
@@ -294,51 +741,7 @@
     @elseif($sec->section_key === 'about')
         @include('partials.page-about')
     @elseif($sec->section_key === 'amenities')
-        @php
-            $amTitle = page_section('amenities', 'title', $page->title . ' Amenities', $page->slug);
-            $amSub = page_section('amenities', 'subtitle', '', $page->slug);
-            $rawAmItems = page_section('amenities', 'items', [], $page->slug);
-            $amItems = array_values(array_filter((array)$rawAmItems, fn($item) => is_array($item) && !empty(trim($item['name'] ?? ''))));
-        @endphp
-        @if(!empty($amItems))
-        <section id="amenities" class="GolfAmenities-module__j5-r4q__amenitiesSection">
-            <div class="container">
-                <div class="GolfAmenities-module__j5-r4q__header">
-                    <h2 class="GolfAmenities-module__j5-r4q__title">{!! $amTitle !!}</h2>
-                    @if(!empty($amSub))
-                    <p class="GolfAmenities-module__j5-r4q__subtitle">{{ $amSub }}</p>
-                    @endif
-                </div>
-                <div class="GolfAmenities-module__j5-r4q__grid">
-                    @foreach($amItems as $amItem)
-                        @php
-                            $aName = $amItem['name'] ?? '';
-                            $aIcon = $amItem['icon'] ?? '';
-                            if (!empty($aName)) {
-                                $matchedAm = \App\Models\Amenity::where('is_active', true)
-                                    ->where(function($q) use ($aIcon, $aName) {
-                                        if (!empty($aIcon)) $q->where('icon', $aIcon);
-                                        $q->orWhereRaw('LOWER(name) = ?', [strtolower(trim($aName))]);
-                                    })->first();
-                                if ($matchedAm) {
-                                    $aName = $matchedAm->name;
-                                    if (!empty($matchedAm->icon)) $aIcon = $matchedAm->icon;
-                                }
-                            }
-                        @endphp
-                        <div class="GolfAmenities-module__j5-r4q__card">
-                            @if(!empty($aIcon))
-                            <div class="GolfAmenities-module__j5-r4q__iconBox">
-                                <img alt="{{ $aName }}" width="30" height="30" class="GolfAmenities-module__j5-r4q__iconImg" style="color:transparent" src="{{ $aIcon }}"/>
-                            </div>
-                            @endif
-                            <p class="GolfAmenities-module__j5-r4q__amenityName">{{ $aName }}</p>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-        @endif
+        @include('partials.page-amenities')
     @elseif($sec->section_key === 'gallery')
         @include('partials.project-gallery', ['slug' => $page->slug])
     @elseif(($sec->section_key === 'content' || $sec->section_key === 'toc') && !$articleRendered)
@@ -360,64 +763,7 @@
         </section>
         @endif
     @elseif($sec->section_key === 'payment_plan')
-        @php
-            $rawPlanTabs = page_section('payment_plan', 'plan_tabs', [], $page->slug);
-            $planTabs = is_array($rawPlanTabs) ? array_values(array_filter($rawPlanTabs, function($t) {
-                $cl = strtolower(trim($t));
-                return !str_contains($cl, 'without finance') && !str_contains($cl, 'with finance');
-            })) : [];
-            $rawPayRows = page_section('payment_plan', 'rows', [], $page->slug);
-            $payRows = array_values(array_filter((array)$rawPayRows, fn($r) => is_array($r) && (!empty(trim($r['installment'] ?? '')) || !empty(trim($r['percentage'] ?? '')) || !empty(trim($r['milestone'] ?? '')))));
-            $payTitle = page_section('payment_plan', 'title', '', $page->slug);
-            $payDesc = page_section('payment_plan', 'description', '', $page->slug);
-        @endphp
-        @if(!empty($payRows) || (!empty($payTitle) && !empty($payDesc)))
-        <section id="paymentplan" style="padding: 70px 0; background: #faf8f5;">
-            <div class="container">
-                <div style="text-align: center; margin-bottom: 35px;">
-                    <h2 style="font-size: 32px; font-weight: 700; color: #1a1a1a; margin-bottom: 10px;">{!! $payTitle ?: 'Payment Plan' !!}</h2>
-                    @if(!empty(trim(strip_tags((string)$payDesc))))
-                        <div style="font-size: 15px; color: #666; max-width: 800px; margin: 0 auto; line-height: 1.6;">{!! $payDesc !!}</div>
-                    @endif
-                </div>
-                @if(!empty($planTabs))
-                    <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap;">
-                        @foreach($planTabs as $tIdx => $tabName)
-                            <button type="button" style="padding: 9px 20px; border-radius: 20px; border: 1px solid #1a4731; background: {{ $tIdx === 0 ? '#1a4731' : '#fff' }}; color: {{ $tIdx === 0 ? '#fff' : '#1a4731' }}; font-weight: 600; font-size: 13px; cursor: pointer;">{{ $tabName }}</button>
-                        @endforeach
-                    </div>
-                @endif
-                @if(!empty($payRows))
-                <div style="background: #fff; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); overflow-x: auto; max-width: 1000px; margin: 0 auto;">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
-                        <thead>
-                            <tr style="background: #1a4731; color: #fff; font-weight: 700;">
-                                <th style="padding: 14px 18px;">Installment</th>
-                                <th style="padding: 14px 18px;">Percentage</th>
-                                <th style="padding: 14px 18px;">Milestone</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($payRows as $rIdx => $r)
-                                <tr style="border-bottom: 1px solid #f0ebe4; background: {{ $rIdx % 2 === 0 ? '#fff' : '#fdfcfb' }};">
-                                    <td style="padding: 14px 18px; font-weight: 600; color: #222;">{{ $r['installment'] ?? '' }}</td>
-                                    <td style="padding: 14px 18px; font-weight: 700; color: #1a4731;">{{ $r['percentage'] ?? '' }}</td>
-                                    <td style="padding: 14px 18px; color: #555;">{{ $r['milestone'] ?? '' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                @endif
-                @php
-                    $dlUrl = page_section('payment_plan', 'download_url', '', $page->slug);
-                @endphp
-                <div style="text-align: center; margin-top: 35px;">
-                    <a href="{{ (!empty($dlUrl) && $dlUrl !== '#') ? $dlUrl : '#contact' }}" onclick="{{ (empty($dlUrl) || $dlUrl === '#') ? 'if(window.openListModal){window.openListModal(); return false;}' : '' }}" style="display: inline-block; padding: 14px 34px; background: #1a4731; color: #fff; font-weight: 700; font-size: 14px; text-decoration: none; border-radius: 4px; letter-spacing: 0.5px; transition: background 0.2s ease; cursor: pointer;">DOWNLOAD PAYMENT PLAN</a>
-                </div>
-            </div>
-        </section>
-        @endif
+        @include('partials.page-payment-plan')
     @elseif($sec->section_key === 'master_plan')
         @php
             $mpImg = page_section('master_plan', 'image', '', $page->slug);
@@ -425,7 +771,7 @@
             $hasMasterPlan = !empty($mpImg) && (str_starts_with($mpImg, 'http') || file_exists(public_path(ltrim($mpImg, '/'))));
         @endphp
         @if($hasMasterPlan)
-        <section id="master" style="padding: 60px 0; background: #faf8f5;">
+        <section id="master" style="padding: 60px 0; background: #ffffff;">
             <div class="container">
                 <div style="text-align: center; margin-bottom: 25px;">
                     <h2 style="font-size: 32px; font-weight: 700; color: #1a1a1a;">{!! $mpTitle ?: 'Master Plan' !!}</h2>
@@ -468,7 +814,7 @@
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         @foreach($locCategories as $cIdx => $cat)
                             <div style="border: 1px solid #e0d7cb; border-radius: 8px; overflow: hidden; background: #fff;">
-                                <button type="button" onclick="const p = this.nextElementSibling; p.style.display = (p.style.display === 'none' ? 'block' : 'none');" style="width: 100%; padding: 14px 18px; background: {{ $cIdx === 0 ? '#1a4731' : '#f7f4f0' }}; color: {{ $cIdx === 0 ? '#fff' : '#333' }}; font-weight: 700; font-size: 15px; border: none; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                                <button type="button" onclick="const p = this.nextElementSibling; p.style.display = (p.style.display === 'none' ? 'block' : 'none');" style="width: 100%; padding: 14px 18px; background: {{ $cIdx === 0 ? '#BFA16A' : '#f7f4f0' }}; color: {{ $cIdx === 0 ? '#fff' : '#333' }}; font-weight: 700; font-size: 15px; border: none; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                                     <span>{{ $cat['name'] ?? '' }}</span>
                                     <span style="font-size: 18px;">▾</span>
                                 </button>
@@ -477,7 +823,7 @@
                                         @foreach($cat['items'] ?? [] as $cItm)
                                              <li style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 6px; font-size: 14px;">
                                                 <span style="font-weight: 600; color: #222;">{{ $cItm['name'] ?? '' }}</span>
-                                                <span style="color: #1a4731; font-weight: 700; font-size: 13px;">{{ $cItm['time'] ?? '' }}</span>
+                                                <span style="color: #BFA16A; font-weight: 700; font-size: 13px;">{{ $cItm['time'] ?? '' }}</span>
                                             </li>
                                         @endforeach
                                     </ul>
@@ -493,36 +839,7 @@
     @elseif($sec->section_key === 'landmarks')
         <section class="GolfLandmarks-module__N9ZsyW__landmarksSection"><div class="container"><div class="GolfLandmarks-module__N9ZsyW__header"><h2 class="GolfLandmarks-module__N9ZsyW__title">Nearby Landmarks</h2></div><div class="GolfLandmarks-module__N9ZsyW__landmarksGrid"><div class="GolfLandmarks-module__N9ZsyW__card"><div class="GolfLandmarks-module__N9ZsyW__imgWrapper"><img alt="Ferrari World Abu Dhabi" class="GolfLandmarks-module__N9ZsyW__cardImg" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="100vw" src="/images/golf-estates/landmark-ferrari.jpg"/></div><div class="GolfLandmarks-module__N9ZsyW__cardContent"><h3 class="GolfLandmarks-module__N9ZsyW__landmarkTitle">Ferrari World Abu Dhabi</h3><p class="GolfLandmarks-module__N9ZsyW__landmarkTime">42 Mins</p></div></div><div class="GolfLandmarks-module__N9ZsyW__card"><div class="GolfLandmarks-module__N9ZsyW__imgWrapper"><img alt="Zayed International Airport" class="GolfLandmarks-module__N9ZsyW__cardImg" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="100vw" src="/images/golf-estates/landmark-airport.jpg"/></div><div class="GolfLandmarks-module__N9ZsyW__cardContent"><h3 class="GolfLandmarks-module__N9ZsyW__landmarkTitle">Zayed International Airport</h3><p class="GolfLandmarks-module__N9ZsyW__landmarkTime">25 Mins</p></div></div><div class="GolfLandmarks-module__N9ZsyW__card"><div class="GolfLandmarks-module__N9ZsyW__imgWrapper"><img alt="Louvre Abu Dhabi" class="GolfLandmarks-module__N9ZsyW__cardImg" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="100vw" src="/images/golf-estates/landmark-louvre.jpg"/></div><div class="GolfLandmarks-module__N9ZsyW__cardContent"><h3 class="GolfLandmarks-module__N9ZsyW__landmarkTitle">Louvre Abu Dhabi</h3><p class="GolfLandmarks-module__N9ZsyW__landmarkTime">34 Mins</p></div></div></div></div></section>
     @elseif($sec->section_key === 'faq')
-        @php
-            $pageSlug = $page->slug;
-            $rawDbFaqs = page_section('faq', 'items', [], $pageSlug);
-            $dbFaqs = array_values(array_filter((array)$rawDbFaqs, fn($f) => is_array($f) && (!empty(trim($f['q'] ?? ($f['question'] ?? ''))))));
-        @endphp
-        @if(!empty($dbFaqs))
-        <section id="faq" class="GolfFaq-module__4nJd7q__faqSection" style="padding: 65px 0; background: #ffffff;">
-            <div class="container" style="max-width: 920px; margin: 0 auto; padding: 0 20px;">
-                <div style="text-align: center; margin-bottom: 35px;">
-                    <h2 style="font-size: 32px; font-weight: 700; color: #1a1a1a;">{{ page_section('faq', 'heading', page_section('faq', 'title', 'Frequently Asked Questions', $pageSlug), $pageSlug) }}</h2>
-                    @if($faqSub = page_section('faq', 'subtitle', '', $pageSlug))
-                        <p style="font-size: 15px; color: #666; margin-top: 8px;">{{ $faqSub }}</p>
-                    @endif
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    @foreach($dbFaqs as $fIdx => $fItem)
-                        <div style="border: 1px solid #e0d7cb; border-radius: 8px; overflow: hidden; background: #fff;">
-                            <button type="button" onclick="const a = this.nextElementSibling; const s = this.querySelector('.faqArr'); const isOpen = a.style.display !== 'none'; a.style.display = isOpen ? 'none' : 'block'; s.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';" style="width: 100%; padding: 16px 20px; background: {{ $fIdx === 0 ? '#1a4731' : '#fcfaf8' }}; color: {{ $fIdx === 0 ? '#fff' : '#222' }}; font-weight: 700; font-size: 15px; border: none; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s ease;">
-                                <span>{{ $fItem['q'] ?? $fItem['question'] ?? '' }}</span>
-                                <span class="faqArr" style="font-size: 16px; transition: transform 0.2s ease; transform: {{ $fIdx === 0 ? 'rotate(180deg)' : 'rotate(0deg)' }};">▾</span>
-                            </button>
-                            <div style="display: {{ $fIdx === 0 ? 'block' : 'none' }}; padding: 16px 20px; background: #fff; font-size: 14.5px; line-height: 1.7; color: #444; border-top: 1px solid #f0ebe4;">
-                                {!! $fItem['a'] ?? $fItem['answer'] ?? '' !!}
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-        @endif
+        @include('partials.faq', ['page' => $page, 'slug' => $page->slug])
     @elseif($sec->section_key === 'contact')
         @php
             $hasContactContent = !empty(trim((string)page_section('contact', 'heading', page_section('contact', 'title', '', $page->slug), $page->slug)))
@@ -536,7 +853,11 @@
         @endif
     @elseif($sec->section_key === 'communities' && !$communitiesRendered && empty($GLOBALS['communitiesRenderedGlobal']))
         @php
-            $rawSelCommIds = page_section('communities', 'selected_ids', [], $page->slug) ?: page_section('communities', 'project_ids', [], $page->slug);
+            $rawSelCommIds = (isset($community) && !empty($community->featured_projects))
+                ? $community->featured_projects
+                : ((isset($city) && !empty($city->featured_communities))
+                    ? $city->featured_communities
+                    : (page_section('communities', 'selected_ids', [], $page->slug) ?: page_section('communities', 'project_ids', [], $page->slug)));
             $hasSelProjects = !empty(array_filter((array)$rawSelCommIds));
         @endphp
         @if($hasSelProjects)
@@ -545,6 +866,7 @@
         @endif
     @endif
 @endforeach
+@endif
 
 @include('partials.footer')<button type="button" class="ScrollToTop-module__bPaVnG__scrollTopBtn " aria-label="Scroll to top of page"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up" aria-hidden="true"><path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path></svg></button></main>
 
@@ -552,6 +874,91 @@
     <script src="{{ asset('js/communities/community-interactions.js') }}?v={{ time() }}"></script>
     <!-- Universal International Phone Selector (218 Countries Worldwide & Dynamic Validation) -->
     <script src="{{ asset('js/universal-phone-selector.js') }}?v={{ time() }}"></script>
+
+    <!-- List Your Property Modal -->
+    <div id="listPropertyModal" class="modalOverlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="modalContent" style="background: #fff; width: 100%; max-width: 580px; border-radius: 12px; padding: 32px 28px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+            <div class="modalHeader" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1px solid #f0ebe4;">
+                <h2 class="modalTitle" style="margin: 0; font-size: 22px; font-weight: 700; color: #BFA16A;">LIST YOUR PROPERTY</h2>
+                <button type="button" id="modalCloseBtn" onclick="window.closeListModal()" aria-label="Close modal" style="background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="modalLeadForm" style="display: grid; gap: 16px;">
+                <div>
+                    <label style="display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px;">Name *</label>
+                    <input type="text" name="name" required placeholder="Your Name" style="width: 100%; padding: 11px 14px; border: 1px solid #dcdcdc; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px;">Email *</label>
+                    <input type="email" name="email" required placeholder="your.email@example.com" style="width: 100%; padding: 11px 14px; border: 1px solid #dcdcdc; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px;">Phone *</label>
+                    <input type="tel" name="phone" required placeholder="+92 300 1234567" style="width: 100%; padding: 11px 14px; border: 1px solid #dcdcdc; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px;">Property Details</label>
+                    <textarea name="comment" rows="3" placeholder="Tell us about the property (bedrooms, plot size, location, expected price)..." style="width: 100%; padding: 11px 14px; border: 1px solid #dcdcdc; border-radius: 4px; font-size: 14px; box-sizing: border-box;"></textarea>
+                </div>
+                <div>
+                    <button type="submit" style="width: 100%; padding: 14px; background: #BFA16A; color: #fff; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; letter-spacing: 0.5px; transition: background 0.2s ease;">SUBMIT PROPERTY</button>
+                </div>
+            </form>
+            <div id="modalSuccessBox" style="display: none; padding: 18px; background: rgba(191, 161, 106, 0.12); border: 1px solid #BFA16A; border-radius: 6px; color: #222; text-align: center; font-weight: 600; font-size: 14px;">
+                Thank you! Your property listing inquiry has been received. Our advisory team will reach out shortly.
+            </div>
+        </div>
+    </div>
+    <script>
+    window.openListModal = function() {
+        const listModal = document.getElementById("listPropertyModal");
+        if (listModal) {
+            listModal.style.display = "flex";
+            document.body.style.overflow = "hidden";
+        }
+    };
+    window.closeListModal = function() {
+        const listModal = document.getElementById("listPropertyModal");
+        if (listModal) {
+            listModal.style.display = "none";
+            document.body.style.overflow = "";
+        }
+    };
+    document.getElementById("modalLeadForm")?.addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const f = this;
+        const submitBtn = f.querySelector("button[type='submit']");
+        submitBtn.disabled = true;
+        submitBtn.textContent = "SUBMITTING...";
+        const formData = new FormData(f);
+        formData.append("source", "Website");
+        formData.append("sub_source", "Project Page Modal");
+        formData.append("form_identifier", "project_list_modal");
+        formData.append("activity_description", "List Your Property Modal Submission");
+        try {
+            await fetch("/api/leads", {
+                method: "POST",
+                body: formData,
+                headers: { "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "" }
+            });
+        } catch(err){}
+        f.style.display = "none";
+        document.getElementById("modalSuccessBox").style.display = "block";
+        setTimeout(() => {
+            window.closeListModal();
+            f.reset();
+            f.style.display = "grid";
+            document.getElementById("modalSuccessBox").style.display = "none";
+            submitBtn.disabled = false;
+            submitBtn.textContent = "SUBMIT PROPERTY";
+        }, 3000);
+    });
+    </script>
 </body>
 </html>
 

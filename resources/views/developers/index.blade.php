@@ -226,7 +226,7 @@
         justify-content: flex-end;
     }
     .devCardBtn {
-        background: #0284c7;
+        background: #BFA16A;
         color: #ffffff !important;
         padding: 10px 22px;
         border-radius: 8px;
@@ -237,12 +237,12 @@
         align-items: center;
         gap: 6px;
         transition: background 0.2s ease, transform 0.15s ease;
-        box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+        box-shadow: 0 2px 6px rgba(191, 161, 106, 0.25);
     }
     .devCardBtn:hover {
-        background: #0369a1;
+        background: #aa8d58;
         transform: translateY(-1px);
-        box-shadow: 0 4px 10px rgba(2, 132, 199, 0.35);
+        box-shadow: 0 4px 10px rgba(191, 161, 106, 0.35);
     }
 
     /* Long Content Section (Exact Page Parity: Green Headings, Clean Typography, Bullet Discs) */
@@ -265,7 +265,7 @@
         font-family: inherit;
         font-size: 23px;
         font-weight: 700;
-        color: #1a4731 !important;
+        color: #BFA16A !important;
         line-height: 1.3;
         margin: 22px 0 6px 0;
         letter-spacing: -0.01em;
@@ -277,7 +277,7 @@
         font-family: inherit;
         font-size: 17.5px;
         font-weight: 700;
-        color: #1a4731 !important;
+        color: #BFA16A !important;
         line-height: 1.35;
         margin: 12px 0 4px 0;
     }
@@ -288,7 +288,7 @@
         font-family: inherit;
         font-size: 16px;
         font-weight: 700;
-        color: #1a4731 !important;
+        color: #BFA16A !important;
         line-height: 1.35;
         margin: 10px 0 2px 0;
     }
@@ -613,7 +613,7 @@
 <section id="faq" aria-label="Frequently Asked Questions About Real Estate Developers in Pakistan" class="faqSection">
     <div class="container">
         <div class="section-header" style="text-align: center; margin-bottom: 35px;">
-            <h2 style="font-size: 32px; font-weight: 700; color: #1a4731;">Frequently Asked Questions</h2>
+            <h2 style="font-size: 32px; font-weight: 700; color: #BFA16A;">Frequently Asked Questions</h2>
             <p style="font-size: 15px; color: #666; margin-top: 8px;">Frequently Asked Questions About Real Estate Developers in Pakistan</p>
         </div>
 

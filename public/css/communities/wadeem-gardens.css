@@ -111,7 +111,7 @@
 
 .WadeemHeader-module__zCs2ka__dropdownItem:hover {
   color: #fff;
-  background: #1a473159;
+  background: #BFA16A59;
   padding-left: 22px;
 }
 
@@ -120,7 +120,7 @@
   letter-spacing: .5px;
   cursor: pointer;
   text-transform: uppercase;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border: none;
   border-radius: 4px;
   padding: 9px 20px;
@@ -130,16 +130,16 @@
 }
 
 .WadeemHeader-module__zCs2ka__listPropBtn:hover {
-  background-color: #123322;
+  background-color: #aa8d58;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px #1a47314d;
+  box-shadow: 0 4px 12px #BFA16A4d;
 }
 
 .WadeemHeader-module__zCs2ka__listPropBtnMobile {
   color: #fff;
   text-transform: uppercase;
   cursor: pointer;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border: none;
   border-radius: 4px;
   width: 100%;
@@ -207,7 +207,7 @@
 }
 
 .WadeemHeader-module__zCs2ka__langOption:hover {
-  background: #1a473166;
+  background: #BFA16A66;
 }
 
 .WadeemHeader-module__zCs2ka__mobileToggle {
@@ -585,7 +585,7 @@
 }
 
 .WadeemHero-module__8gVoSW__prevBtn:hover, .WadeemHero-module__8gVoSW__nextBtn:hover {
-  background: #1a4731;
+  background: #BFA16A;
 }
 
 .WadeemHero-module__8gVoSW__prevBtn {
@@ -640,7 +640,7 @@
   letter-spacing: .5px;
   cursor: pointer;
   text-transform: uppercase;
-  background-color: #d9232d;
+  background-color: #BFA16A;
   border: none;
   border-radius: 4px;
   padding: 14px 32px;
@@ -651,9 +651,9 @@
 }
 
 .WadeemHero-module__8gVoSW__brochureBtn:hover {
-  background-color: #b71a23;
+  background-color: #aa8d58;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px #1a473166;
+  box-shadow: 0 6px 18px #BFA16A66;
 }
 
 .WadeemHero-module__8gVoSW__badgeRow {
@@ -723,7 +723,7 @@
 }
 
 .WadeemHero-module__8gVoSW__inputField:focus {
-  border-color: #1a4731;
+  border-color: #BFA16A;
 }
 
 .WadeemHero-module__8gVoSW__recaptchaBox {
@@ -767,7 +767,7 @@
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
-  background: #1a4731;
+  background: #BFA16A;
   border: none;
   border-radius: 4px;
   width: 100%;
@@ -779,7 +779,7 @@
 }
 
 .WadeemHero-module__8gVoSW__submitBtn:hover {
-  background: #123322;
+  background: #aa8d58;
   transform: translateY(-1px);
 }
 
@@ -851,9 +851,9 @@
 }
 
 .WadeemHighlights-module__hT7VBW__highlightCard:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px #1a47311f;
+  box-shadow: 0 6px 18px #BFA16A1f;
 }
 
 .WadeemHighlights-module__hT7VBW__iconWrapper {
@@ -869,7 +869,7 @@
 .WadeemHighlights-module__hT7VBW__accentCircle {
   opacity: 1 !important;
   z-index: 1 !important;
-  background: #1a4731 !important;
+  background: #BFA16A !important;
   border-radius: 50% !important;
   width: 38px !important;
   height: 38px !important;
@@ -981,7 +981,7 @@
 
 .WadeemAboutVideo-module__UHt1hW__brownBackdrop {
   z-index: 1;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
   position: absolute;
@@ -1013,7 +1013,7 @@
   color: #fff;
   cursor: pointer;
   z-index: 5;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border: none;
   border-radius: 50%;
   justify-content: center;
@@ -1031,7 +1031,7 @@
 }
 
 .WadeemAboutVideo-module__UHt1hW__playButton:hover {
-  background-color: #123322;
+  background-color: #aa8d58;
   transform: translate(-50%, -50%)scale(1.1);
 }
 
@@ -1097,13 +1097,13 @@
 }
 
 .WadeemAmenities-module__BETGSa__card:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   transform: translateY(-2px);
   box-shadow: 0 6px 18px #0000000f;
 }
 
 .WadeemAmenities-module__BETGSa__iconBox {
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border-radius: 6px;
   flex-shrink: 0;
   justify-content: center;
@@ -1556,8 +1556,8 @@
 
 .WadeemPaymentPlan-module__gOSpUW__viewBtnActive {
   color: #fff;
-  background-color: #1a4731;
-  border-color: #1a4731;
+  background-color: #BFA16A;
+  border-color: #BFA16A;
 }
 
 .WadeemPaymentPlan-module__gOSpUW__planTabsWrapper {
@@ -1585,12 +1585,12 @@
 }
 
 .WadeemPaymentPlan-module__gOSpUW__planTabActive {
-  color: #1a4731;
+  color: #BFA16A;
 }
 
 .WadeemPaymentPlan-module__gOSpUW__planTabActive:after {
   content: "";
-  background-color: #1a4731;
+  background-color: #BFA16A;
   height: 3px;
   position: absolute;
   bottom: -2px;
@@ -1624,7 +1624,7 @@
 }
 
 .WadeemPaymentPlan-module__gOSpUW__thPrimary {
-  color: #1a4731 !important;
+  color: #BFA16A !important;
 }
 
 .WadeemPaymentPlan-module__gOSpUW__table td {
@@ -1640,7 +1640,7 @@
 }
 
 .WadeemPaymentPlan-module__gOSpUW__tdPercentage {
-  color: #1a4731;
+  color: #BFA16A;
   font-weight: 700;
 }
 
@@ -1667,9 +1667,9 @@
 }
 
 .WadeemPaymentPlan-module__gOSpUW__gridCard:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   transform: translateY(-3px);
-  box-shadow: 0 8px 22px #1a47311f;
+  box-shadow: 0 8px 22px #BFA16A1f;
 }
 
 .WadeemPaymentPlan-module__gOSpUW__gridPercent {
@@ -1680,7 +1680,7 @@
 }
 
 .WadeemPaymentPlan-module__gOSpUW__gridInstallment {
-  color: #1a4731;
+  color: #BFA16A;
   margin-bottom: 6px;
   font-size: 16px;
   font-weight: 700;
@@ -1760,9 +1760,9 @@
 }
 
 .WadeemPaymentMethods-module__I1N62a__paymentCard:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px #1a47311f;
+  box-shadow: 0 6px 20px #BFA16A1f;
 }
 
 .WadeemPaymentMethods-module__I1N62a__iconWrapper {
@@ -2040,7 +2040,7 @@
 }
 
 .WadeemLocation-module__QvUhWq__itemTime {
-  color: #1a4731;
+  color: #BFA16A;
   white-space: nowrap;
   font-size: 13px;
   font-weight: 500;
@@ -2158,8 +2158,8 @@
 }
 
 .WadeemFaq-module__Ee-YCq__faqItemOpen {
-  border-color: #1a4731;
-  box-shadow: 0 4px 15px #1a473114;
+  border-color: #BFA16A;
+  box-shadow: 0 4px 15px #BFA16A14;
 }
 
 .WadeemFaq-module__Ee-YCq__questionBtn {
@@ -2179,7 +2179,7 @@
 }
 
 .WadeemFaq-module__Ee-YCq__faqItemOpen .WadeemFaq-module__Ee-YCq__questionBtn {
-  color: #1a4731;
+  color: #BFA16A;
 }
 
 .WadeemFaq-module__Ee-YCq__questionText {
@@ -2202,7 +2202,7 @@
 
 .WadeemFaq-module__Ee-YCq__faqItemOpen .WadeemFaq-module__Ee-YCq__iconCircle {
   color: #fff;
-  background: #1a4731;
+  background: #BFA16A;
 }
 
 .WadeemFaq-module__Ee-YCq__answerBox {
@@ -2318,7 +2318,7 @@
 
 .WadeemContact-module__yfSiVG__titleSmall {
   letter-spacing: 2px;
-  color: #1a4731;
+  color: #BFA16A;
   text-align: center;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -2353,8 +2353,8 @@
 
 .WadeemContact-module__yfSiVG__inputField:focus {
   background: #fff;
-  border-color: #1a4731;
-  box-shadow: 0 0 0 3px #1a473126;
+  border-color: #BFA16A;
+  box-shadow: 0 0 0 3px #BFA16A26;
 }
 
 .WadeemContact-module__yfSiVG__submitBtn {
@@ -2362,7 +2362,7 @@
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border: none;
   border-radius: 6px;
   width: 100%;
@@ -2371,13 +2371,13 @@
   font-size: 15px;
   font-weight: 700;
   transition: all .25s;
-  box-shadow: 0 3px 12px #1a473159;
+  box-shadow: 0 3px 12px #BFA16A59;
 }
 
 .WadeemContact-module__yfSiVG__submitBtn:hover {
-  background-color: #123322;
+  background-color: #aa8d58;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px #1a473173;
+  box-shadow: 0 6px 18px #BFA16A73;
 }
 
 .WadeemContact-module__yfSiVG__successMsg {
@@ -2497,7 +2497,7 @@
 }
 
 .Footer-module__S6Hkya__linkItem:hover {
-  color: #1a4731;
+  color: #BFA16A;
   transform: translateX(3px);
 }
 
@@ -2521,7 +2521,7 @@
 }
 
 .Footer-module__S6Hkya__contactLink:hover {
-  color: #1a4731;
+  color: #BFA16A;
 }
 
 .Footer-module__S6Hkya__contactItemStatic {
@@ -2619,7 +2619,7 @@
 .ScrollToTop-module__bPaVnG__scrollTopBtn:hover {
   background: var(--color-primary-hover);
   transform: translateY(-3px)scale(1.05);
-  box-shadow: 0 6px 20px #1a473173;
+  box-shadow: 0 6px 20px #BFA16A73;
 }
 
 /* [project]/src/components/ListPropertyModal.module.css [app-client] (css) */
@@ -2887,7 +2887,7 @@
 }
 
 .WadeemBrochureModal-module__V2NsaW__inputField:focus {
-  border-color: #1a4731;
+  border-color: #BFA16A;
 }
 
 .WadeemBrochureModal-module__V2NsaW__recaptchaBox {
@@ -2931,7 +2931,7 @@
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
-  background: #1a4731;
+  background: #BFA16A;
   border: none;
   border-radius: 4px;
   width: 100%;
@@ -2943,7 +2943,7 @@
 }
 
 .WadeemBrochureModal-module__V2NsaW__downloadBtn:hover {
-  background: #123322;
+  background: #aa8d58;
 }
 
 .WadeemBrochureModal-module__V2NsaW__successBox {

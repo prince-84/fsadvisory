@@ -8,11 +8,21 @@ $dbParagraphs = page_section('overview_location', 'paragraphs', "Saima is a prem
 @endphp
 
 <section id="overview-location" aria-label="Saima Overview and Location" class="locOverviewSection">
+    <style>
+        .locMainTitle,
+        .locOverviewSection h1,
+        .locOverviewSection h2,
+        .locOverviewSection h3 {
+            color: #BFA16A !important;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 700;
+        }
+    </style>
     <div class="container">
         <div class="locContentGrid">
             <!-- Left Column: Title and Paragraphs -->
             <div class="locLeftCol">
-                <h2 class="locMainTitle">
+                <h2 class="locMainTitle" style="color: #BFA16A !important;">
                     {{ page_section('overview_location', 'heading', 'Saima Overview and Location') }}
                 </h2>
 

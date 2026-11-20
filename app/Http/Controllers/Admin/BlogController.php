@@ -76,7 +76,7 @@ class BlogController extends Controller
         // Parse FAQs
         $faqs = $this->parseFaqs($request);
 
-        $status = $request->input('status', 'publish');
+        $status = $request->input('status', 'draft');
         $isPublished = ($status === 'publish');
 
         $blog = Blog::create([

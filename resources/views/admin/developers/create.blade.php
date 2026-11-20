@@ -452,8 +452,8 @@
                                 <div style="width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 10px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
                                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                                 </div>
-                                <strong style="display: block; font-size: 14px; color: #1e293b; margin-bottom: 4px;">Pehle Developer Save Karein</strong>
-                                <span style="font-size: 12px; color: #64748b;">Developer create karne ke baad project card settings me is developer ko select karein. Phir wo cards yahan Available Cards me show honge.</span>
+                                <strong style="display: block; font-size: 14px; color: #1e293b; margin-bottom: 4px;">Save Developer First</strong>
+                                <span style="font-size: 12px; color: #64748b;">After creating the developer, assign projects to this developer to manage featured property cards.</span>
                             </div>
                         </div>
 

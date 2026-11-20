@@ -5,807 +5,555 @@
 @push('styles')
 <style>
     .adm-topbar { display: none !important; }
-    .adm-edit-layout {
-        display: flex;
-        align-items: flex-start;
-        gap: 32px;
+    .dev-form-card {
         background: #ffffff;
-        border-radius: 16px;
+        border-radius: 12px;
         border: 1px solid #f1f5f9;
         box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-        padding: 28px 32px 36px;
-    }
-    .adm-edit-layout > .adm-tabs {
-        flex: 0 0 240px !important;
-        width: 240px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 4px !important;
-        position: sticky !important;
-        top: 20px !important;
-    }
-    .adm-edit-layout > .adm-tabs .adm-tab {
-        background: transparent !important;
-        border: none !important;
-        border-radius: 10px !important;
-        padding: 12px 16px !important;
-        font-size: 14px !important;
-        font-weight: 500 !important;
-        color: #475569 !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 12px !important;
-        width: 100% !important;
-        text-align: left !important;
-        cursor: pointer !important;
-        transition: all 0.18s ease !important;
-        position: relative !important;
-    }
-    .adm-edit-layout > .adm-tabs .adm-tab.is-active {
-        background: #f0f9ff !important;
-        color: #0284c7 !important;
-        font-weight: 600 !important;
-    }
-    .adm-edit-layout > .adm-tabs .adm-tab.is-active::after {
-        content: '';
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%) rotate(45deg);
-        width: 6px;
-        height: 6px;
-        border-top: 2px solid #0284c7;
-        border-right: 2px solid #0284c7;
-    }
-    .adm-edit-layout > .adm-edit-form-area {
-        flex: 1 1 0 !important;
-        min-width: 0 !important;
-    }
-    .adm-edit-layout .tab-pane { display: none; }
-    .adm-edit-layout .tab-pane.active { display: block; }
-    .adm-edit-layout .adm-card-head {
         display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        padding-bottom: 20px;
-        margin-bottom: 24px;
-        border-bottom: 1px solid #f1f5f9;
+        align-items: stretch;
+        min-height: 620px;
+        margin-top: 18px;
     }
-    .adm-edit-layout .adm-card-head h2 {
-        font-size: 18px !important;
-        font-weight: 700 !important;
-        color: #0f172a !important;
-        margin: 0 0 4px 0 !important;
-    }
-    .adm-edit-layout .adm-card-head p {
-        font-size: 13.5px !important;
-        color: #64748b !important;
-        margin: 0 !important;
-    }
-    .adm-edit-layout .adm-input,
-    .adm-edit-layout .adm-textarea,
-    .adm-edit-layout .adm-select {
-        background: #f8fafc !important;
-        border: 1px solid #f1f5f9 !important;
-        border-radius: 8px !important;
-        padding: 10px 14px !important;
-        font-size: 14px !important;
-        color: #1e293b !important;
-        width: 100%;
-        box-sizing: border-box;
-    }
-    .adm-edit-layout .adm-field { margin-bottom: 18px; }
-    .adm-edit-layout .adm-label {
-        display: block;
-        font-size: 13px !important;
-        font-weight: 600 !important;
-        color: #334155 !important;
-        margin-bottom: 6px !important;
-    }
-    .project-card-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
+    .dev-sidebar {
+        width: 230px;
+        flex-shrink: 0;
+        padding: 24px 16px;
+        border-right: 1px solid #f1f5f9;
         background: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        padding: 6px 12px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #1e293b;
-        cursor: pointer;
-        transition: all 0.15s ease;
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
     }
-    .project-card-chip.selected {
-        background: #0284c7;
-        color: #ffffff;
-        border-color: #0284c7;
+    .dev-tab-btn {
+        display: flex; align-items: center; gap: 12px;
+        padding: 11px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 500;
+        color: #475569; background: transparent; border: none;
+        width: 100%; text-align: left; position: relative;
+        cursor: pointer; user-select: none; transition: all 0.18s ease;
     }
-    /* FAQ Drag & Drop Styles */
-    .faq-repeater-row {
-        transition: background 0.15s ease, border-color 0.15s ease;
+    .dev-tab-btn:hover { background: #f8fafc; color: #1e293b; }
+    .dev-tab-btn.is-active { background: #faf6f0; color: #BFA16A; font-weight: 600; }
+    .dev-tab-btn.is-active::after {
+        content: ''; position: absolute; right: -8px; top: 50%;
+        transform: translateY(-50%); width: 0; height: 0;
+        border-top: 8px solid transparent; border-bottom: 8px solid transparent;
+        border-left: 8px solid #faf6f0;
     }
-    .faq-repeater-row.is-dragging {
-        opacity: 0.45 !important;
-        background: #f0fdf4 !important;
-        border: 1.5px dashed #1a4731 !important;
+    .dev-tab-icon {
+        width: 28px; height: 28px; border-radius: 6px;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0; transition: all 0.18s ease;
     }
-    .faq-repeater-row.drag-over-top {
-        border-top: 3px solid #1a4731 !important;
+    .dev-tab-btn.is-active .dev-tab-icon {
+        background: #BFA16A;
+        color: #ffffff; box-shadow: 0 2px 4px rgba(191,161,106,0.25);
     }
-    .faq-repeater-row.drag-over-bottom {
-        border-bottom: 3px solid #1a4731 !important;
+    .dev-tab-btn:not(.is-active) .dev-tab-icon { background: #f1f5f9; color: #64748b; }
+    .dev-content-area { flex: 1; padding: 28px 36px 36px 36px; min-width: 0; }
+    .dev-section-title { font-size: 15px; font-weight: 700; color: #1e293b; margin: 0 0 24px 0; }
+    .dev-row { display: grid; grid-template-columns: 200px 1fr; align-items: center; gap: 20px; margin-bottom: 20px; }
+    .dev-row.dev-row-align-top { align-items: flex-start; }
+    .dev-label { font-size: 13.5px; font-weight: 600; color: #1e293b; }
+    .dev-label .req { color: #ef4444; margin-left: 2px; }
+    .dev-input {
+        width: 100%; background: #f8fafc; border: 1px solid #e2e8f0;
+        border-radius: 8px; padding: 10px 14px; font-size: 13.5px;
+        color: #1e293b; font-family: inherit; outline: none; transition: all 0.2s ease;
     }
-    .faq-drag-handle:hover {
-        background: #f0fdf4 !important;
-        border-color: #1a4731 !important;
+    .dev-input:focus { background: #ffffff; border-color: #BFA16A; box-shadow: 0 0 0 3px rgba(191,161,106,0.15); }
+    .dev-textarea {
+        width: 100%; background: #f8fafc; border: 1px solid #e2e8f0;
+        border-radius: 8px; padding: 12px 14px; font-size: 13.5px;
+        color: #1e293b; font-family: inherit; outline: none; resize: vertical;
+        min-height: 100px; transition: all 0.2s ease;
     }
-    .faq-drag-handle:active {
-        cursor: grabbing !important;
+    .dev-textarea:focus { background: #ffffff; border-color: #BFA16A; box-shadow: 0 0 0 3px rgba(191,161,106,0.15); }
+    .dev-slug-wrapper {
+        display: flex; align-items: center; background: #f8fafc;
+        border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; transition: all 0.2s ease;
     }
+    .dev-slug-wrapper:focus-within { background: #ffffff; border-color: #BFA16A; box-shadow: 0 0 0 3px rgba(191,161,106,0.15); }
+    .dev-slug-prefix {
+        padding: 0 12px; color: #64748b; font-size: 13px; font-family: monospace;
+        background: #f1f5f9; height: 42px; display: flex; align-items: center;
+        border-right: 1px solid #e2e8f0; user-select: none;
+    }
+    .dev-slug-input { flex: 1; border: none !important; background: transparent !important; outline: none !important; padding: 10px 14px; font-size: 13.5px; color: #1e293b; font-family: inherit; }
+    .dev-list-btn, .dev-live-btn {
+        display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px;
+        font-size: 13px; font-weight: 600; color: #BFA16A; background: #ffffff;
+        border: 1px solid #e2d5c1; border-radius: 6px; text-decoration: none;
+        transition: all 0.18s ease; box-shadow: 0 1px 2px rgba(191,161,106,0.05);
+    }
+    .dev-list-btn:hover, .dev-live-btn:hover { background: #faf6f0; border-color: #BFA16A; color: #aa8d58; }
+    .dev-status-select {
+        padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 6px;
+        border: 1px solid #cbd5e1; background: #ffffff; color: #1e293b;
+        cursor: pointer; outline: none; transition: all 0.2s ease;
+    }
+    .dev-status-select:focus { border-color: #BFA16A; box-shadow: 0 0 0 3px rgba(191,161,106,0.15); }
+    .dev-upload-box {
+        display: flex; align-items: center; gap: 12px; background: #f8fafc;
+        border: 1px dashed #cbd5e1; border-radius: 8px; padding: 10px 14px; transition: all 0.2s ease;
+    }
+    .dev-upload-box:hover { border-color: #BFA16A; background: #faf6f0; }
+    .faq-repeater-row { transition: background 0.15s ease, border-color 0.15s ease; }
+    .faq-repeater-row.is-dragging { opacity: 0.45 !important; background: #faf6f0 !important; border: 1.5px dashed #BFA16A !important; }
+    .faq-repeater-row.drag-over-top { border-top: 3px solid #BFA16A !important; }
+    .faq-repeater-row.drag-over-bottom { border-bottom: 3px solid #BFA16A !important; }
 </style>
 @endpush
 
 @section('content')
-<div id="editCityView">
-    <div class="cms-page-header" style="margin-bottom: 22px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 14px;">
+<div style="padding: 24px 32px;">
+    @if(session('success'))
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13.5px; display: flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if(isset($errors) && $errors->any())
+        <div style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13.5px;">
+            <ul style="margin: 0; padding-left: 20px;">
+                @foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Header -->
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
         <div>
             <h1 style="font-size: 20px; font-weight: 700; color: #1e293b; margin: 0 0 4px 0;">Edit City &gt; {{ $city->name }}</h1>
             <div style="font-size: 13px; color: #8c9ba5;">Home &ndash; Manage &ndash; Cities &ndash; {{ $city->name }}</div>
         </div>
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <a href="{{ route('admin.cities.index') }}" class="adm-btn" style="background: #ffffff; border: 1px solid #cbd5e1; color: #475569; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600;">
-                &larr; Back to Cities
-            </a>
-            <a href="{{ $city->url }}" target="_blank" class="adm-btn adm-btn-primary" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 8px 16px; border-radius: 8px; text-decoration: none;">
-                @include('admin.partials.icon', ['name' => 'external']) View City Page
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <select name="status" id="city_status" class="dev-status-select" form="cityForm">
+                <option value="draft"    {{ old('status', $city->status) === 'draft'    ? 'selected' : '' }}>Draft</option>
+                <option value="publish"  {{ old('status', $city->status) === 'publish'  ? 'selected' : '' }}>Publish</option>
+                <option value="sold_out" {{ old('status', $city->status) === 'sold_out' ? 'selected' : '' }}>Sold Out</option>
+            </select>
+            <a href="{{ route('admin.cities.index') }}" class="dev-list-btn">Cities List</a>
+            <a href="{{ $city->url }}" target="_blank" rel="noopener" class="dev-live-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+                View Live Page
             </a>
         </div>
     </div>
 
-    @if(session('success'))
-        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; padding: 12px 18px; border-radius: 10px; margin-bottom: 20px; font-size: 14px;">
-            {{ session('success') }}
+    <!-- Main Card -->
+    <div class="dev-form-card">
+        <!-- Left Sidebar Tabs -->
+        <div class="dev-sidebar">
+            <button type="button" class="dev-tab-btn is-active" data-tab="basic" onclick="switchCityTab('basic')">
+                <div class="dev-tab-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+                </div>
+                <span>Basic Details</span>
+            </button>
+            <button type="button" class="dev-tab-btn" data-tab="seo" onclick="switchCityTab('seo')">
+                <div class="dev-tab-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+                <span>SEO</span>
+            </button>
+            <button type="button" class="dev-tab-btn" data-tab="communities" onclick="switchCityTab('communities')">
+                <div class="dev-tab-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <span>Featured Communities</span>
+            </button>
+            <button type="button" class="dev-tab-btn" data-tab="faqs" onclick="switchCityTab('faqs')">
+                <div class="dev-tab-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <span>FAQs</span>
+            </button>
         </div>
-    @endif
 
-    <form method="POST" action="{{ route('admin.cities.update', $city->id) }}" enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
+        <!-- Right Content -->
+        <div class="dev-content-area">
+            <form action="{{ route('admin.cities.update', $city->id) }}" method="POST" id="cityForm" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
 
-        @php
-            $currentTab = request('tab', 'general');
-            $validTabs = ['general', 'hero', 'content', 'projects', 'about', 'faq', 'contact', 'seo'];
-            if (!in_array($currentTab, $validTabs, true)) {
-                $currentTab = 'general';
-            }
-        @endphp
-        <input type="hidden" name="active_tab" id="active_tab_input" value="{{ $currentTab }}">
-
-        @php
-            $page = $page ?? ($city->page ?? null);
-            $sections = $sections ?? ($page ? $page->sections->keyBy('section_key') : collect());
-            $heroContent = $sections['hero']->content ?? [];
-            $tocContent  = $sections['content']->content ?? [];
-            $commContent = $sections['communities']->content ?? [];
-            $aboutContent= $sections['about']->content ?? [];
-            $faqContent  = $sections['faq']->content ?? [];
-            $contactContent = $sections['contact']->content ?? [];
-
-            $selectedProjectIds = $selectedProjectIds ?? ($commContent['selected_ids'] ?? []);
-            if (!is_array($selectedProjectIds)) {
-                $selectedProjectIds = [];
-            }
-            $faqItems = $faqItems ?? ($faqContent['items'] ?? []);
-            if (!is_array($faqItems)) {
-                $faqItems = [];
-            }
-        @endphp
-
-        <!-- Top Live Preview Bar -->
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b;">Page URL:</span>
-                <span style="font-size: 14px; font-family: monospace; color: #0284c7; font-weight: 600;">
-                    {{ $city->url }}
-                </span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 12px; color: #64748b; font-weight: 500;">Status:</span>
                 @php
-                    $curStatus = $city->status ?? 'publish';
-                    $statusMap = [
-                        'publish'  => ['bg' => '#f0fdf4', 'border' => '#bbf7d0', 'color' => '#15803d', 'dot' => '#22c55e', 'label' => 'Publish'],
-                        'draft'    => ['bg' => '#fffbeb', 'border' => '#fde68a', 'color' => '#b45309', 'dot' => '#f59e0b', 'label' => 'Draft'],
-                        'sold_out' => ['bg' => '#fef2f2', 'border' => '#fecaca', 'color' => '#b91c1c', 'dot' => '#ef4444', 'label' => 'Sold out'],
-                    ];
-                    $st = $statusMap[$curStatus] ?? $statusMap['publish'];
+                    $page = $page ?? ($city->page ?? null);
                 @endphp
-                <div class="adm-status-dropdown-wrap" style="position: relative; display: inline-block;">
-                    <input type="hidden" name="status" id="edit_city_status" value="{{ $curStatus }}">
-                    <button type="button" id="edit_city_status_btn" class="adm-status-btn" onclick="toggleStatusDropdown('edit_city_status_menu')" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; border-radius: 8px; cursor: pointer; border: 1px solid {{ $st['border'] }}; background: {{ $st['bg'] }}; color: {{ $st['color'] }}; transition: all 0.15s ease;">
-                        <span class="status-dot" style="width: 7px; height: 7px; border-radius: 50%; background: {{ $st['dot'] }};"></span>
-                        <span id="edit_city_status_label">{{ $st['label'] }}</span>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </button>
-                    <div id="edit_city_status_menu" class="adm-status-menu" style="display: none; position: absolute; right: 0; top: calc(100% + 6px); background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05); min-width: 140px; padding: 6px; z-index: 9999;">
-                        <button type="button" onclick="selectFormStatus('publish', 'Publish', '#f0fdf4', '#bbf7d0', '#15803d', '#22c55e', 'edit_city_status', 'edit_city_status_btn', 'edit_city_status_label', 'edit_city_status_menu')" class="adm-status-opt" style="display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 10px; font-size: 13px; font-weight: 600; border: none; background: none; border-radius: 6px; cursor: pointer; color: #15803d; text-align: left;">
-                            <span style="width: 7px; height: 7px; border-radius: 50%; background: #22c55e;"></span> Publish
-                        </button>
-                        <button type="button" onclick="selectFormStatus('draft', 'Draft', '#fffbeb', '#fde68a', '#b45309', '#f59e0b', 'edit_city_status', 'edit_city_status_btn', 'edit_city_status_label', 'edit_city_status_menu')" class="adm-status-opt" style="display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 10px; font-size: 13px; font-weight: 600; border: none; background: none; border-radius: 6px; cursor: pointer; color: #b45309; text-align: left;">
-                            <span style="width: 7px; height: 7px; border-radius: 50%; background: #f59e0b;"></span> Draft
-                        </button>
-                        <button type="button" onclick="selectFormStatus('sold_out', 'Sold out', '#fef2f2', '#fecaca', '#b91c1c', '#ef4444', 'edit_city_status', 'edit_city_status_btn', 'edit_city_status_label', 'edit_city_status_menu')" class="adm-status-opt" style="display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 10px; font-size: 13px; font-weight: 600; border: none; background: none; border-radius: 6px; cursor: pointer; color: #b91c1c; text-align: left;">
-                            <span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444;"></span> Sold out
-                        </button>
+
+                <!-- TAB 1: BASIC DETAILS -->
+                <div class="dev-tab-pane" id="city_tab_pane_basic">
+                    <h2 class="dev-section-title">City Details</h2>
+
+                    <!-- Name -->
+                    <div class="dev-row">
+                        <label class="dev-label" for="city_name">City Name <span class="req">*</span></label>
+                        <input type="text" id="city_name" name="name" required class="dev-input" value="{{ old('name', $city->name) }}">
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="adm-edit-layout">
-            <!-- Left Tabs -->
-            <div class="adm-tabs">
-                <button type="button" class="adm-tab {{ $currentTab === 'general' ? 'is-active' : '' }}" onclick="switchEditTab('general')" data-tab="general">
-                    @include('admin.partials.icon', ['name' => 'grid'])
-                    <span>General Settings</span>
-                </button>
-                <button type="button" class="adm-tab {{ $currentTab === 'hero' ? 'is-active' : '' }}" onclick="switchEditTab('hero')" data-tab="hero">
-                    @include('admin.partials.icon', ['name' => 'spark'])
-                    <span>Hero</span>
-                </button>
-                <button type="button" class="adm-tab {{ $currentTab === 'content' ? 'is-active' : '' }}" onclick="switchEditTab('content')" data-tab="content">
-                    @include('admin.partials.icon', ['name' => 'edit'])
-                    <span>Content</span>
-                </button>
-                <button type="button" class="adm-tab {{ $currentTab === 'projects' ? 'is-active' : '' }}" onclick="switchEditTab('projects')" data-tab="projects">
-                    @include('admin.partials.icon', ['name' => 'building'])
-                    <span>Project Card</span>
-                </button>
-                <button type="button" class="adm-tab {{ $currentTab === 'about' ? 'is-active' : '' }}" onclick="switchEditTab('about')" data-tab="about">
-                    @include('admin.partials.icon', ['name' => 'book'])
-                    <span>About Community</span>
-                </button>
-                <button type="button" class="adm-tab {{ $currentTab === 'faq' ? 'is-active' : '' }}" onclick="switchEditTab('faq')" data-tab="faq">
-                    @include('admin.partials.icon', ['name' => 'list'])
-                    <span>FAQ</span>
-                </button>
-                <button type="button" class="adm-tab {{ $currentTab === 'contact' ? 'is-active' : '' }}" onclick="switchEditTab('contact')" data-tab="contact">
-                    @include('admin.partials.icon', ['name' => 'mail'])
-                    <span>Contact Section</span>
-                </button>
-                <button type="button" class="adm-tab {{ $currentTab === 'seo' ? 'is-active' : '' }}" onclick="switchEditTab('seo')" data-tab="seo">
-                    @include('admin.partials.icon', ['name' => 'search'])
-                    <span>SEO &amp; Meta</span>
-                </button>
-            </div>
-
-            <!-- Right Form Area -->
-            <div class="adm-edit-form-area">
-                <!-- 1. GENERAL -->
-                <div id="edit_tab_general" class="tab-pane {{ $currentTab === 'general' ? 'active' : '' }}">
-                    <div class="adm-card-head">
-                        <div>
-                            <h2>General Settings</h2>
-                            <p>City Name, URL slug, and navigation settings.</p>
+                    <!-- Slug -->
+                    <div class="dev-row">
+                        <label class="dev-label" for="city_slug">Slug <span class="req">*</span></label>
+                        <div class="dev-slug-wrapper">
+                            <span class="dev-slug-prefix">city/</span>
+                            <input type="text" id="city_slug" name="slug" class="dev-slug-input" value="{{ old('slug', ltrim(preg_replace('#^city/#', '', ltrim($city->slug, '/')), '/')) }}">
                         </div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 6px;">
-                        <div class="adm-field">
-                            <label class="adm-label">City Name <span style="color: #ef4444;">*</span></label>
-                            <input type="text" name="name" value="{{ $city->name }}" required class="adm-input">
+
+                    <!-- H1 -->
+                    <div class="dev-row">
+                        <label class="dev-label" for="city_h1">H1</label>
+                        <input type="text" id="city_h1" name="h1" class="dev-input" value="{{ old('h1', $city->h1) }}">
+                    </div>
+
+                    <!-- Tagline -->
+                    <div class="dev-row">
+                        <label class="dev-label" for="city_tagline">Tagline</label>
+                        <input type="text" id="city_tagline" name="tagline" class="dev-input" value="{{ old('tagline', $city->tagline) }}">
+                    </div>
+
+                    <!-- Short Content -->
+                    <div class="dev-row dev-row-align-top">
+                        <label class="dev-label" for="city_short_content" style="padding-top: 10px;">Short Content</label>
+                        <div style="flex: 1; min-width: 0;">
+                            <textarea id="city_short_content" name="short_content" class="adm-summernote" data-height="180">{{ old('short_content', $city->short_content) }}</textarea>
                         </div>
-                        <div class="adm-field">
-                            <label class="adm-label">Route / Slug <span style="color: #ef4444;">*</span></label>
-                            <div style="display: flex; align-items: center; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden;">
-                                <span style="padding: 0 12px; color: #64748b; font-family: monospace; font-size: 14px; user-select: none;">/city/</span>
-                                <input type="text" name="slug" value="{{ ltrim(preg_replace('#^city/#', '', ltrim($city->slug, '/')), '/') }}" required class="adm-input" style="border: none !important; background: transparent !important;">
+                    </div>
+
+                    <!-- Full Content -->
+                    <div class="dev-row dev-row-align-top">
+                        <label class="dev-label" for="city_full_content" style="padding-top: 10px;">Full Content</label>
+                        <div style="flex: 1; min-width: 0;">
+                            <textarea id="city_full_content" name="full_content" class="adm-summernote" data-height="350">{{ old('full_content', $city->full_content) }}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Cover Image -->
+                    <div class="dev-row dev-row-align-top">
+                        <label class="dev-label" for="city_cover_image_file" style="padding-top: 10px;">Cover Image</label>
+                        <div style="flex: 1; min-width: 0;">
+                            <div class="dev-upload-box">
+                                <input type="file" id="city_cover_image_file" name="cover_image_file" accept="image/*" style="font-size: 13px;" onchange="previewCityCoverFile(this)">
+                            </div>
+                            <div id="cityCoverPreviewContainer" style="margin-top: 8px; {{ $city->image ? '' : 'display: none;' }}">
+                                <img id="cityCoverPreviewImg" src="{{ $city->image ? (str_starts_with($city->image, 'http') ? $city->image : asset(ltrim($city->image,'/'))) : '' }}" alt="Cover Preview" style="max-height: 120px; max-width: 240px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;">
                             </div>
                         </div>
                     </div>
-                    <div class="adm-field">
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: 600;">
-                            <input type="checkbox" name="in_navbar" value="1" {{ ($page && $page->in_navbar) ? 'checked' : '' }}>
-                            <span>Show in Top Navigation Menu</span>
-                        </label>
+                </div>
+
+                <!-- TAB 2: SEO -->
+                <div class="dev-tab-pane" id="city_tab_pane_seo" style="display: none;">
+                    <h2 class="dev-section-title">SEO &amp; Meta Details</h2>
+                    <div class="dev-row">
+                        <label class="dev-label" for="city_meta_title">Meta Title</label>
+                        <input type="text" id="city_meta_title" name="meta_title" class="dev-input" value="{{ old('meta_title', $page->meta_title ?? '') }}">
+                    </div>
+                    <div class="dev-row dev-row-align-top">
+                        <label class="dev-label" for="city_meta_description" style="padding-top: 10px;">Meta Description</label>
+                        <textarea id="city_meta_description" name="meta_description" class="dev-textarea">{{ old('meta_description', $page->meta_description ?? '') }}</textarea>
+                    </div>
+                    <div class="dev-row">
+                        <label class="dev-label" for="city_meta_keywords">Meta Keywords</label>
+                        <input type="text" id="city_meta_keywords" name="meta_keywords" class="dev-input" value="{{ old('meta_keywords', $page->meta_keywords ?? '') }}">
                     </div>
                 </div>
 
-                <!-- 2. HERO -->
-                <div id="edit_tab_hero" class="tab-pane {{ $currentTab === 'hero' ? 'active' : '' }}">
-                    <div class="adm-card-head">
-                        <div>
-                            <h2>Hero Banner</h2>
-                            <p>Main heading, subtitle, and hero backdrop.</p>
-                        </div>
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Hero Main Heading (H1)</label>
-                        <input type="text" name="sections[hero][title]" value="{{ $heroContent['title'] ?? '' }}" placeholder="e.g. {{ $city->name }}" class="adm-input">
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Hero Subtitle</label>
-                        <textarea name="sections[hero][subtitle]" rows="2" class="adm-textarea">{{ $heroContent['subtitle'] ?? '' }}</textarea>
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Badge Text</label>
-                        <input type="text" name="sections[hero][badge]" value="{{ $heroContent['badge'] ?? '' }}" class="adm-input">
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Hero Background Image</label>
-                        <input type="file" name="hero_image_file" accept="image/*" class="adm-input">
-                        <input type="text" name="sections[hero][bg_image]" value="{{ $heroContent['bg_image'] ?? '' }}" placeholder="or image path" class="adm-input" style="margin-top: 6px;">
-                    </div>
-                </div>
-
-                <!-- 3. CONTENT TAB (WYSIWYG) -->
-                <div id="edit_tab_content" class="tab-pane {{ $currentTab === 'content' ? 'active' : '' }}">
-                    <div class="adm-card-head">
-                        <div>
-                            <h2>Content Editor</h2>
-                            <p>Single visual WYSIWYG editor containing complete page article, H1/H2/H3 headings, paragraphs, and embedded photos.</p>
-                        </div>
-                        <span class="adm-chip" style="background: #f1f5f9; color: #475569; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; text-transform: uppercase;">content section</span>
+                <!-- TAB 3: FEATURED COMMUNITIES (communities with city_id = this city) -->
+                <div class="dev-tab-pane" id="city_tab_pane_communities" style="display: none;">
+                    <div style="margin-bottom: 20px;">
+                        <h2 class="dev-section-title" style="margin: 0;">Featured Communities</h2>
                     </div>
 
-                    <div class="adm-field">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-                            <label class="adm-label" style="margin-bottom: 0;">Page Article &amp; Community Body (Headings, Paragraphs, Images)</label>
-                            <label for="city_edit_content_file_btn" class="adm-btn" onmousedown="$('#edit_content_wysiwyg').summernote('saveRange'); window.currentActiveSummernote = $('#edit_content_wysiwyg');" style="background: #1a4731; color: #ffffff; padding: 6px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                                Choose File &amp; Insert Image
-                            </label>
-                            <input type="file" id="city_edit_content_file_btn" accept="image/*" style="display: none;" onchange="if(this.files && this.files[0]){ window.uploadAndInsertSummernoteFile(this.files[0], $('#edit_content_wysiwyg')); this.value=''; }">
-                        </div>
-                        <textarea name="sections[content][html]" id="edit_content_wysiwyg" class="adm-textarea adm-summernote" data-height="500" rows="22">{{ $tocContent['html'] ?? ($tocContent['body'] ?? '') }}</textarea>
-                    </div>
-                </div>
+                    @php
+                        $assignedComms = $assignedCommunities ?? collect();
+                        $selectedCityCommIds = (array) old('featured_communities', $city->featured_communities ?? []);
+                        $selectedCityCommIds = array_map('intval', $selectedCityCommIds);
+                        $unselectedCityComms = $assignedComms->whereNotIn('id', $selectedCityCommIds)->values();
+                        $selectedCityComms   = $assignedComms->whereIn('id', $selectedCityCommIds)->values();
+                        // If no featured_communities stored yet, all assigned show as available
+                        if (empty($selectedCityCommIds)) {
+                            $unselectedCityComms = $assignedComms;
+                            $selectedCityComms   = collect();
+                        }
+                    @endphp
 
-                <!-- 4. PROJECTS -->
-                <div id="edit_tab_projects" class="tab-pane {{ $currentTab === 'projects' ? 'active' : '' }}">
-                    <div class="adm-card-head">
-                        <div>
-                            <h2>Project Card (Featured Properties)</h2>
-                            <p>Select which properties are featured on this city page.</p>
-                        </div>
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Section Heading</label>
-                        <input type="text" name="sections[communities][heading]" value="{{ $commContent['heading'] ?? '' }}" class="adm-input">
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Section Subtitle</label>
-                        <input type="text" name="sections[communities][subtitle]" value="{{ $commContent['subtitle'] ?? '' }}" class="adm-input">
-                    </div>
-
-                    <div style="margin-top: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <span style="font-size: 13px; font-weight: 700; color: #1a4731; text-transform: uppercase; letter-spacing: 0.5px;">
-                                Select Property Cards (Drag &amp; Drop Between Boxes):
-                            </span>
-                            <span style="font-size: 12px; color: #64748b;">
-                                Mouse se card ko pakar kar right box me le aayein ya (+ Add) par click karein
-                            </span>
-                        </div>
-
-                        <!-- Dual Boxes Grid matching Image 2 -->
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                            
-                            <!-- BOX 1: Available Property Cards -->
-                            <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 16px; display: flex; flex-direction: column;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
-                                    <div>
-                                        <strong style="font-size: 13.5px; color: #1e293b; display: flex; align-items: center; gap: 6px;">
-                                            📁 Available Property Cards ( <span id="availableCount">0</span> )
-                                        </strong>
-                                        <span style="font-size: 11.5px; color: #64748b;">All created property cards in your system</span>
-                                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <!-- BOX 1: Available Communities -->
+                        <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 16px; display: flex; flex-direction: column;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+                                <div>
+                                    <strong style="font-size: 13.5px; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+                                        Available Communities ( <span id="availableCityCommCount">{{ $unselectedCityComms->count() }}</span> )
+                                    </strong>
                                 </div>
-
-                                <div id="box1_availableCards" ondragover="allowDropCard(event)" ondrop="dropCardToAvailable(event)" style="display: flex; flex-direction: column; gap: 8px; min-height: 380px; max-height: 540px; overflow-y: auto; padding: 4px;">
-                                    @foreach($allProjects as $proj)
-                                        @if(!in_array($proj->id, $selectedProjectIds, true))
-                                            <div class="dual-project-card" id="proj_card_{{ $proj->id }}" data-id="{{ $proj->id }}" draggable="true" ondragstart="dragCardStart(event)" ondragend="dragCardEnd(event)" style="display: flex; align-items: center; gap: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 9px 12px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.03); transition: all 0.15s ease;">
-                                                <span style="color: #94a3b8; font-size: 14px; cursor: grab; user-select: none;">⠿</span>
-                                                <img src="{{ $proj->image_url }}" alt="" style="width: 48px; height: 34px; object-fit: cover; border-radius: 5px; border: 1px solid #cbd5e1; flex-shrink: 0; background: #f1f5f9;">
-                                                <div style="flex: 1; min-width: 0;">
-                                                    <strong class="dual-card-title" style="display: block; font-size: 13px; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $proj->title }}</strong>
-                                                    <span style="font-size: 11px; color: #64748b;">{{ $proj->price ?: ($proj->location ?: 'Saima') }}</span>
-                                                </div>
-                                                <button type="button" onclick="moveCardToSelected({{ $proj->id }})" title="Add to page" style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; border-radius: 6px; padding: 5px 11px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0;">
-                                                    + Add
-                                                </button>
+                                <button type="button" onclick="selectAllCityComms()" style="background: none; border: none; font-size: 11.5px; color: #15803d; cursor: pointer; text-decoration: underline; font-weight: 600;">+ Select All</button>
+                            </div>
+                            <div id="box1_availableCityComms" ondragover="allowDropCityComm(event)" ondrop="dropCityCommToAvailable(event)" style="display: flex; flex-direction: column; gap: 8px; min-height: 320px; max-height: 500px; overflow-y: auto; padding: 4px;">
+                                @forelse($unselectedCityComms as $comm)
+                                    <div class="dual-city-comm" id="city_comm_card_{{ $comm->id }}" data-id="{{ $comm->id }}" draggable="true" ondragstart="dragCityCommStart(event)" ondragend="dragCityCommEnd(event)" style="display: flex; align-items: center; gap: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 9px 12px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.03); transition: all 0.15s ease;">
+                                        <span style="color: #94a3b8; font-size: 14px; cursor: grab; user-select: none;">⠿</span>
+                                        @if($comm->image)
+                                            <img src="{{ str_starts_with($comm->image, 'http') ? $comm->image : asset(ltrim($comm->image,'/')) }}" alt="" style="width: 48px; height: 34px; object-fit: cover; border-radius: 5px; border: 1px solid #cbd5e1; flex-shrink: 0; background: #f1f5f9;">
+                                        @else
+                                            <div style="width: 48px; height: 34px; background: #f1f5f9; border-radius: 5px; border: 1px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; flex-shrink: 0;">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
                                             </div>
                                         @endif
-                                    @endforeach
-                                </div>
+                                        <div style="flex: 1; min-width: 0;">
+                                            <strong style="display: block; font-size: 13px; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $comm->name }}</strong>
+                                            <span style="font-size: 11px; color: #64748b;">{{ $city->name }}</span>
+                                        </div>
+                                        <button type="button" onclick="moveCityCommToSelected({{ $comm->id }})" title="Add to featured" style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; border-radius: 6px; padding: 5px 11px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0;">+ Add</button>
+                                    </div>
+                                @empty
+                                    <div style="text-align: center; padding: 40px 16px; border: 2px dashed #e2e8f0; border-radius: 8px; color: #94a3b8;">
+                                        <strong style="display: block; font-size: 13px; color: #475569;">No Communities Assigned</strong>
+                                    </div>
+                                @endforelse
                             </div>
+                        </div>
 
-                            <!-- BOX 2: Selected Cards for This Page -->
-                            <div style="background: #ffffff; border: 1.5px solid #1a4731; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; box-shadow: 0 4px 14px rgba(26, 71, 49, 0.05);">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;">
-                                    <div>
-                                        <strong style="font-size: 13.5px; color: #1a4731; display: flex; align-items: center; gap: 6px;">
-                                            ✓ Selected Cards for This Page ( <span id="selectedCount">0</span> )
-                                        </strong>
-                                        <span style="font-size: 11.5px; color: #64748b;">Sirf ye cards aapke page par dikhenge</span>
-                                    </div>
-                                    <button type="button" onclick="clearAllSelectedCards()" style="background: none; border: none; font-size: 11.5px; color: #ef4444; cursor: pointer; text-decoration: underline;">Clear All</button>
+                        <!-- BOX 2: Selected Communities -->
+                        <div style="background: #ffffff; border: 1.5px solid #BFA16A; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; box-shadow: 0 4px 14px rgba(191,161,106,0.08);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;">
+                                <div>
+                                    <strong style="font-size: 13.5px; color: #BFA16A; display: flex; align-items: center; gap: 6px;">
+                                        ✓ Featured on This Page ( <span id="selectedCityCommCount">{{ $selectedCityComms->count() }}</span> )
+                                    </strong>
                                 </div>
-
-                                <div id="box2_selectedCards" ondragover="allowDropCard(event)" ondrop="dropCardToSelected(event)" style="display: flex; flex-direction: column; gap: 8px; min-height: 380px; max-height: 540px; overflow-y: auto; padding: 4px; border-radius: 8px;">
-                                    <!-- Empty placeholder when 0 cards -->
-                                    <div id="selectedCardsEmptyState" style="text-align: center; padding: 80px 20px; border: 2px dashed #e2e8f0; border-radius: 8px; color: #94a3b8; display: none;">
-                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" style="margin: 0 auto 10px; display: block;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-                                        <strong style="display: block; font-size: 14px; color: #475569; margin-bottom: 4px;">Drag Cards Here</strong>
-                                        <span style="font-size: 12px; color: #94a3b8;">Left box se mouse se pakar kar yahan chhor dein (drop karein)</span>
-                                    </div>
-
-                                    @foreach($allProjects as $proj)
-                                        @if(in_array($proj->id, $selectedProjectIds, true))
-                                            <div class="dual-project-card" id="proj_card_{{ $proj->id }}" data-id="{{ $proj->id }}" draggable="true" ondragstart="dragCardStart(event)" ondragend="dragCardEnd(event)" style="display: flex; align-items: center; gap: 10px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 9px 12px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.03); transition: all 0.15s ease;">
-                                                <span style="color: #94a3b8; font-size: 14px; cursor: grab; user-select: none;">⠿</span>
-                                                <img src="{{ $proj->image_url }}" alt="" style="width: 48px; height: 34px; object-fit: cover; border-radius: 5px; border: 1px solid #cbd5e1; flex-shrink: 0; background: #f1f5f9;">
-                                                <div style="flex: 1; min-width: 0;">
-                                                    <strong class="dual-card-title" style="display: block; font-size: 13px; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $proj->title }}</strong>
-                                                    <span style="font-size: 11px; color: #64748b;">{{ $proj->price ?: ($proj->location ?: 'Saima') }}</span>
-                                                </div>
-                                                <button type="button" onclick="moveCardToAvailable({{ $proj->id }})" title="Remove from page" style="background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 6px; padding: 5px 11px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0;">
-                                                    ✕ Remove
-                                                </button>
+                                <button type="button" onclick="clearAllCityComms()" style="background: none; border: none; font-size: 11.5px; color: #ef4444; cursor: pointer; text-decoration: underline;">Clear All</button>
+                            </div>
+                            <div id="box2_selectedCityComms" ondragover="allowDropCityComm(event)" ondrop="dropCityCommToSelected(event)" style="display: flex; flex-direction: column; gap: 8px; min-height: 320px; max-height: 500px; overflow-y: auto; padding: 4px; border-radius: 8px;">
+                                <div id="selectedCityCommsEmptyState" style="text-align: center; padding: 60px 20px; border: 2px dashed #e2e8f0; border-radius: 8px; color: #94a3b8; {{ $selectedCityComms->isEmpty() ? '' : 'display: none;' }}">
+                                    <strong style="display: block; font-size: 14px; color: #475569;">Drag Cards Here</strong>
+                                </div>
+                                @foreach($selectedCityComms as $comm)
+                                    <div class="dual-city-comm" id="city_comm_card_{{ $comm->id }}" data-id="{{ $comm->id }}" draggable="true" ondragstart="dragCityCommStart(event)" ondragend="dragCityCommEnd(event)" style="display: flex; align-items: center; gap: 10px; background: #faf6f0; border: 1px solid #e2d5c1; border-radius: 8px; padding: 9px 12px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.03); transition: all 0.15s ease;">
+                                        <span style="color: #94a3b8; font-size: 14px; cursor: grab; user-select: none;">⠿</span>
+                                        @if($comm->image)
+                                            <img src="{{ str_starts_with($comm->image, 'http') ? $comm->image : asset(ltrim($comm->image,'/')) }}" alt="" style="width: 48px; height: 34px; object-fit: cover; border-radius: 5px; border: 1px solid #cbd5e1; flex-shrink: 0; background: #f1f5f9;">
+                                        @else
+                                            <div style="width: 48px; height: 34px; background: #f1f5f9; border-radius: 5px; border: 1px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; flex-shrink: 0;">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
                                             </div>
                                         @endif
-                                    @endforeach
-                                </div>
-
-                                <!-- Hidden container for form inputs -->
-                                <div id="selectedCardsInputsContainer"></div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 5. ABOUT -->
-                <div id="edit_tab_about" class="tab-pane {{ $currentTab === 'about' ? 'active' : '' }}">
-                    <div class="adm-card-head">
-                        <div>
-                            <h2>About Community</h2>
-                            <p>City narrative and video showcase.</p>
-                        </div>
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Headline</label>
-                        <input type="text" name="sections[about][heading]" value="{{ $aboutContent['heading'] ?? '' }}" class="adm-input">
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Description / Narrative</label>
-                        <textarea name="sections[about][description]" rows="5" class="adm-textarea">{{ $aboutContent['description'] ?? '' }}</textarea>
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Video Stream URL</label>
-                        <input type="text" name="sections[about][video_url]" value="{{ $aboutContent['video_url'] ?? '' }}" class="adm-input">
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Video Poster / Cover Image</label>
-                        <div class="adm-img-box" style="display: flex; gap: 14px; align-items: center; background: #faf8f5; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px;">
-                            @php $aboutPosterVal = $aboutContent['poster_image'] ?? ($aboutContent['video_poster'] ?? ''); @endphp
-                            <img id="preview_edit_about_poster" src="{{ $aboutPosterVal }}" style="width: 100px; height: 62px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; {{ empty($aboutPosterVal) ? 'display: none;' : '' }}" alt="Poster">
-                            <div style="flex: 1;">
-                                <div style="margin-bottom: 8px;">
-                                    <input type="file" name="about_poster_file" accept="image/*" class="adm-input" style="padding: 6px 10px;" onchange="if(this.files && this.files[0]){const r=new FileReader();r.onload=e=>{const img=document.getElementById('preview_edit_about_poster'); img.src=e.target.result; img.style.display='block';};r.readAsDataURL(this.files[0]);}">
-                                </div>
-                                <input type="text" id="edit_about_poster" name="sections[about][poster_image]" value="{{ $aboutPosterVal }}" placeholder="/images/projects/poster.jpg" class="adm-input" oninput="const img=document.getElementById('preview_edit_about_poster'); if(this.value){img.src=this.value; img.style.display='block';}else{img.style.display='none';}">
+                                        <div style="flex: 1; min-width: 0;">
+                                            <strong style="display: block; font-size: 13px; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $comm->name }}</strong>
+                                            <span style="font-size: 11px; color: #64748b;">{{ $city->name }}</span>
+                                        </div>
+                                        <button type="button" onclick="moveCityCommToAvailable({{ $comm->id }})" title="Remove" style="background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 6px; padding: 5px 11px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0;">✕ Remove</button>
+                                    </div>
+                                @endforeach
+                                <div id="selectedCityCommsInputsContainer"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 6. FAQ -->
-                <div id="edit_tab_faq" class="tab-pane {{ $currentTab === 'faq' ? 'active' : '' }}">
-                    <div class="adm-card-head">
+                <!-- TAB 4: FAQs -->
+                <div class="dev-tab-pane" id="city_tab_pane_faqs" style="display: none;">
+                    <h2 class="dev-section-title">FAQs</h2>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
                         <div>
-                            <h2>Frequently Asked Questions</h2>
-                            <p>Manage questions and answers.</p>
+                            <label class="dev-label" style="display: block; margin-bottom: 6px;">FAQ Section Heading</label>
+                            <input type="text" name="faq_heading" class="dev-input" value="{{ old('faq_heading', $city->faq_heading) }}" placeholder="e.g. Frequently Asked Questions">
                         </div>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
-                        <div class="adm-field" style="margin-bottom: 0;">
-                            <label class="adm-label">FAQ Section Title</label>
-                            <input type="text" name="sections[faq][title]" value="{{ $faqContent['title'] ?? '' }}" placeholder="e.g. Frequently Asked Questions" class="adm-input">
-                        </div>
-
-                        <div class="adm-field" style="margin-bottom: 0;">
-                            <label class="adm-label">FAQ Subtitle</label>
-                            <input type="text" name="sections[faq][subtitle]" value="{{ $faqContent['subtitle'] ?? '' }}" placeholder="e.g. Find answers to common questions..." class="adm-input">
+                        <div>
+                            <label class="dev-label" style="display: block; margin-bottom: 6px;">FAQ Subtitle</label>
+                            <input type="text" name="faq_subtitle" class="dev-input" value="{{ old('faq_subtitle', $city->faq_subtitle) }}" placeholder="e.g. Find answers below...">
                         </div>
                     </div>
 
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">
-                        <span style="font-size: 12.5px; font-weight: 700; color: #1a4731; text-transform: uppercase; letter-spacing: 0.5px;">
-                            Questions &amp; Answers List:
-                        </span>
+                        <span style="font-size: 12.5px; font-weight: 700; color: #BFA16A; text-transform: uppercase; letter-spacing: 0.5px;">Questions &amp; Answers:</span>
                         <span style="font-size: 11.5px; color: #6b7280;">Drag ⇅ to reorder, ✕ to delete</span>
                     </div>
 
-                    <!-- Table-like Header (Question next to Answer) -->
                     <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr) minmax(0, 1.5fr) 34px; gap: 10px; padding: 0 6px; margin-bottom: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #6b7280;" aria-hidden="true">
                         <span></span><span>Question</span><span>Answer</span><span></span>
                     </div>
 
-                    <div id="editFaqItemsContainer" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
-                        @foreach($faqItems as $idx => $item)
+                    <div id="cityFaqItemsContainer" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                        @php
+                            $cityFaqItems = old('faqs', $city->faqs ?? []);
+                            if (!is_array($cityFaqItems)) $cityFaqItems = [];
+                        @endphp
+                        @foreach($cityFaqItems as $idx => $item)
                             <div class="faq-repeater-row" style="display: grid; grid-template-columns: 34px minmax(0, 1fr) minmax(0, 1.5fr) 34px; gap: 10px; align-items: center; background: #faf8f5; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px 10px;">
-                                <div class="faq-drag-handle" draggable="true" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 36px; border: 1px solid #d1d5db; background: #ffffff; border-radius: 6px; color: #1a4731; cursor: grab; user-select: none;" title="Drag ⇅ to reorder">
+                                <div class="faq-drag-handle" draggable="true" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 36px; border: 1px solid #d1d5db; background: #ffffff; border-radius: 6px; color: #BFA16A; cursor: grab; user-select: none;" title="Drag to reorder">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 20V4m0 0L3 8m4-4l4 4"/><path d="M17 4v16m0 0l4-4m-4 4l-4-4"/></svg>
                                 </div>
-                                <input type="text" name="faq_q[]" value="{{ $item['q'] ?? '' }}" class="adm-input" placeholder="Question" style="margin: 0; min-height: 36px; font-size: 13px;">
-                                <textarea name="faq_a[]" class="adm-textarea" rows="1" placeholder="Answer" style="margin: 0; min-height: 36px; font-size: 13px; resize: vertical; line-height: 1.4;">{{ $item['a'] ?? '' }}</textarea>
-                                <button type="button" onclick="this.closest('.faq-repeater-row').remove()" title="Delete row" style="width: 34px; height: 36px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c; border-radius: 6px; cursor: pointer; font-size: 14px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease;">&#10005;</button>
+                                <input type="text" name="faqs[{{ $idx }}][question]" value="{{ $item['question'] ?? ($item['q'] ?? '') }}" class="dev-input" placeholder="Question" style="margin: 0; min-height: 36px; font-size: 13px; padding: 8px 12px;">
+                                <textarea name="faqs[{{ $idx }}][answer]" class="dev-textarea" rows="1" placeholder="Answer" style="margin: 0; min-height: 36px; font-size: 13px; resize: vertical; line-height: 1.4; padding: 8px 12px;">{{ $item['answer'] ?? ($item['a'] ?? '') }}</textarea>
+                                <button type="button" onclick="this.closest('.faq-repeater-row').remove(); updateCityFaqIndexes();" title="Delete" style="width: 34px; height: 36px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c; border-radius: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;">&#10005;</button>
                             </div>
                         @endforeach
                     </div>
 
-                    <!-- Add Row Button matching Image 2 -->
-                    <button type="button" onclick="addEditFaqRow()" style="padding: 6px 14px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1.5px dashed #1a4731; color: #1a4731; background: #faf8f5; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s ease;">
+                    <button type="button" onclick="addCityFaqRow()" style="padding: 6px 14px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1.5px dashed #BFA16A; color: #BFA16A; background: #faf6f0; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;">
                         + Add Row
                     </button>
                 </div>
 
-                <!-- 7. CONTACT -->
-                <div id="edit_tab_contact" class="tab-pane {{ $currentTab === 'contact' ? 'active' : '' }}">
-                    <div class="adm-card-head">
-                        <div>
-                            <h2>Contact Section</h2>
-                            <p>Call to action information.</p>
-                        </div>
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Heading</label>
-                        <input type="text" name="sections[contact][heading]" value="{{ $contactContent['heading'] ?? '' }}" class="adm-input">
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Subtitle</label>
-                        <textarea name="sections[contact][subtitle]" rows="2" class="adm-textarea">{{ $contactContent['subtitle'] ?? '' }}</textarea>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-                        <div class="adm-field">
-                            <label class="adm-label">Phone / WhatsApp</label>
-                            <input type="text" name="sections[contact][phone]" value="{{ $contactContent['phone'] ?? '' }}" class="adm-input">
-                        </div>
-                        <div class="adm-field">
-                            <label class="adm-label">Email</label>
-                            <input type="email" name="sections[contact][email]" value="{{ $contactContent['email'] ?? '' }}" class="adm-input">
-                        </div>
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Button Text</label>
-                        <input type="text" name="sections[contact][btn_text]" value="{{ $contactContent['btn_text'] ?? '' }}" class="adm-input">
-                    </div>
-                </div>
+            </form>
 
-                <!-- 8. SEO -->
-                <div id="edit_tab_seo" class="tab-pane {{ $currentTab === 'seo' ? 'active' : '' }}">
-                    <div class="adm-card-head">
-                        <div>
-                            <h2>SEO &amp; Meta Settings</h2>
-                            <p>Search engine optimization tags.</p>
-                        </div>
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Meta Title</label>
-                        <input type="text" name="meta_title" value="{{ $page->meta_title ?? '' }}" class="adm-input">
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Meta Description</label>
-                        <textarea name="meta_description" rows="3" class="adm-textarea">{{ $page->meta_description ?? '' }}</textarea>
-                    </div>
-                    <div class="adm-field">
-                        <label class="adm-label">Meta Keywords</label>
-                        <input type="text" name="meta_keywords" value="{{ $page->meta_keywords ?? '' }}" class="adm-input">
-                    </div>
+            <!-- Save Bar -->
+            <div style="position: sticky; bottom: 0; background: #ffffff; border-top: 1px solid #e2e8f0; padding: 16px 0 0 0; display: flex; justify-content: space-between; align-items: center; margin-top: 32px;">
+                <div style="font-size: 13.5px; color: #64748b;">
+                    Editing: <strong style="color: #0f172a;">{{ $city->name }}</strong>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <a href="{{ route('admin.cities.index') }}" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600;">Cancel</a>
+                    <button type="submit" form="cityForm" style="background: #BFA16A; color: #ffffff; border: none; padding: 8px 24px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(191,161,106,0.35);">Save Changes</button>
                 </div>
             </div>
         </div>
-
-        <!-- Sticky Bottom Save Bar -->
-        <div style="position: sticky; bottom: 0; background: #ffffff; border-top: 1px solid #e2e8f0; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-top: -10px; z-index: 10;">
-            <div style="font-size: 13.5px; color: #64748b;">
-                Editing City: <strong style="color: #0f172a;">{{ $city->name }}</strong>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <a href="{{ route('admin.cities.index') }}" class="adm-btn" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 8px 18px; border-radius: 8px; text-decoration: none;">Cancel</a>
-                <button type="submit" class="adm-btn adm-btn-primary" style="padding: 8px 24px; border-radius: 8px;">Save Changes</button>
-            </div>
-        </div>
-    </form>
+    </div>
 </div>
 
 <script>
-    function switchEditTab(tabId) {
-        const input = document.getElementById('active_tab_input');
-        if (input) input.value = tabId;
-
-        try {
-            const url = new URL(window.location.href);
-            url.searchParams.set('tab', tabId);
-            window.history.replaceState({}, '', url.toString());
-        } catch (e) {}
-
-        document.querySelectorAll('.adm-tabs .adm-tab').forEach(btn => {
+    function switchCityTab(tabId) {
+        document.querySelectorAll('.dev-tab-btn').forEach(btn => {
             btn.classList.toggle('is-active', btn.getAttribute('data-tab') === tabId);
         });
-        document.querySelectorAll('.tab-pane').forEach(pane => {
-            pane.classList.remove('active');
-        });
-        const target = document.getElementById('edit_tab_' + tabId);
-        if (target) {
-            target.classList.add('active');
-            if (tabId === 'content' && window.initSummernote) {
-                window.initSummernote();
+        document.querySelectorAll('.dev-tab-pane').forEach(pane => { pane.style.display = 'none'; });
+        const pane = document.getElementById('city_tab_pane_' + tabId);
+        if (pane) {
+            pane.style.display = 'block';
+            if (tabId === 'basic' && window.initSummernote) {
+                setTimeout(() => window.initSummernote(), 100);
             }
         }
     }
 
-    function addEditFaqRow() {
-        const container = document.getElementById('editFaqItemsContainer');
-        const div = document.createElement('div');
-        div.className = 'faq-repeater-row';
-        div.style.cssText = 'display: grid; grid-template-columns: 34px minmax(0, 1fr) minmax(0, 1.5fr) 34px; gap: 10px; align-items: center; background: #faf8f5; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px 10px;';
-        div.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: center; width: 34px; height: 36px; border: 1px solid #d1d5db; background: #ffffff; border-radius: 6px; color: #1a4731; cursor: grab;" title="Drag to reorder">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 20V4m0 0L3 8m4-4l4 4"/><path d="M17 4v16m0 0l4-4m-4 4l-4-4"/></svg>
-            </div>
-            <input type="text" name="faq_q[]" class="adm-input" placeholder="Question" style="margin: 0; min-height: 36px; font-size: 13px;">
-            <textarea name="faq_a[]" class="adm-textarea" rows="1" placeholder="Answer" style="margin: 0; min-height: 36px; font-size: 13px; resize: vertical; line-height: 1.4;"></textarea>
-            <button type="button" onclick="this.closest('.faq-repeater-row').remove()" title="Delete row" style="width: 34px; height: 36px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c; border-radius: 6px; cursor: pointer; font-size: 14px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease;">&#10005;</button>
-        `;
-        container.appendChild(div);
-        const input = div.querySelector('input');
-        if (input) input.focus();
+    function previewCityCoverFile(input) {
+        if (input.files && input.files[0]) {
+            const r = new FileReader();
+            r.onload = e => {
+                const img = document.getElementById('cityCoverPreviewImg');
+                const container = document.getElementById('cityCoverPreviewContainer');
+                img.src = e.target.result;
+                container.style.display = 'block';
+            };
+            r.readAsDataURL(input.files[0]);
+        }
     }
 
-    // ==========================================
-    // DUAL-BOX CARD SELECTOR (DRAG & DROP + CLICK)
-    // ==========================================
-    let draggedDualCard = null;
+    // ===== DUAL BOX: FEATURED COMMUNITIES =====
+    let draggedCityComm = null;
 
-    function dragCardStart(e) {
-        draggedDualCard = e.currentTarget;
+    function dragCityCommStart(e) {
+        draggedCityComm = e.currentTarget;
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/plain', e.currentTarget.getAttribute('data-id'));
-        setTimeout(() => { if (draggedDualCard) draggedDualCard.style.opacity = '0.4'; }, 0);
+        setTimeout(() => { if (draggedCityComm) draggedCityComm.style.opacity = '0.4'; }, 0);
     }
-
-    function dragCardEnd(e) {
-        if (e.currentTarget) {
-            e.currentTarget.style.opacity = '1';
-        }
-        draggedDualCard = null;
+    function dragCityCommEnd(e) {
+        if (e.currentTarget) e.currentTarget.style.opacity = '1';
+        draggedCityComm = null;
     }
+    function allowDropCityComm(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
 
-    function allowDropCard(e) {
+    function dropCityCommToSelected(e) {
         e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-    }
-
-    function dropCardToSelected(e) {
-        e.preventDefault();
-        const card = draggedDualCard;
+        const card = draggedCityComm;
         if (!card) return;
-
-        const box2 = document.getElementById('box2_selectedCards');
+        const box2 = document.getElementById('box2_selectedCityComms');
         if (!box2) return;
-
-        const targetCard = e.target.closest('.dual-project-card');
+        const targetCard = e.target.closest('.dual-city-comm');
         if (targetCard && targetCard.parentNode === box2 && targetCard !== card) {
             box2.insertBefore(card, targetCard);
         } else {
             box2.appendChild(card);
         }
-
-        const id = card.getAttribute('data-id');
-        setCardToSelectedStyle(card, id);
-        updateDualBoxState();
+        setCityCommSelectedStyle(card, card.getAttribute('data-id'));
+        updateCityCommBoxState();
     }
-
-    function dropCardToAvailable(e) {
+    function dropCityCommToAvailable(e) {
         e.preventDefault();
-        const card = draggedDualCard;
+        const card = draggedCityComm;
         if (!card) return;
-
-        const box1 = document.getElementById('box1_availableCards');
-        if (!box1) return;
-
-        box1.appendChild(card);
-        const id = card.getAttribute('data-id');
-        setCardToAvailableStyle(card, id);
-        updateDualBoxState();
+        document.getElementById('box1_availableCityComms').appendChild(card);
+        setCityCommAvailableStyle(card, card.getAttribute('data-id'));
+        updateCityCommBoxState();
     }
-
-    function moveCardToSelected(id) {
-        const card = document.getElementById('proj_card_' + id);
-        const box2 = document.getElementById('box2_selectedCards');
+    function moveCityCommToSelected(id) {
+        const card = document.getElementById('city_comm_card_' + id);
+        const box2 = document.getElementById('box2_selectedCityComms');
         if (!card || !box2) return;
-
         box2.appendChild(card);
-        setCardToSelectedStyle(card, id);
-        updateDualBoxState();
+        setCityCommSelectedStyle(card, id);
+        updateCityCommBoxState();
     }
-
-    function moveCardToAvailable(id) {
-        const card = document.getElementById('proj_card_' + id);
-        const box1 = document.getElementById('box1_availableCards');
+    function moveCityCommToAvailable(id) {
+        const card = document.getElementById('city_comm_card_' + id);
+        const box1 = document.getElementById('box1_availableCityComms');
         if (!card || !box1) return;
-
         box1.appendChild(card);
-        setCardToAvailableStyle(card, id);
-        updateDualBoxState();
+        setCityCommAvailableStyle(card, id);
+        updateCityCommBoxState();
     }
-
-    function clearAllSelectedCards() {
-        const box1 = document.getElementById('box1_availableCards');
-        const box2 = document.getElementById('box2_selectedCards');
-        if (!box1 || !box2) return;
-
-        const cards = Array.from(box2.querySelectorAll('.dual-project-card'));
-        cards.forEach(card => {
-            box1.appendChild(card);
-            const id = card.getAttribute('data-id');
-            setCardToAvailableStyle(card, id);
+    function selectAllCityComms() {
+        const box1 = document.getElementById('box1_availableCityComms');
+        const box2 = document.getElementById('box2_selectedCityComms');
+        Array.from(box1.querySelectorAll('.dual-city-comm')).forEach(card => {
+            box2.appendChild(card);
+            setCityCommSelectedStyle(card, card.getAttribute('data-id'));
         });
-        updateDualBoxState();
+        updateCityCommBoxState();
     }
-
-    function setCardToSelectedStyle(card, id) {
-        card.style.background = '#f0fdf4';
-        card.style.borderColor = '#86efac';
-        const actionBtn = card.querySelector('button');
-        if (actionBtn) {
-            actionBtn.setAttribute('onclick', `moveCardToAvailable(${id})`);
-            actionBtn.setAttribute('title', 'Remove from page');
-            actionBtn.style.background = '#fef2f2';
-            actionBtn.style.borderColor = '#fecaca';
-            actionBtn.style.color = '#dc2626';
-            actionBtn.innerHTML = '✕ Remove';
+    function clearAllCityComms() {
+        const box1 = document.getElementById('box1_availableCityComms');
+        const box2 = document.getElementById('box2_selectedCityComms');
+        Array.from(box2.querySelectorAll('.dual-city-comm')).forEach(card => {
+            box1.appendChild(card);
+            setCityCommAvailableStyle(card, card.getAttribute('data-id'));
+        });
+        updateCityCommBoxState();
+    }
+    function setCityCommSelectedStyle(card, id) {
+        card.style.background = '#faf6f0';
+        card.style.borderColor = '#bae6fd';
+        const btn = card.querySelector('button');
+        if (btn) {
+            btn.setAttribute('onclick', `moveCityCommToAvailable(${id})`);
+            btn.setAttribute('title', 'Remove');
+            btn.style.background = '#fef2f2'; btn.style.borderColor = '#fecaca'; btn.style.color = '#dc2626';
+            btn.innerHTML = '✕ Remove';
         }
     }
-
-    function setCardToAvailableStyle(card, id) {
+    function setCityCommAvailableStyle(card, id) {
         card.style.background = '#ffffff';
         card.style.borderColor = '#e2e8f0';
-        const actionBtn = card.querySelector('button');
-        if (actionBtn) {
-            actionBtn.setAttribute('onclick', `moveCardToSelected(${id})`);
-            actionBtn.setAttribute('title', 'Add to page');
-            actionBtn.style.background = '#f0fdf4';
-            actionBtn.style.borderColor = '#bbf7d0';
-            actionBtn.style.color = '#15803d';
-            actionBtn.innerHTML = '+ Add';
+        const btn = card.querySelector('button');
+        if (btn) {
+            btn.setAttribute('onclick', `moveCityCommToSelected(${id})`);
+            btn.setAttribute('title', 'Add to featured');
+            btn.style.background = '#f0fdf4'; btn.style.borderColor = '#bbf7d0'; btn.style.color = '#15803d';
+            btn.innerHTML = '+ Add';
         }
     }
-
-    function updateDualBoxState() {
-        const box1 = document.getElementById('box1_availableCards');
-        const box2 = document.getElementById('box2_selectedCards');
-        const availCountSpan = document.getElementById('availableCount');
-        const selCountSpan = document.getElementById('selectedCount');
-        const emptyState = document.getElementById('selectedCardsEmptyState');
-        const inputsContainer = document.getElementById('selectedCardsInputsContainer');
-
+    function updateCityCommBoxState() {
+        const box1 = document.getElementById('box1_availableCityComms');
+        const box2 = document.getElementById('box2_selectedCityComms');
+        const availSpan  = document.getElementById('availableCityCommCount');
+        const selSpan    = document.getElementById('selectedCityCommCount');
+        const emptyState = document.getElementById('selectedCityCommsEmptyState');
+        const inputsContainer = document.getElementById('selectedCityCommsInputsContainer');
         if (!box1 || !box2) return;
-
-        const availCards = box1.querySelectorAll('.dual-project-card');
-        const selCards = box2.querySelectorAll('.dual-project-card');
-
-        if (availCountSpan) availCountSpan.textContent = availCards.length;
-        if (selCountSpan) selCountSpan.textContent = selCards.length;
-
-        if (emptyState) {
-            emptyState.style.display = selCards.length === 0 ? 'block' : 'none';
-        }
-
+        const availCards = box1.querySelectorAll('.dual-city-comm');
+        const selCards   = box2.querySelectorAll('.dual-city-comm');
+        if (availSpan) availSpan.textContent = availCards.length;
+        if (selSpan) selSpan.textContent = selCards.length;
+        if (emptyState) emptyState.style.display = selCards.length === 0 ? 'block' : 'none';
         if (inputsContainer) {
             inputsContainer.innerHTML = '';
             selCards.forEach(card => {
@@ -813,7 +561,7 @@
                 if (id) {
                     const input = document.createElement('input');
                     input.type = 'hidden';
-                    input.name = 'selected_project_ids[]';
+                    input.name = 'featured_communities[]';
                     input.value = id;
                     inputsContainer.appendChild(input);
                 }
@@ -821,132 +569,81 @@
         }
     }
 
-    // FAQ Drag & Drop Reordering Logic
-    let draggedFaqRow = null;
+    // ===== FAQs =====
+    let cityFaqRowIndex = {{ count($city->faqs ?? []) }};
 
-    function bindFaqDragEvents(row) {
-        if (!row) return;
-        const handle = row.querySelector('.faq-drag-handle');
-        if (!handle) return;
-
-        handle.setAttribute('draggable', 'true');
-
-        handle.addEventListener('dragstart', function(e) {
-            draggedFaqRow = row;
-            row.classList.add('is-dragging');
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', '');
-            if (e.dataTransfer.setDragImage) {
-                e.dataTransfer.setDragImage(row, 20, 20);
-            }
-        });
-
-        handle.addEventListener('dragend', function() {
-            if (draggedFaqRow) {
-                draggedFaqRow.classList.remove('is-dragging');
-            }
-            document.querySelectorAll('.faq-repeater-row').forEach(r => {
-                r.classList.remove('drag-over-top', 'drag-over-bottom', 'is-dragging');
-            });
-            draggedFaqRow = null;
-        });
-
-        row.addEventListener('dragover', function(e) {
-            if (!draggedFaqRow || draggedFaqRow === this || draggedFaqRow.parentNode !== this.parentNode) return;
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            const rect = this.getBoundingClientRect();
-            const midpoint = rect.top + rect.height / 2;
-            if (e.clientY < midpoint) {
-                this.classList.add('drag-over-top');
-                this.classList.remove('drag-over-bottom');
-            } else {
-                this.classList.add('drag-over-bottom');
-                this.classList.remove('drag-over-top');
-            }
-        });
-
-        row.addEventListener('dragleave', function() {
-            this.classList.remove('drag-over-top', 'drag-over-bottom');
-        });
-
-        row.addEventListener('drop', function(e) {
-            if (!draggedFaqRow || draggedFaqRow === this || draggedFaqRow.parentNode !== this.parentNode) return;
-            e.preventDefault();
-            this.classList.remove('drag-over-top', 'drag-over-bottom');
-            const list = this.parentNode;
-            const rect = this.getBoundingClientRect();
-            const midpoint = rect.top + rect.height / 2;
-            if (e.clientY < midpoint) {
-                list.insertBefore(draggedFaqRow, this);
-            } else {
-                list.insertBefore(draggedFaqRow, this.nextSibling);
-            }
-        });
-    }
-
-    function addEditFaqRow() {
-        const container = document.getElementById('editFaqItemsContainer');
+    function addCityFaqRow() {
+        const container = document.getElementById('cityFaqItemsContainer');
+        const idx = cityFaqRowIndex++;
         const div = document.createElement('div');
         div.className = 'faq-repeater-row';
         div.style.cssText = 'display: grid; grid-template-columns: 34px minmax(0, 1fr) minmax(0, 1.5fr) 34px; gap: 10px; align-items: center; background: #faf8f5; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px 10px;';
         div.innerHTML = `
-            <div class="faq-drag-handle" draggable="true" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 36px; border: 1px solid #d1d5db; background: #ffffff; border-radius: 6px; color: #1a4731; cursor: grab; user-select: none;" title="Drag ⇅ to reorder">
+            <div class="faq-drag-handle" draggable="true" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 36px; border: 1px solid #d1d5db; background: #ffffff; border-radius: 6px; color: #BFA16A; cursor: grab; user-select: none;" title="Drag to reorder">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 20V4m0 0L3 8m4-4l4 4"/><path d="M17 4v16m0 0l4-4m-4 4l-4-4"/></svg>
             </div>
-            <input type="text" name="faq_q[]" class="adm-input" placeholder="Question" style="margin: 0; min-height: 36px; font-size: 13px;">
-            <textarea name="faq_a[]" class="adm-textarea" rows="1" placeholder="Answer" style="margin: 0; min-height: 36px; font-size: 13px; resize: vertical; line-height: 1.4;"></textarea>
-            <button type="button" onclick="this.closest('.faq-repeater-row').remove()" title="Delete row" style="width: 34px; height: 36px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c; border-radius: 6px; cursor: pointer; font-size: 14px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease;">&#10005;</button>
+            <input type="text" name="faqs[${idx}][question]" class="dev-input" placeholder="Question" style="margin: 0; min-height: 36px; font-size: 13px; padding: 8px 12px;">
+            <textarea name="faqs[${idx}][answer]" class="dev-textarea" rows="1" placeholder="Answer" style="margin: 0; min-height: 36px; font-size: 13px; resize: vertical; line-height: 1.4; padding: 8px 12px;"></textarea>
+            <button type="button" onclick="this.closest('.faq-repeater-row').remove(); updateCityFaqIndexes();" title="Delete" style="width: 34px; height: 36px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c; border-radius: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;">&#10005;</button>
         `;
         container.appendChild(div);
-        bindFaqDragEvents(div);
-        const input = div.querySelector('input');
-        if (input) input.focus();
+        bindCityFaqDragEvents(div);
+        div.querySelector('input')?.focus();
+        updateCityFaqIndexes();
     }
 
-    // Status Dropdown Functions
-    function toggleStatusDropdown(menuId) {
-        const menu = document.getElementById(menuId);
-        if (!menu) return;
-        const isShown = menu.style.display === 'block';
-        document.querySelectorAll('.adm-status-menu').forEach(m => m.style.display = 'none');
-        menu.style.display = isShown ? 'none' : 'block';
+    function updateCityFaqIndexes() {
+        const rows = document.querySelectorAll('#cityFaqItemsContainer .faq-repeater-row');
+        rows.forEach((row, i) => {
+            row.querySelectorAll('[name]').forEach(el => {
+                el.name = el.name.replace(/faqs\[\d+\]/, `faqs[${i}]`);
+            });
+        });
+        cityFaqRowIndex = rows.length;
     }
 
-    function selectFormStatus(statusVal, label, bg, border, color, dotColor, inputId, btnId, labelId, menuId) {
-        const hiddenInput = document.getElementById(inputId);
-        if (hiddenInput) hiddenInput.value = statusVal;
-
-        const btn = document.getElementById(btnId);
-        if (btn) {
-            btn.style.background = bg;
-            btn.style.borderColor = border;
-            btn.style.color = color;
-            const dot = btn.querySelector('.status-dot');
-            if (dot) dot.style.background = dotColor;
-        }
-
-        const lbl = document.getElementById(labelId);
-        if (lbl) lbl.textContent = label;
-
-        const menu = document.getElementById(menuId);
-        if (menu) menu.style.display = 'none';
+    let draggedCityFaqRow = null;
+    function bindCityFaqDragEvents(row) {
+        const handle = row.querySelector('.faq-drag-handle');
+        if (!handle) return;
+        handle.setAttribute('draggable', 'true');
+        handle.addEventListener('dragstart', e => {
+            draggedCityFaqRow = row; row.classList.add('is-dragging');
+            e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', '');
+        });
+        handle.addEventListener('dragend', () => {
+            if (draggedCityFaqRow) draggedCityFaqRow.classList.remove('is-dragging');
+            document.querySelectorAll('.faq-repeater-row').forEach(r => r.classList.remove('drag-over-top', 'drag-over-bottom', 'is-dragging'));
+            draggedCityFaqRow = null;
+        });
+        row.addEventListener('dragover', e => {
+            if (!draggedCityFaqRow || draggedCityFaqRow === row || draggedCityFaqRow.parentNode !== row.parentNode) return;
+            e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+            const rect = row.getBoundingClientRect();
+            if (e.clientY < rect.top + rect.height / 2) {
+                row.classList.add('drag-over-top'); row.classList.remove('drag-over-bottom');
+            } else {
+                row.classList.add('drag-over-bottom'); row.classList.remove('drag-over-top');
+            }
+        });
+        row.addEventListener('dragleave', () => row.classList.remove('drag-over-top', 'drag-over-bottom'));
+        row.addEventListener('drop', e => {
+            if (!draggedCityFaqRow || draggedCityFaqRow === row || draggedCityFaqRow.parentNode !== row.parentNode) return;
+            e.preventDefault(); row.classList.remove('drag-over-top', 'drag-over-bottom');
+            const list = row.parentNode;
+            const rect = row.getBoundingClientRect();
+            if (e.clientY < rect.top + rect.height / 2) {
+                list.insertBefore(draggedCityFaqRow, row);
+            } else {
+                list.insertBefore(draggedCityFaqRow, row.nextSibling);
+            }
+            updateCityFaqIndexes();
+        });
     }
 
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.adm-status-dropdown-wrap') && !e.target.closest('.adm-status-menu')) {
-            document.querySelectorAll('.adm-status-menu').forEach(m => m.style.display = 'none');
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const tabFromUrl = urlParams.get('tab') || '{{ $currentTab }}';
-        if (tabFromUrl && tabFromUrl !== 'general') {
-            switchEditTab(tabFromUrl);
-        }
-        updateDualBoxState();
-        document.querySelectorAll('#editFaqItemsContainer .faq-repeater-row').forEach(bindFaqDragEvents);
+    document.addEventListener('DOMContentLoaded', () => {
+        updateCityCommBoxState();
+        document.querySelectorAll('#cityFaqItemsContainer .faq-repeater-row').forEach(bindCityFaqDragEvents);
     });
 </script>
 @endsection

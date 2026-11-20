@@ -18,12 +18,22 @@ class City extends Model implements Auditable
         'status',
         'order',
         'is_active',
+        'h1',
+        'tagline',
+        'short_content',
+        'full_content',
+        'faqs',
+        'faq_heading',
+        'faq_subtitle',
+        'featured_communities',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
-        'order'     => 'integer',
-        'page_id'   => 'integer',
+        'is_active'             => 'boolean',
+        'order'                 => 'integer',
+        'page_id'               => 'integer',
+        'faqs'                  => 'array',
+        'featured_communities'  => 'array',
     ];
 
     protected $appends = [

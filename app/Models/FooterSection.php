@@ -81,7 +81,6 @@ class FooterSection extends Model
                     ['label' => 'Contact Us', 'url' => '/contact-us'],
                     ['label' => 'Privacy Policy', 'url' => '/privacy-policy'],
                     ['label' => 'Terms & Condition', 'url' => '/terms-and-conditions'],
-                    ['label' => 'Disclaimer', 'url' => '/disclaimer'],
                 ]
             ],
             [

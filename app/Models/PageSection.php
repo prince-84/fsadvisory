@@ -17,12 +17,14 @@ class PageSection extends Model implements Auditable
         'section_name',
         'order',
         'is_active',
+        'is_visible',
         'content',
     ];
 
     protected $casts = [
         'content'   => 'array',
         'is_active' => 'boolean',
+        'is_visible' => 'boolean',
         'order'     => 'integer',
     ];
 

@@ -10,7 +10,7 @@
             
             <!-- Section Header -->
             <div style="margin-bottom: 25px; border-bottom: 1px solid #f0eae1; padding-bottom: 15px;">
-                <span style="font-size: 11.5px; font-weight: 700; color: #1a4731; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">
+                <span style="font-size: 11.5px; font-weight: 700; color: #BFA16A; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">
                     DETAILED OVERVIEW &amp; SPECIFICATIONS
                 </span>
                 <h3 style="font-size: 26px; font-weight: 700; color: #111827; margin: 0; line-height: 1.35;">
@@ -19,13 +19,13 @@
             </div>
 
             <!-- Summernote HTML Rich Content (Text, Headings, Photos, etc.) -->
-            <div class="saimaSummernoteBodyContent" style="font-size: 16px; color: #374151; line-height: 1.85;">
+            <div class="saimaSummernoteBodyContent" style="font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14.5px; font-weight: 400; color: #2B2B2B; line-height: 1.6;">
                 {!! $articleSummernote !!}
             </div>
 
             <!-- Action Bar: Scroll Back to Top -->
             <div style="margin-top: 40px; padding-top: 20px; border-top: 1px dashed #d1d5db; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-                <button type="button" onclick="scrollBackToIntro()" class="saimaReadMoreBtn" style="font-size: 14.5px; font-weight: 700; color: #1a4731; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: none; border: none; text-decoration: underline; text-underline-offset: 4px;">
+                <button type="button" onclick="scrollBackToIntro()" class="saimaReadMoreBtn" style="font-size: 14.5px; font-weight: 700; color: #BFA16A; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: none; border: none; text-decoration: underline; text-underline-offset: 4px;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(180deg);">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -75,6 +75,15 @@
     display: list-item !important;
     margin-bottom: 8px !important;
     line-height: 1.75 !important;
+}
+.saimaSummernoteBodyContent a {
+    color: #BFA16A !important;
+    text-decoration: underline !important;
+    font-weight: 600 !important;
+    transition: color 0.2s ease !important;
+}
+.saimaSummernoteBodyContent a:hover {
+    color: #aa8c55 !important;
 }
 </style>
 @endif

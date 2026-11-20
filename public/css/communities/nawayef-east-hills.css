@@ -4,7 +4,7 @@
   z-index: 999;
   -webkit-backdrop-filter: blur(12px);
   background: #19140fd9;
-  border-bottom: 1px solid #1a473133;
+  border-bottom: 1px solid #BFA16A33;
   padding: 12px 0;
   transition: all .3s;
   position: fixed;
@@ -81,7 +81,7 @@
   -webkit-backdrop-filter: blur(16px);
   z-index: 1000;
   background: #1a1612f2;
-  border: 1px solid #1a47314d;
+  border: 1px solid #BFA16A4d;
   border-radius: 8px;
   flex-direction: column;
   min-width: 240px;
@@ -109,7 +109,7 @@
 
 .NawayefHeader-module__YYF5Cq__dropdownItem:hover {
   color: #fff;
-  background: #1a473126;
+  background: #BFA16A26;
   padding-left: 20px;
 }
 
@@ -118,8 +118,8 @@
   letter-spacing: .5px;
   cursor: pointer;
   text-transform: uppercase;
-  background: #1a4731;
-  border: 1px solid #1a4731;
+  background: #BFA16A;
+  border: 1px solid #BFA16A;
   border-radius: 6px;
   padding: 8px 18px;
   font-size: .82rem;
@@ -128,10 +128,10 @@
 }
 
 .NawayefHeader-module__YYF5Cq__btnAction:hover {
-  background: #123322;
-  border-color: #123322;
+  background: #aa8d58;
+  border-color: #aa8d58;
   transform: translateY(-1px);
-  box-shadow: 0 4px 15px #1a473159;
+  box-shadow: 0 4px 15px #BFA16A59;
 }
 
 .NawayefHeader-module__YYF5Cq__mobileToggle {
@@ -457,7 +457,7 @@
 }
 
 .NawayefHero-module__-s2NRa__prevBtn:hover, .NawayefHero-module__-s2NRa__nextBtn:hover {
-  background: #1a4731;
+  background: #BFA16A;
 }
 
 .NawayefHero-module__-s2NRa__prevBtn {
@@ -512,7 +512,7 @@
   letter-spacing: .5px;
   cursor: pointer;
   text-transform: uppercase;
-  background-color: #d9232d;
+  background-color: #BFA16A;
   border: none;
   border-radius: 4px;
   padding: 14px 32px;
@@ -523,9 +523,9 @@
 }
 
 .NawayefHero-module__-s2NRa__brochureBtn:hover {
-  background-color: #b71a23;
+  background-color: #aa8d58;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px #1a473166;
+  box-shadow: 0 6px 18px #BFA16A66;
 }
 
 .NawayefHero-module__-s2NRa__badgeRow {
@@ -595,7 +595,7 @@
 }
 
 .NawayefHero-module__-s2NRa__inputField:focus {
-  border-color: #1a4731;
+  border-color: #BFA16A;
 }
 
 .NawayefHero-module__-s2NRa__recaptchaBox {
@@ -639,7 +639,7 @@
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
-  background: #1a4731;
+  background: #BFA16A;
   border: none;
   border-radius: 4px;
   width: 100%;
@@ -651,7 +651,7 @@
 }
 
 .NawayefHero-module__-s2NRa__submitBtn:hover {
-  background: #123322;
+  background: #aa8d58;
   transform: translateY(-1px);
 }
 
@@ -723,9 +723,9 @@
 }
 
 .NawayefHighlights-module__jt1XCq__highlightCard:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px #1a47311f;
+  box-shadow: 0 6px 18px #BFA16A1f;
 }
 
 .NawayefHighlights-module__jt1XCq__iconWrapper {
@@ -741,7 +741,7 @@
 .NawayefHighlights-module__jt1XCq__accentCircle {
   opacity: 1 !important;
   z-index: 1 !important;
-  background: #1a4731 !important;
+  background: #BFA16A !important;
   border-radius: 50% !important;
   width: 38px !important;
   height: 38px !important;
@@ -853,7 +853,7 @@
 
 .NawayefAboutVideo-module___kfhmG__brownBackdrop {
   z-index: 1;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
   position: absolute;
@@ -885,7 +885,7 @@
   color: #fff;
   cursor: pointer;
   z-index: 5;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border: none;
   border-radius: 50%;
   justify-content: center;
@@ -903,7 +903,7 @@
 }
 
 .NawayefAboutVideo-module___kfhmG__playButton:hover {
-  background-color: #123322;
+  background-color: #aa8d58;
   transform: translate(-50%, -50%)scale(1.1);
 }
 
@@ -970,13 +970,13 @@
 }
 
 .NawayefAmenities-module__MND-Xq__card:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px #1a47311f;
+  box-shadow: 0 6px 18px #BFA16A1f;
 }
 
 .NawayefAmenities-module__MND-Xq__iconBox {
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border-radius: 6px;
   flex-shrink: 0;
   justify-content: center;
@@ -1381,7 +1381,7 @@
 
 .NawayefFloorPlans-module__NcddJW__tabActive {
   color: #fff;
-  background: #1a4731;
+  background: #BFA16A;
 }
 
 .NawayefFloorPlans-module__NcddJW__planCard {
@@ -1413,7 +1413,7 @@
 }
 
 .NawayefFloorPlans-module__NcddJW__planTagline {
-  color: #1a4731;
+  color: #BFA16A;
   margin: 0 0 16px;
   font-size: 15px;
   font-weight: 600;
@@ -1444,7 +1444,7 @@
 }
 
 .NawayefFloorPlans-module__NcddJW__specIcon {
-  color: #1a4731;
+  color: #BFA16A;
 }
 
 .NawayefFloorPlans-module__NcddJW__specLabel {
@@ -1470,7 +1470,7 @@
 .NawayefFloorPlans-module__NcddJW__downloadBtn {
   color: #fff;
   cursor: pointer;
-  background: #1a4731;
+  background: #BFA16A;
   border: none;
   border-radius: 4px;
   align-items: center;
@@ -1483,7 +1483,7 @@
 }
 
 .NawayefFloorPlans-module__NcddJW__downloadBtn:hover {
-  background: #123322;
+  background: #aa8d58;
   transform: translateY(-1px);
 }
 
@@ -1503,9 +1503,9 @@
 }
 
 .NawayefFloorPlans-module__NcddJW__zoomBtn:hover {
-  color: #1a4731;
+  color: #BFA16A;
   background: #f4f0eb;
-  border-color: #1a4731;
+  border-color: #BFA16A;
 }
 
 .NawayefFloorPlans-module__NcddJW__imageCol {
@@ -1642,7 +1642,7 @@
 }
 
 .NawayefArticle-module__N03jgq__checkIcon {
-  color: #1a4731;
+  color: #BFA16A;
   flex-shrink: 0;
   margin-top: 3px;
 }
@@ -1662,7 +1662,7 @@
 }
 
 .NawayefArticle-module__N03jgq__paragraph a:hover {
-  color: var(--color-primary, #1a4731);
+  color: var(--color-primary, #BFA16A);
 }
 
 .NawayefArticle-module__N03jgq__tableWrapper {
@@ -1762,8 +1762,8 @@
 
 .NawayefPaymentPlan-module__fXSgIa__toggleActive {
   color: #fff;
-  background: #1a4731;
-  box-shadow: 0 2px 8px #1a47314d;
+  background: #BFA16A;
+  box-shadow: 0 2px 8px #BFA16A4d;
 }
 
 .NawayefPaymentPlan-module__fXSgIa__tableCard {
@@ -1781,7 +1781,7 @@
 
 .NawayefPaymentPlan-module__fXSgIa__planTable th {
   text-align: left;
-  color: #1a4731;
+  color: #BFA16A;
   text-transform: uppercase;
   letter-spacing: .5px;
   background: #f8fafc;
@@ -1803,7 +1803,7 @@
 }
 
 .NawayefPaymentPlan-module__fXSgIa__percentageCol {
-  color: #1a4731;
+  color: #BFA16A;
   font-weight: 700;
 }
 
@@ -1823,9 +1823,9 @@
 }
 
 .NawayefPaymentPlan-module__fXSgIa__gridCard:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px #1a47311f;
+  box-shadow: 0 8px 24px #BFA16A1f;
 }
 
 .NawayefPaymentPlan-module__fXSgIa__percentNum {
@@ -1838,7 +1838,7 @@
 }
 
 .NawayefPaymentPlan-module__fXSgIa__installmentTitle {
-  color: #1a4731;
+  color: #BFA16A;
   text-transform: uppercase;
   margin: 0 0 6px;
   font-size: 14.5px;
@@ -1861,7 +1861,7 @@
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: .5px;
-  background: #1a4731;
+  background: #BFA16A;
   border: none;
   border-radius: 6px;
   align-items: center;
@@ -1874,9 +1874,9 @@
 }
 
 .NawayefPaymentPlan-module__fXSgIa__btnDownload:hover {
-  background: #123322;
+  background: #aa8d58;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px #1a473159;
+  box-shadow: 0 6px 20px #BFA16A59;
 }
 
 @media (max-width: 991px) {
@@ -1943,9 +1943,9 @@
 }
 
 .NawayefPaymentMethods-module__5DL82G__paymentCard:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px #1a47311f;
+  box-shadow: 0 8px 24px #BFA16A1f;
 }
 
 .NawayefPaymentMethods-module__5DL82G__iconWrapper {
@@ -2334,7 +2334,7 @@
 }
 
 .NawayefFaq-module__cDdx-a__faqItem:hover {
-  border-color: #1a4731;
+  border-color: #BFA16A;
 }
 
 .NawayefFaq-module__cDdx-a__questionBtn {
@@ -2354,7 +2354,7 @@
 }
 
 .NawayefFaq-module__cDdx-a__icon {
-  color: #1a4731;
+  color: #BFA16A;
   flex-shrink: 0;
   transition: transform .25s;
 }
@@ -2460,7 +2460,7 @@
 
 .NawayefContact-module___KDmwG__cardTitleSmall {
   letter-spacing: 2px;
-  color: #1a4731;
+  color: #BFA16A;
   text-align: center;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -2495,8 +2495,8 @@
 
 .NawayefContact-module___KDmwG__inputField:focus {
   background: #fff;
-  border-color: #1a4731;
-  box-shadow: 0 0 0 3px #1a473126;
+  border-color: #BFA16A;
+  box-shadow: 0 0 0 3px #BFA16A26;
 }
 
 .NawayefContact-module___KDmwG__submitBtn {
@@ -2504,7 +2504,7 @@
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border: none;
   border-radius: 6px;
   width: 100%;
@@ -2513,13 +2513,13 @@
   font-size: 15px;
   font-weight: 700;
   transition: all .25s;
-  box-shadow: 0 3px 12px #1a473159;
+  box-shadow: 0 3px 12px #BFA16A59;
 }
 
 .NawayefContact-module___KDmwG__submitBtn:hover {
-  background-color: #123322;
+  background-color: #aa8d58;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px #1a473173;
+  box-shadow: 0 6px 18px #BFA16A73;
 }
 
 .NawayefContact-module___KDmwG__successMessage {
@@ -2635,7 +2635,7 @@
 }
 
 .Footer-module__S6Hkya__linkItem:hover {
-  color: #1a4731;
+  color: #BFA16A;
   transform: translateX(3px);
 }
 
@@ -2659,7 +2659,7 @@
 }
 
 .Footer-module__S6Hkya__contactLink:hover {
-  color: #1a4731;
+  color: #BFA16A;
 }
 
 .Footer-module__S6Hkya__contactItemStatic {
@@ -2757,7 +2757,7 @@
 .ScrollToTop-module__bPaVnG__scrollTopBtn:hover {
   background: var(--color-primary-hover);
   transform: translateY(-3px)scale(1.05);
-  box-shadow: 0 6px 20px #1a473173;
+  box-shadow: 0 6px 20px #BFA16A73;
 }
 
 /* [project]/src/components/ListPropertyModal.module.css [app-client] (css) */
@@ -2991,7 +2991,7 @@
 
 .NawayefBrochureModal-module__VuHacW__titleSmall {
   letter-spacing: 2px;
-  color: #1a4731;
+  color: #BFA16A;
   text-align: center;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -3025,8 +3025,8 @@
 
 .NawayefBrochureModal-module__VuHacW__inputField:focus {
   background: #fff;
-  border-color: #1a4731;
-  box-shadow: 0 0 0 3px #1a473126;
+  border-color: #BFA16A;
+  box-shadow: 0 0 0 3px #BFA16A26;
 }
 
 .NawayefBrochureModal-module__VuHacW__submitBtn {
@@ -3034,7 +3034,7 @@
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   border: none;
   border-radius: 6px;
   width: 100%;
@@ -3046,7 +3046,7 @@
 }
 
 .NawayefBrochureModal-module__VuHacW__submitBtn:hover {
-  background-color: #123322;
+  background-color: #aa8d58;
   transform: translateY(-1px);
 }
 

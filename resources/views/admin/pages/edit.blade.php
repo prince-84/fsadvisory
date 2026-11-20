@@ -92,17 +92,17 @@
         stroke: #64748b !important;
     }
 
-    /* Active Tab (Screenshot 2 Style: soft light blue / cyan pill with right indicator arrow) */
+    /* Active Tab (FS Brand Golden Accent) */
     .adm-edit-layout > #pageSectionTabs .adm-tab.is-active {
-        background: #f0f9ff !important;
-        color: #0284c7 !important;
+        background: #faf6f0 !important;
+        color: #BFA16A !important;
         font-weight: 600 !important;
         box-shadow: none !important;
         border-radius: 10px !important;
     }
 
     .adm-edit-layout > #pageSectionTabs .adm-tab.is-active svg {
-        stroke: #0284c7 !important;
+        stroke: #BFA16A !important;
     }
 
     .adm-edit-layout > #pageSectionTabs .adm-tab.is-active::after {
@@ -113,8 +113,8 @@
         transform: translateY(-50%);
         width: 6px;
         height: 6px;
-        border-top: 2px solid #0284c7;
-        border-right: 2px solid #0284c7;
+        border-top: 2px solid #BFA16A;
+        border-right: 2px solid #BFA16A;
         transform: translateY(-50%) rotate(45deg);
     }
 
@@ -189,9 +189,9 @@
     .adm-edit-layout .adm-textarea:focus,
     .adm-edit-layout .adm-select:focus {
         background: #ffffff !important;
-        border-color: #0284c7 !important;
+        border-color: #BFA16A !important;
         outline: none !important;
-        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1) !important;
+        box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.18) !important;
     }
 
     .adm-edit-layout .adm-label {
@@ -226,18 +226,26 @@
 
     .adm-edit-layout .adm-btn-primary,
     #savePageBtn {
-        background: #1a4731 !important;
-        border-color: #1a4731 !important;
+        background: #BFA16A !important;
+        border-color: #BFA16A !important;
         border-radius: 8px !important;
         padding: 10px 24px !important;
         font-weight: 700 !important;
         font-size: 13.5px !important;
         color: #ffffff !important;
-        box-shadow: 0 2px 8px rgba(26, 71, 49, 0.3) !important;
+        box-shadow: 0 2px 8px rgba(191, 161, 106, 0.35) !important;
         display: inline-flex !important;
         align-items: center !important;
         gap: 8px !important;
         cursor: pointer !important;
+        transition: background 0.2s ease, transform 0.15s ease !important;
+    }
+
+    .adm-edit-layout .adm-btn-primary:hover,
+    #savePageBtn:hover {
+        background: #aa8d58 !important;
+        border-color: #aa8d58 !important;
+        transform: translateY(-1px) !important;
     }
 
     #savePageBtn *,
@@ -291,14 +299,14 @@
     </div>
 </div>
 
-<!-- Screenshot 2 Pattern: Page URL Card Banner -->
+<!-- Page URL Card Banner (FS Brand Golden Accent) -->
 <div style="background:#ffffff; border-radius:14px; border:1px solid #f1f5f9; box-shadow:0 1px 3px rgba(0,0,0,0.03); padding:14px 20px; margin-bottom:22px; display:flex; align-items:center; gap:12px; font-size:14px;">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#BFA16A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
     </svg>
     <span style="font-weight:600; color:#475569;">Page URL:</span>
-    <a href="{{ $liveUrl }}" target="_blank" rel="noopener" style="color:#0284c7; text-decoration:none; font-weight:500; word-break:break-all;">
+    <a href="{{ $liveUrl }}" target="_blank" rel="noopener" style="color:#BFA16A; text-decoration:none; font-weight:600; word-break:break-all;">
         {{ $liveUrl }}
     </a>
 </div>
@@ -336,6 +344,7 @@
                     'overview_location' => 'globe',
                     'payment_methods'   => 'lock',
                     'floor_plans'       => 'grid',
+                    'floor_plan'        => 'grid',
                     'payment_plan'      => 'trend',
                     'gallery'           => 'spark',
                     'master_plan'       => 'globe',
@@ -363,7 +372,7 @@
                     </svg>
                 </span>
                 @include('admin.partials.icon', ['name' => $iconName])
-                <span>{{ $sec->section_name }}</span>
+                <span>{{ ($sec->section_key === 'about' && $isProjectEdit) ? 'Short Content' : $sec->section_name }}</span>
             </button>
         @endforeach
     </div>
@@ -392,6 +401,56 @@
             <input type="hidden" name="section_order[]" value="{{ $sec->section_key }}" id="so_{{ $sec->section_key }}">
         @endforeach
     </div>
+    <div id="sectionVisibleInputs">
+        @foreach($allSections as $sec)
+            <input type="hidden" name="section_visible[{{ $sec->section_key }}]" value="{{ ($sec->is_visible ?? true) ? 1 : 0 }}" id="sv_{{ $sec->section_key }}">
+        @endforeach
+    </div>
+    <style>
+        .adm-visbar { display:flex; justify-content:flex-end; align-items:center; gap:8px; margin: 0 0 10px 0; }
+        .adm-vis-label { font-size:11.5px; font-weight:600; color:#64748b; }
+        .adm-vis-switch { position:relative; width:34px; height:19px; border-radius:20px; border:none; background:#cbd5e1; cursor:pointer; padding:0; transition:background .2s; flex-shrink:0; }
+        .adm-vis-switch::after { content:''; position:absolute; top:2px; left:2px; width:15px; height:15px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transition:transform .2s; }
+        .adm-vis-switch.is-on { background:#BFA16A; }
+        .adm-vis-switch.is-on::after { transform:translateX(15px); }
+        .tab-pane.adm-sec-off .adm-card { opacity:.6; }
+    </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var csrf = document.querySelector('input[name="_token"]')?.value;
+        var visUrlTpl = "{{ route('admin.pages.section-visibility', ['page' => $page, 'sectionKey' => '__KEY__']) }}";
+        document.querySelectorAll('.tab-pane[id^="tab-"]').forEach(function (pane) {
+            var key = pane.id.replace('tab-', '');
+            var input = document.getElementById('sv_' + key);
+            if (!input || pane.querySelector('.adm-visbar')) return;
+            var on = input.value !== '0';
+            var bar = document.createElement('div');
+            bar.className = 'adm-visbar';
+            bar.innerHTML = '<span class="adm-vis-label"></span><button type="button" class="adm-vis-switch" aria-label="Visible on site"></button>';
+            var label = bar.querySelector('.adm-vis-label');
+            var sw = bar.querySelector('.adm-vis-switch');
+            function paint() {
+                sw.classList.toggle('is-on', on);
+                pane.classList.toggle('adm-sec-off', !on);
+                label.textContent = on ? 'Visible on site' : 'Hidden on site';
+            }
+            sw.addEventListener('click', function () {
+                on = !on;
+                input.value = on ? 1 : 0;
+                paint();
+                if (csrf) {
+                    var fd = new FormData();
+                    fd.append('_token', csrf);
+                    fd.append('visible', on ? 1 : 0);
+                    fetch(visUrlTpl.replace('__KEY__', encodeURIComponent(key)), { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } }).catch(function () {});
+                }
+            });
+            paint();
+            var card = pane.querySelector('.adm-card');
+            if (card) card.parentNode.insertBefore(bar, card); else pane.insertBefore(bar, pane.firstChild);
+        });
+    });
+    </script>
 
     <!-- 1. GENERAL TAB -->
     <div id="tab-general" class="tab-pane {{ $currentTab === 'general' ? 'active' : '' }}">
@@ -475,7 +534,7 @@
                     <div style="margin-top: 28px; padding-top: 24px; border-top: 1px dashed #cbd5e1;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #ecfdf5; border-radius: 8px; color: #10b981;">
+                                <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #faf6f0; border-radius: 8px; color: #BFA16A;">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
                                 </span>
                                 <div>
@@ -483,7 +542,7 @@
                                     <div style="font-size: 12.5px; color: #64748b;">Configure attributes, city location, and card display for this project.</div>
                                 </div>
                             </div>
-                            <span style="font-size: 11px; font-weight: 700; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 999px; text-transform: uppercase;">
+                            <span style="font-size: 11px; font-weight: 700; background: #faf6f0; color: #BFA16A; border: 1px solid rgba(191,161,106,0.3); padding: 4px 10px; border-radius: 999px; text-transform: uppercase;">
                                 Project Card
                             </span>
                         </div>
@@ -494,20 +553,22 @@
                                 <label class="adm-label" for="projectCommunity">Neighbourhood/Community <span style="font-weight: 400; color: #64748b; font-size: 12px;">(Select Community)</span></label>
                                 @php
                                     $currLoc = old('location', $linkedProject->location ?? '');
+                                    $currCommId = old('community_id', $linkedProject->community_id ?? null);
                                 @endphp
-                                <select id="projectCommunity" name="location" class="adm-select" style="width: 100%; border-radius: 8px; background: #ffffff; cursor: pointer;">
+                                <select id="projectCommunity" name="community_id" class="adm-select" style="width: 100%; border-radius: 8px; background: #ffffff; cursor: pointer;" onchange="syncProjectLocation(this)">
                                     <option value="">-- Select Neighbourhood/Community --</option>
                                     @forelse($communities ?? [] as $comm)
                                         @php
                                             $locValue = $comm->name . ($comm->city ? ', ' . $comm->city->name : '');
                                         @endphp
-                                        <option value="{{ $locValue }}" {{ (strcasecmp($currLoc, $locValue) === 0 || strcasecmp($currLoc, $comm->name) === 0) ? 'selected' : '' }}>
+                                        <option value="{{ $comm->id }}" data-location="{{ $locValue }}" {{ ((int)$currCommId === (int)$comm->id || strcasecmp($currLoc, $locValue) === 0 || strcasecmp($currLoc, $comm->name) === 0) ? 'selected' : '' }}>
                                             {{ $locValue }}
                                         </option>
                                     @empty
                                         <option value="" disabled>No communities found. Please add a community from sidebar first.</option>
                                     @endforelse
                                 </select>
+                                <input type="hidden" name="location" id="projectLocationHidden" value="{{ $currLoc }}">
                             </div>
 
                             <!-- Developer Dropdown -->
@@ -536,13 +597,13 @@
                         <div style="margin-top: 16px;">
                             <label style="display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; font-weight: 700; color: #1e293b; margin-bottom: 6px; text-transform: uppercase;">
                                 <span style="display: flex; align-items: center; gap: 6px;">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a4731" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BFA16A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                                         <line x1="7" y1="7" x2="7.01" y2="7"></line>
                                     </svg>
                                     Card Badges (Selected &ndash; Active on Card)
                                 </span>
-                                <span style="font-size: 11px; font-weight: 600; color: #059669; background: #ecfdf5; padding: 2px 8px; border-radius: 999px; border: 1px solid #a7f3d0; text-transform: none;">
+                                <span style="font-size: 11px; font-weight: 600; color: #BFA16A; background: #faf6f0; padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(191,161,106,0.3); text-transform: none;">
                                     Box 1 &bull; Active on Property Card
                                 </span>
                             </label>
@@ -594,7 +655,7 @@
             <div style="padding: 16px 20px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <div>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: #ecfdf5; border-radius: 6px; color: #166534;">
+                        <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: #faf6f0; border-radius: 6px; color: #BFA16A;">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                         </span>
                         <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #1e293b; text-transform: uppercase; letter-spacing: 0.03em;">
@@ -606,7 +667,7 @@
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <span id="activeSectionsCountBadge" style="background: #1a4731; color: #ffffff; font-size: 11.5px; font-weight: 700; padding: 4px 12px; border-radius: 999px;">
+                    <span id="activeSectionsCountBadge" style="background: #BFA16A; color: #ffffff; font-size: 11.5px; font-weight: 700; padding: 4px 12px; border-radius: 999px;">
                         0 Active
                     </span>
                 </div>
@@ -702,7 +763,7 @@
                                     <input type="file" name="section_files[hero][bg_image]" accept="image/*" class="adm-file-input" onchange="previewItemImage(this)">
                                 </div>
                                 <input type="text" name="sections[hero][bg_image]" value="{{ $hContent['bg_image'] ?? '' }}" class="adm-input" placeholder="Or enter image path / URL (e.g. /images/hero/slide-1.jpg)">
-                                <div class="adm-help" style="color: #1a4731; font-weight: 600;">✓ Jo image yahan Hero Banner pr upload/set hogi, wahi image Property Card pr bhi automatically lag jayegi.</div>
+                                <div class="adm-help" style="color: #BFA16A; font-weight: 600;">✓ Hero banner image will automatically sync with the property card.</div>
                             </div>
                         </div>
                     </div>
@@ -841,7 +902,7 @@
                                             <input type="hidden" class="adm-hl-icon-input" name="sections[highlights][items][{{ $idx }}][icon]" value="{{ $curIcon }}">
                                             <div class="adm-grid-2-col" style="align-items: flex-end;">
                                                 <div class="adm-field">
-                                                    <label class="adm-label" style="font-size: 11px; margin-bottom: 4px; color: #0284c7; font-weight: 700;">Choose Amenity</label>
+                                                    <label class="adm-label" style="font-size: 11px; margin-bottom: 4px; color: #BFA16A; font-weight: 700;">Choose Amenity</label>
                                                     <div class="adm-metric-input-wrap">
                                                         <div class="adm-metric-input-group">
                                                             <span class="adm-metric-prefix-icon" title="Amenity Icon">
@@ -923,12 +984,12 @@
                                 <span>Section Title</span>
                                 <span class="adm-chip">heading</span>
                             </label>
-                            <input type="text" id="sec_communities_heading" name="sections[communities][heading]" value="{{ $sContent['heading'] ?? 'Projects' }}" class="adm-input">
+                            <input type="text" id="sec_communities_heading" name="sections[communities][heading]" value="{{ array_key_exists('heading', $sContent) ? ($sContent['heading'] ?? '') : 'Projects' }}" class="adm-input">
                         </div>
 
                         <!-- Select Property Cards Dual-Box Drag & Drop -->
                         <div style="display: flex; justify-content: space-between; align-items: center; margin: 24px 0 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
-                            <span style="font-size: 13px; font-weight: 700; color: #1a4731; text-transform: uppercase; letter-spacing: 0.5px;">
+                            <span style="font-size: 13px; font-weight: 700; color: #BFA16A; text-transform: uppercase; letter-spacing: 0.5px;">
                                 Select Property Cards (Drag &amp; Drop Between Boxes):
                             </span>
                             <span style="font-size: 12px; color: #64748b;">
@@ -971,10 +1032,10 @@
                             </div>
 
                             <!-- BOX 2: Selected Cards for This Page -->
-                            <div style="background: #ffffff; border: 1.5px solid #1a4731; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; box-shadow: 0 4px 14px rgba(26, 71, 49, 0.05);">
+                            <div style="background: #ffffff; border: 1.5px solid #BFA16A; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; box-shadow: 0 4px 14px rgba(191, 161, 106, 0.1);">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;">
                                     <div>
-                                        <strong style="font-size: 13.5px; color: #1a4731; display: flex; align-items: center; gap: 6px;">
+                                        <strong style="font-size: 13.5px; color: #BFA16A; display: flex; align-items: center; gap: 6px;">
                                             ✓ Selected Cards for This Page ( <span id="selectedCount">0</span> )
                                         </strong>
                                         <span style="font-size: 11.5px; color: #64748b;">Cards displayed on this page</span>
@@ -1052,7 +1113,7 @@
                                     <label class="adm-label" for="content_intro_{{ $sec->id }}" style="font-weight: 700; font-size: 13px; color: #111827; margin-bottom: 0; display: block;">
                                         Short Content
                                     </label>
-                                    <label for="content_intro_file_{{ $sec->id }}" class="adm-btn" onmousedown="$('#content_intro_{{ $sec->id }}').summernote('saveRange'); window.currentActiveSummernote = $('#content_intro_{{ $sec->id }}');" style="background: #1a4731; color: #ffffff; padding: 5px 12px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                    <label for="content_intro_file_{{ $sec->id }}" class="adm-btn" onmousedown="$('#content_intro_{{ $sec->id }}').summernote('saveRange'); window.currentActiveSummernote = $('#content_intro_{{ $sec->id }}');" style="background: #BFA16A; color: #ffffff; padding: 5px 12px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                                         Choose File &amp; Insert Image
                                     </label>
@@ -1081,7 +1142,7 @@
                                         <span class="adm-chip">html / wysiwyg</span>
                                     </label>
                                 @endif
-                                <label for="content_img_file_{{ $sec->id }}" class="adm-btn" onmousedown="$('#content_wysiwyg_{{ $sec->id }}').summernote('saveRange'); window.currentActiveSummernote = $('#content_wysiwyg_{{ $sec->id }}');" style="background: #1a4731; color: #ffffff; padding: 6px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                <label for="content_img_file_{{ $sec->id }}" class="adm-btn" onmousedown="$('#content_wysiwyg_{{ $sec->id }}').summernote('saveRange'); window.currentActiveSummernote = $('#content_wysiwyg_{{ $sec->id }}');" style="background: #BFA16A; color: #ffffff; padding: 6px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                                     Choose File &amp; Insert Image
                                 </label>
@@ -1390,7 +1451,7 @@
                         <input type="hidden" name="sections[faq][_has_items]" value="1">
                         <div class="adm-field">
                             <label class="adm-label" for="sec_faq_heading">Section Title</label>
-                            <input type="text" id="sec_faq_heading" name="sections[faq][heading]" value="{{ $sContent['heading'] ?? 'Frequently Asked Questions' }}" class="adm-input">
+                            <input type="text" id="sec_faq_heading" name="sections[faq][heading]" value="{{ array_key_exists('heading', $sContent) ? ($sContent['heading'] ?? '') : 'Frequently Asked Questions' }}" class="adm-input">
                         </div>
 
                         <div class="adm-faq-wrap">
@@ -2326,69 +2387,180 @@
                     <div class="adm-card-head">
                         <div>
                             <h2>Payment Plan &amp; Milestone Schedule</h2>
-                            <p>Manage payment plan title, description, milestone percentage table rows, and the download payment plan CTA.</p>
+                            <p>Manage payment plan breakdown cards and small plan images (click opens full size on site).</p>
                         </div>
                         <span class="adm-chip">payment_plan</span>
                     </div>
                     <div class="adm-card-body">
+                        <input type="hidden" name="sections[payment_plan][_has_breakdown]" value="1">
+                        <input type="hidden" name="sections[payment_plan][_has_plan_images]" value="1">
                         <div class="adm-field">
                             <label class="adm-label">Section Title</label>
-                            <input type="text" name="sections[payment_plan][title]" value="{{ old('sections.payment_plan.title', $sContent['title'] ?? '') }}" class="adm-input" placeholder="e.g. {{ $page->title }} Payment Plan">
+                            <input type="text" name="sections[payment_plan][title]" value="{{ old('sections.payment_plan.title', array_key_exists('title', $sContent) ? ($sContent['title'] ?? '') : 'Payment plan') }}" class="adm-input" placeholder="e.g. Payment plan">
                         </div>
 
                         <div class="adm-field">
                             <label class="adm-label">Description / Subtitle</label>
-                            <textarea name="sections[payment_plan][description]" class="adm-textarea adm-summernote" rows="2" placeholder="Flexible milestone payment terms tailored for island living...">{{ old('sections.payment_plan.description', $sContent['description'] ?? '') }}</textarea>
+                            <textarea name="sections[payment_plan][description]" class="adm-textarea" rows="2" placeholder="Flexible milestone payment terms tailored for real estate investment...">{{ old('sections.payment_plan.description', $sContent['description'] ?? '') }}</textarea>
                         </div>
 
-                        <!-- Installment Table Rows Repeater -->
+                        <!-- 1. Breakdown Cards & Progress Bar (Image 1 Style) -->
                         @php
-                            $payRows = $sContent['rows'] ?? [];
+                            $rawBreakdown = array_key_exists('breakdown', $sContent) ? $sContent['breakdown'] : ($sContent['items'] ?? []);
+                            $breakdownItems = is_array($rawBreakdown) ? $rawBreakdown : [];
                         @endphp
                         <div class="adm-repeater-wrap" style="margin-top: 24px;">
                             <div class="adm-repeater-intro">
                                 <div>
-                                    <h3>Installment Breakdown Rows (<span id="payRowCount">{{ count($payRows) }}</span>)</h3>
-                                    <p>Configure installment name, percentage, and target construction/handover milestone.</p>
+                                    <h3>Payment Breakdown Cards (<span id="payBreakdownCount">{{ count($breakdownItems) }}</span>)</h3>
+                                    <p>Configure dynamic cards (e.g. Down payment, Instalments, On possession) with percentages and milestone notes.</p>
                                 </div>
-                                <button type="button" class="adm-btn adm-btn-ghost adm-btn-sm" onclick="addPaymentRow()">
-                                    @include('admin.partials.icon', ['name' => 'plus']) Add Installment Row
+                                <button type="button" class="adm-btn adm-btn-ghost adm-btn-sm" onclick="addPaymentBreakdownCard()">
+                                    @include('admin.partials.icon', ['name' => 'plus']) Add Breakdown Card
                                 </button>
                             </div>
 
-                            <div style="background: #faf8f5; border: 1px solid #e8e1d7; border-radius: 8px; overflow: hidden;">
-                                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
-                                    <thead>
-                                        <tr style="background: #ece4d8; color: #4a3e2f; font-weight: 700; border-bottom: 1px solid #d4c7b5;">
-                                            <th style="padding: 10px 14px; width: 40px;">#</th>
-                                            <th style="padding: 10px 14px;">Installment</th>
-                                            <th style="padding: 10px 14px; width: 140px;">Percentage</th>
-                                            <th style="padding: 10px 14px;">Milestone</th>
-                                            <th style="padding: 10px 14px; width: 60px; text-align: center;">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="payment_rows_container">
-                                        @foreach($payRows as $rIdx => $row)
-                                            <tr id="pay_row_{{ $rIdx }}" style="border-bottom: 1px solid #e8e1d7;">
-                                                <td style="padding: 8px 14px; font-weight: 700; color: #1a4731;">{{ $rIdx + 1 }}</td>
-                                                <td style="padding: 8px 14px;">
-                                                    <input type="text" name="sections[payment_plan][rows][{{ $rIdx }}][installment]" value="{{ $row['installment'] ?? '' }}" class="adm-input" placeholder="e.g. Down Payment" style="font-weight: 600;">
-                                                </td>
-                                                <td style="padding: 8px 14px;">
-                                                    <input type="text" name="sections[payment_plan][rows][{{ $rIdx }}][percentage]" value="{{ $row['percentage'] ?? '' }}" class="adm-input" placeholder="e.g. 5% or 10%" style="font-weight: 700; color: #1a4731;">
-                                                </td>
-                                                <td style="padding: 8px 14px;">
-                                                    <input type="text" name="sections[payment_plan][rows][{{ $rIdx }}][milestone]" value="{{ $row['milestone'] ?? '' }}" class="adm-input" placeholder="e.g. Construction Milestone / On Booking">
-                                                </td>
-                                                <td style="padding: 8px 14px; text-align: center;">
-                                                    <button type="button" class="adm-btn-item-delete" onclick="document.getElementById('pay_row_{{ $rIdx }}').remove()" style="padding: 6px 8px;" title="Remove row">
-                                                        ✕
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                            <div id="payment_breakdown_container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;">
+                                @foreach($breakdownItems as $bIdx => $bItem)
+                                    @php
+                                        $stageNum = $loop->iteration;
+                                        $defColor = $loop->first ? '#0B2545' : ($stageNum === 2 ? '#BFA16A' : '#4B6B94');
+                                    @endphp
+                                    <div class="adm-card adm-repeater-item" id="pay_bcard_{{ $bIdx }}" style="border: 1px solid #dcd3c6; background: #fff; margin-bottom: 0; padding: 14px; border-radius: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                            <strong style="font-size: 13px; color: #1e293b;">Stage #{{ $stageNum }}</strong>
+                                            <button type="button" class="adm-btn-item-delete" onclick="document.getElementById('pay_bcard_{{ $bIdx }}').remove(); updatePayBreakdownCount();" style="padding: 4px 8px; font-size: 11px;">✕</button>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                                            <div>
+                                                <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 2px;">Stage Title</label>
+                                                <input type="text" name="sections[payment_plan][breakdown][{{ $bIdx }}][title]" value="{{ $bItem['title'] ?? '' }}" class="adm-input" placeholder="e.g. Down payment" style="font-size: 13px; padding: 7px 10px;">
+                                            </div>
+                                            <div style="display: flex; gap: 8px;">
+                                                <div style="flex: 1;">
+                                                    <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 2px;">Percentage</label>
+                                                    <input type="text" name="sections[payment_plan][breakdown][{{ $bIdx }}][percentage]" value="{{ $bItem['percentage'] ?? '' }}" class="adm-input" placeholder="e.g. 10%" style="font-weight: 700; color: #BFA16A; font-size: 13px; padding: 7px 10px;">
+                                                </div>
+                                                <div style="width: 85px;">
+                                                    <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 2px;">Color</label>
+                                                    <input type="color" name="sections[payment_plan][breakdown][{{ $bIdx }}][color]" value="{{ $bItem['color'] ?? $defColor }}" style="width: 100%; height: 34px; padding: 2px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- 2. Payment Plan Sheets Gallery (Image 2 & 3 Style) -->
+                        @php
+                            $rawPlanImages = array_key_exists('plan_images', $sContent) ? $sContent['plan_images'] : ($sContent['images'] ?? []);
+                            $planImages = is_array($rawPlanImages) ? $rawPlanImages : [];
+                        @endphp
+                        <div class="adm-repeater-wrap" style="margin-top: 28px; padding-top: 24px; border-top: 1px solid #f1f5f9;">
+                            <div class="adm-repeater-intro">
+                                <div>
+                                    <h3>Payment Plan Sheets &amp; Floor Images (<span id="payImgCount">{{ count($planImages) }}</span>)</h3>
+                                    <p>Upload high-resolution payment plan sheets. Users can click any plan on the front-end to view full size with zoom lightbox.</p>
+                                </div>
+                                <button type="button" class="adm-btn adm-btn-ghost adm-btn-sm" onclick="addPaymentPlanImage()">
+                                    @include('admin.partials.icon', ['name' => 'plus']) Add Plan Sheet
+                                </button>
+                            </div>
+
+                            <div id="payment_images_container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px;">
+                                @foreach($planImages as $pIdx => $pItem)
+                                    @php
+                                        $sheetNum = $loop->iteration;
+                                        $pSrc = is_string($pItem) ? $pItem : ($pItem['image'] ?? ($pItem['src'] ?? ''));
+                                    @endphp
+                                    <div class="adm-card adm-repeater-item" id="pay_img_card_{{ $pIdx }}" style="border: 1px solid #dcd3c6; background: #fff; margin-bottom: 0; padding: 12px; border-radius: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                            <strong style="font-size: 12.5px; color: #1e293b;">Sheet #{{ $sheetNum }}</strong>
+                                            <button type="button" class="adm-btn-item-delete" onclick="document.getElementById('pay_img_card_{{ $pIdx }}').remove(); updatePayImgCount();" style="padding: 4px 8px; font-size: 11px;">✕</button>
+                                        </div>
+                                        @if(!empty($pSrc))
+                                            <div style="width: 100%; height: 140px; border-radius: 6px; overflow: hidden; margin-bottom: 8px; border: 1px solid #e2e8f0; background: #f8fafc;">
+                                                <img src="{{ str_starts_with($pSrc, 'http') ? $pSrc : asset(ltrim($pSrc, '/')) }}" style="width: 100%; height: 100%; object-fit: cover; object-position: top;" alt="Preview">
+                                            </div>
+                                        @endif
+                                        <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 2px;">Upload Image File</label>
+                                        <input type="file" name="section_files[payment_plan][plan_images][{{ $pIdx }}][file]" accept="image/*" class="adm-input" style="font-size: 12px; padding: 6px 10px; margin-bottom: 6px;">
+                                        <input type="hidden" name="sections[payment_plan][plan_images][{{ $pIdx }}][image]" value="{{ $pSrc }}">
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        @elseif($sec->section_key === 'floor_plan')
+            <!-- FLOOR PLAN TAB (Simple: Title + Description + Images) -->
+            <div id="tab-floor_plan" class="tab-pane {{ $currentTab === 'floor_plan' ? 'active' : '' }}">
+                <div class="adm-card">
+                    <div class="adm-card-head">
+                        <div>
+                            <h2>Floor Plan</h2>
+                            <p>Section title, description aur floor plan images manage karo. Images UI par small thumbnails mein show hongi (click se full size).</p>
+                        </div>
+                        <span class="adm-chip">floor_plan</span>
+                    </div>
+                    <div class="adm-card-body">
+                        <div class="adm-field">
+                            <label class="adm-label">Section Title</label>
+                            <input type="text" name="sections[floor_plan][title]" value="{{ old('sections.floor_plan.title', html_entity_decode($sContent['title'] ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8')) }}" class="adm-input" placeholder="e.g. Floor Plan">
+                        </div>
+
+                        <div class="adm-field">
+                            <label class="adm-label">Description / Subtitle</label>
+                            <textarea name="sections[floor_plan][description]" class="adm-textarea" rows="2" placeholder="Spacious layouts designed for modern living...">{{ old('sections.floor_plan.description', $sContent['description'] ?? '') }}</textarea>
+                        </div>
+
+                        <!-- Floor Plan Images (same as Payment Plan Sheets) -->
+                        @php
+                            $rawFpImgs = $sContent['plan_images'] ?? [];
+                            $fpImgs = is_array($rawFpImgs) ? $rawFpImgs : [];
+                        @endphp
+                        <div class="adm-repeater-wrap" style="margin-top: 28px; padding-top: 24px; border-top: 1px solid #f1f5f9;">
+                            <div class="adm-repeater-intro">
+                                <div>
+                                    <h3>Floor Plan Images (<span id="fpImgCount">{{ count($fpImgs) }}</span>)</h3>
+                                    <p>Floor plan sheets ya images upload karo. Click se full size lightbox mein open hoti hain.</p>
+                                </div>
+                                <button type="button" class="adm-btn adm-btn-ghost adm-btn-sm" onclick="addFloorPlanImage()">
+                                    @include('admin.partials.icon', ['name' => 'plus']) Add Image
+                                </button>
+                            </div>
+
+                            <div id="floor_plan_images_container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px;">
+                                @foreach($fpImgs as $fpIdx => $fpItem)
+                                    @php
+                                        $fpNum = $loop->iteration;
+                                        $fpSrc = is_string($fpItem) ? $fpItem : ($fpItem['image'] ?? ($fpItem['src'] ?? ''));
+                                    @endphp
+                                    <div class="adm-card adm-repeater-item" id="fp_img_card_{{ $fpIdx }}" style="border: 1px solid #dcd3c6; background: #fff; margin-bottom: 0; padding: 12px; border-radius: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                            <strong style="font-size: 12.5px; color: #1e293b;">Image #{{ $fpNum }}</strong>
+                                            <button type="button" class="adm-btn-item-delete" onclick="document.getElementById('fp_img_card_{{ $fpIdx }}').remove(); updateFpImgCount();" style="padding: 4px 8px; font-size: 11px;">✕</button>
+                                        </div>
+                                        @if(!empty($fpSrc))
+                                            <div style="width: 100%; height: 140px; border-radius: 6px; overflow: hidden; margin-bottom: 8px; border: 1px solid #e2e8f0; background: #f8fafc;">
+                                                <img id="fp_img_thumb_{{ $fpIdx }}" src="{{ str_starts_with($fpSrc, 'http') ? $fpSrc : asset(ltrim($fpSrc, '/')) }}" style="width: 100%; height: 100%; object-fit: cover; object-position: top;" alt="Preview">
+                                            </div>
+                                        @else
+                                            <div id="fp_img_preview_{{ $fpIdx }}" style="display:none; width:100%; height:120px; border-radius:6px; overflow:hidden; margin-bottom:8px; border:1px solid #e2e8f0; background:#f8fafc;">
+                                                <img id="fp_img_thumb_{{ $fpIdx }}" src="" style="width:100%;height:100%;object-fit:cover;object-position:top;" alt="Preview">
+                                            </div>
+                                        @endif
+                                        <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 2px;">Upload Image File</label>
+                                        <input type="file" name="section_files[floor_plan][plan_images][{{ $fpIdx }}][file]" accept="image/*" class="adm-input" style="font-size: 12px; padding: 6px 10px; margin-bottom: 6px;" onchange="
+                                            const f=this.files[0];
+                                            if(f){const r=new FileReader();r.onload=e=>{const p=document.getElementById('fp_img_preview_{{ $fpIdx }}');const t=document.getElementById('fp_img_thumb_{{ $fpIdx }}');if(t){t.src=e.target.result;}if(p)p.style.display='block';};r.readAsDataURL(f);}
+                                        ">
+                                        <input type="hidden" name="sections[floor_plan][plan_images][{{ $fpIdx }}][image]" value="{{ $fpSrc }}">
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -2396,7 +2568,7 @@
             </div>
 
         @elseif($sec->section_key === 'floor_plans')
-            <!-- FLOOR PLANS TAB -->
+            <!-- FLOOR PLANS TAB (Complex: Legacy) -->
             <div id="tab-floor_plans" class="tab-pane {{ $currentTab === 'floor_plans' ? 'active' : '' }}">
                 <div class="adm-card">
                     <div class="adm-card-head">
@@ -2624,7 +2796,31 @@
             </div>
 
         @elseif($sec->section_key === 'about')
-            <!-- ABOUT COMMUNITY & VIDEO TAB -->
+            @if($isProjectEdit)
+            <!-- SHORT CONTENT TAB (Project Detail Pages only) -->
+            <div id="tab-about" class="tab-pane {{ $currentTab === 'about' ? 'active' : '' }}">
+                <div class="adm-card">
+                    <div class="adm-card-head">
+                        <div>
+                            <h2>Short Content</h2>
+                            <p>Short introductory content for this project.</p>
+                        </div>
+                        <span class="adm-chip">about</span>
+                    </div>
+                    <div class="adm-card-body">
+                        <div class="adm-field">
+                            <label class="adm-label">Short Content</label>
+                            <textarea name="sections[about][description]" class="adm-textarea adm-summernote" rows="8" placeholder="Enter short introductory content...">{{ old('sections.about.description', $sContent['description'] ?? '') }}</textarea>
+                        </div>
+                        {{-- For project pages, Short Content is pure Summernote without separate title or video poster --}}
+                        <input type="hidden" name="sections[about][title]" value="">
+                        <input type="hidden" name="sections[about][video_poster]" value="">
+                        <input type="hidden" name="sections[about][video_src]" value="">
+                    </div>
+                </div>
+            </div>
+            @else
+            <!-- ABOUT COMMUNITY & VIDEO TAB (Non-Project Pages) -->
             <div id="tab-about" class="tab-pane {{ $currentTab === 'about' ? 'active' : '' }}">
                 <div class="adm-card">
                     <div class="adm-card-head">
@@ -2665,6 +2861,7 @@
                     </div>
                 </div>
             </div>
+            @endif
 
         @elseif($sec->section_key === 'amenities')
             <!-- AMENITIES & FACILITIES TAB -->
@@ -2681,7 +2878,7 @@
                         <input type="hidden" name="sections[amenities][_has_items]" value="1">
                         <div class="adm-field">
                             <label class="adm-label">Section Title</label>
-                            <input type="text" name="sections[amenities][title]" value="{{ old('sections.amenities.title', $sContent['title'] ?? '') }}" class="adm-input" placeholder="e.g. {{ $page->title }} Amenities">
+                            <input type="text" name="sections[amenities][title]" value="{{ old('sections.amenities.title', array_key_exists('title', $sContent) ? ($sContent['title'] ?? '') : 'Features and amenities') }}" class="adm-input" placeholder="e.g. Features and amenities">
                         </div>
 
                         <div class="adm-field">
@@ -2726,7 +2923,7 @@
                                                         @if(!empty($curAmIconSrc))
                                                             <img id="preview_amenity_{{ $aIdx }}" src="{{ $curAmIconSrc }}" alt="Icon" style="width: 18px; height: 18px; object-fit: contain;">
                                                         @else
-                                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#FAF5EB" stroke="#DFCFB2" stroke-width="1.2"/><path d="M7.5 12.5L10.5 15.5L16.5 9.5" stroke="#BFA16A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                         @endif
                                                     </span>
                                                     <input type="text"
@@ -2754,7 +2951,7 @@
                                                                     @if(!empty($amIconSrc))
                                                                         <img src="{{ $amIconSrc }}" alt="{{ $am->name }}" style="width: 18px; height: 18px; object-fit: contain;">
                                                                     @else
-                                                                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#FAF5EB" stroke="#DFCFB2" stroke-width="1.2"/><path d="M7.5 12.5L10.5 15.5L16.5 9.5" stroke="#BFA16A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                                     @endif
                                                                 </span>
                                                                 <span class="adm-metric-menu-item-label">{{ $am->name }}</span>
@@ -2974,7 +3171,7 @@
     <!-- Sticky Save Bar -->
     <div class="adm-sticky-save">
         <span>Saving changes for <strong>{{ $isProjectEdit && $projectObj ? $projectObj->title : $page->title }}</strong></span>
-        <button type="button" class="adm-btn adm-btn-primary" id="savePageBtn" onclick="submitEditForm(event)" style="background: #1a4731 !important; color: #ffffff !important;">
+        <button type="button" class="adm-btn adm-btn-primary" id="savePageBtn" onclick="submitEditForm(event)" style="background: #BFA16A !important; color: #ffffff !important;">
             @include('admin.partials.icon', ['name' => 'check']) <span id="saveBtnText" style="color: #ffffff !important;">Save Changes</span>
         </button>
     </div>
@@ -3009,9 +3206,9 @@
     .adm-faq-del:hover { background: #b91c1c; color: #fff; border-color: #b91c1c; }
     .adm-faq-add {
         margin-top: 12px; padding: 6px 14px; font-size: 12.5px; font-weight: 600; cursor: pointer;
-        border: 1px dashed #1a4731; color: #1a4731; background: #faf8f5; border-radius: 8px; transition: all .15s ease;
+        border: 1px dashed #BFA16A; color: #BFA16A; background: #faf8f5; border-radius: 8px; transition: all .15s ease;
     }
-    .adm-faq-add:hover { background: #1a4731; color: #fff; border-style: solid; }
+    .adm-faq-add:hover { background: #BFA16A; color: #fff; border-style: solid; }
     @media (max-width: 700px) {
         .adm-faq-cols { display: none; }
         .adm-faq-row { grid-template-columns: 34px 1fr 34px; }
@@ -3096,7 +3293,7 @@
     .adm-edit-layout > #pageEditForm::-webkit-scrollbar-thumb { background: #c9b9a4; border-radius: 8px; }
 
     .adm-edit-layout .tab-pane {
-        padding-bottom: 20px;
+        padding-bottom: 180px;
     }
 
     .adm-edit-layout .adm-sticky-save {
@@ -3138,27 +3335,41 @@
         position: relative;
         width: 100%;
     }
+    .adm-metric-input-wrap {
+        position: relative;
+    }
     .adm-metric-prefix-icon {
         position: absolute;
         left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 28px;
-        height: 28px;
+        width: 32px;
+        height: 32px;
         border-radius: 6px;
-        background: #eaf1ed;
-        color: #234937;
+        background: transparent !important;
         pointer-events: none;
-        z-index: 2;
+        z-index: 3;
         transition: color .2s, background .2s;
     }
-    .adm-metric-prefix-icon svg {
-        width: 17px;
-        height: 17px;
+    .adm-metric-prefix-icon img {
+        width: 26px !important;
+        height: 26px !important;
+        max-width: 26px !important;
+        max-height: 26px !important;
+        object-fit: contain !important;
+        display: block !important;
     }
+    .adm-metric-prefix-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+    .adm-edit-layout input.adm-metric-input,
+    .adm-edit-layout .adm-metric-input,
     .adm-metric-input {
-        padding-left: 46px !important;
+        padding-left: 54px !important;
         padding-right: 38px !important;
         width: 100% !important;
     }
@@ -3194,11 +3405,15 @@
         background: #ffffff;
         border: 1px solid #cbd5e1;
         border-radius: 8px;
-        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.1);
-        z-index: 1050;
-        max-height: 240px;
+        box-shadow: 0 12px 28px -4px rgba(0,0,0,0.22), 0 8px 10px -6px rgba(0,0,0,0.1);
+        z-index: 999999 !important;
+        max-height: 250px;
         overflow-y: auto;
         padding: 6px;
+    }
+    .adm-metric-menu.dropup {
+        top: auto !important;
+        bottom: calc(100% + 4px) !important;
     }
     .adm-metric-menu.show {
         display: block;
@@ -3326,6 +3541,13 @@
         if (altInput) {
             altInput.value = (val || '').replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ').trim();
         }
+    }
+
+    // Sync location hidden field when community selected (project edit)
+    function syncProjectLocation(sel) {
+        const opt = sel.options[sel.selectedIndex];
+        const locField = document.getElementById('projectLocationHidden');
+        if (locField) locField.value = opt ? (opt.getAttribute('data-location') || '') : '';
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -3857,8 +4079,22 @@
         if (!menu) return;
 
         const wasOpen = menu.classList.contains('show');
-        document.querySelectorAll('.adm-metric-menu.show').forEach(m => m.classList.remove('show'));
+        document.querySelectorAll('.adm-metric-menu.show').forEach(m => {
+            m.classList.remove('show');
+            m.classList.remove('dropup');
+            const pWrap = m.closest('.adm-metric-input-wrap');
+            if (pWrap) pWrap.style.zIndex = '';
+        });
+
         if (!wasOpen) {
+            const rect = wrap.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            if (spaceBelow < 280 && rect.top > 220) {
+                menu.classList.add('dropup');
+            } else {
+                menu.classList.remove('dropup');
+            }
+            wrap.style.zIndex = '100000';
             menu.classList.add('show');
         }
     }
@@ -3894,7 +4130,9 @@
 
         if (menu) {
             menu.classList.remove('show');
+            menu.classList.remove('dropup');
         }
+        wrap.style.zIndex = '';
     }
 
     function onMetricInputChange(input) {
@@ -4106,7 +4344,12 @@
 
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.adm-metric-input-wrap')) {
-            document.querySelectorAll('.adm-metric-menu.show').forEach(m => m.classList.remove('show'));
+            document.querySelectorAll('.adm-metric-menu.show').forEach(m => {
+                m.classList.remove('show');
+                m.classList.remove('dropup');
+                const pWrap = m.closest('.adm-metric-input-wrap');
+                if (pWrap) pWrap.style.zIndex = '';
+            });
         }
     });
 
@@ -4123,7 +4366,7 @@
             const iconSrc = rawIcon ? (rawIcon.startsWith('http') ? rawIcon : '/' + rawIcon.replace(/^\/+/, '')) : '';
             const iconHtml = iconSrc
                 ? `<img src="${escapeHtml(iconSrc)}" alt="${safeName}" style="width:18px;height:18px;object-fit:contain;">`
-                : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+                : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#FAF5EB" stroke="#DFCFB2" stroke-width="1.2"/><path d="M7.5 12.5L10.5 15.5L16.5 9.5" stroke="#BFA16A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
             return `
                 <div class="adm-metric-menu-item" onclick="${handlerFn}(this, '${jsName}', '${jsIcon}')">
                     <span class="adm-metric-menu-item-icon">${iconHtml}</span>
@@ -4195,7 +4438,7 @@
                 
                 <div class="adm-grid-2-col" style="align-items: flex-end;">
                     <div class="adm-field">
-                        <label class="adm-label" style="font-size: 11px; margin-bottom: 4px; color: #0284c7; font-weight: 700;">Choose Amenity</label>
+                        <label class="adm-label" style="font-size: 11px; margin-bottom: 4px; color: #BFA16A; font-weight: 700;">Choose Amenity</label>
                         <div class="adm-metric-input-wrap">
                             <div class="adm-metric-input-group">
                                 <span class="adm-metric-prefix-icon" title="Amenity Icon">
@@ -4920,12 +5163,12 @@
         tr.id = `pay_row_${newIdx}`;
         tr.style.cssText = 'border-bottom: 1px solid #e8e1d7;';
         tr.innerHTML = `
-            <td style="padding: 8px 14px; font-weight: 700; color: #1a4731;">${newIdx + 1}</td>
+            <td style="padding: 8px 14px; font-weight: 700; color: #BFA16A;">${newIdx + 1}</td>
             <td style="padding: 8px 14px;">
                 <input type="text" name="sections[payment_plan][rows][${newIdx}][installment]" value="New Installment" class="adm-input" placeholder="e.g. Next Installment" style="font-weight: 600;">
             </td>
             <td style="padding: 8px 14px;">
-                <input type="text" name="sections[payment_plan][rows][${newIdx}][percentage]" value="10%" class="adm-input" placeholder="e.g. 10%" style="font-weight: 700; color: #1a4731;">
+                <input type="text" name="sections[payment_plan][rows][${newIdx}][percentage]" value="10%" class="adm-input" placeholder="e.g. 10%" style="font-weight: 700; color: #BFA16A;">
             </td>
             <td style="padding: 8px 14px;">
                 <input type="text" name="sections[payment_plan][rows][${newIdx}][milestone]" value="Construction Milestone" class="adm-input" placeholder="Milestone description">
@@ -4939,6 +5182,128 @@
         tbody.appendChild(tr);
         const countSpan = document.getElementById('payRowCount');
         if (countSpan) countSpan.textContent = tbody.children.length;
+    }
+
+    function updatePayBreakdownCount() {
+        const container = document.getElementById('payment_breakdown_container');
+        const countSpan = document.getElementById('payBreakdownCount');
+        if (container && countSpan) countSpan.textContent = container.children.length;
+    }
+
+    function addPaymentBreakdownCard() {
+        const container = document.getElementById('payment_breakdown_container');
+        if (!container) return;
+        const newIdx = 'pb_' + Date.now();
+        const num = container.children.length + 1;
+        const defaultColors = ['#0B2545', '#BFA16A', '#4B6B94', '#64748B'];
+        const autoColor = defaultColors[(num - 1) % defaultColors.length];
+
+        const card = document.createElement('div');
+        card.className = 'adm-card adm-repeater-item';
+        card.id = `pay_bcard_${newIdx}`;
+        card.style.cssText = 'border: 1px solid #dcd3c6; background: #fff; margin-bottom: 0; padding: 14px; border-radius: 8px;';
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <strong style="font-size: 13px; color: #1e293b;">Stage #${num}</strong>
+                <button type="button" class="adm-btn-item-delete" onclick="document.getElementById('pay_bcard_${newIdx}').remove(); updatePayBreakdownCount();" style="padding: 4px 8px; font-size: 11px;">✕</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div>
+                    <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 2px;">Stage Title</label>
+                    <input type="text" name="sections[payment_plan][breakdown][${newIdx}][title]" value="" class="adm-input" placeholder="e.g. Down payment" style="font-size: 13px; padding: 7px 10px;">
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <div style="flex: 1;">
+                        <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 2px;">Percentage</label>
+                        <input type="text" name="sections[payment_plan][breakdown][${newIdx}][percentage]" value="" class="adm-input" placeholder="e.g. 10%" style="font-weight: 700; color: #BFA16A; font-size: 13px; padding: 7px 10px;">
+                    </div>
+                    <div style="width: 85px;">
+                        <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 2px;">Color</label>
+                        <input type="color" name="sections[payment_plan][breakdown][${newIdx}][color]" value="${autoColor}" style="width: 100%; height: 34px; padding: 2px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer;">
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+        updatePayBreakdownCount();
+    }
+
+    function updatePayImgCount() {
+        const container = document.getElementById('payment_images_container');
+        const countSpan = document.getElementById('payImgCount');
+        if (container && countSpan) countSpan.textContent = container.children.length;
+    }
+
+    function addPaymentPlanImage() {
+        const container = document.getElementById('payment_images_container');
+        if (!container) return;
+        const newIdx = 'pimg_' + Date.now();
+        const num = container.children.length + 1;
+
+        const card = document.createElement('div');
+        card.className = 'adm-card adm-repeater-item';
+        card.id = `pay_img_card_${newIdx}`;
+        card.style.cssText = 'border: 1px solid #dcd3c6; background: #fff; margin-bottom: 0; padding: 12px; border-radius: 8px;';
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <strong style="font-size: 12.5px; color: #1e293b;">Sheet #${num}</strong>
+                <button type="button" class="adm-btn-item-delete" onclick="document.getElementById('pay_img_card_${newIdx}').remove(); updatePayImgCount();" style="padding: 4px 8px; font-size: 11px;">✕</button>
+            </div>
+            <div id="pay_img_preview_${newIdx}" style="display:none; width:100%; height:120px; border-radius:6px; overflow:hidden; margin-bottom:8px; border:1px solid #e2e8f0; background:#f8fafc;">
+                <img id="pay_img_thumb_${newIdx}" src="" style="width:100%;height:100%;object-fit:cover;object-position:top;" alt="Preview">
+            </div>
+            <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 2px;">Upload Image File</label>
+            <input type="file" name="section_files[payment_plan][plan_images][${newIdx}][file]" accept="image/*" class="adm-input" style="font-size: 12px; padding: 6px 10px; margin-bottom: 6px;" onchange="
+                const f = this.files[0];
+                if(f){
+                    const r = new FileReader();
+                    r.onload = e => {
+                        const prev = document.getElementById('pay_img_preview_${newIdx}');
+                        const thumb = document.getElementById('pay_img_thumb_${newIdx}');
+                        if(prev && thumb){ thumb.src = e.target.result; prev.style.display='block'; }
+                    };
+                    r.readAsDataURL(f);
+                }
+            ">
+            <input type="hidden" name="sections[payment_plan][plan_images][${newIdx}][image]" value="">
+        `;
+        container.appendChild(card);
+        updatePayImgCount();
+    }
+
+    function updateFpImgCount() {
+        const c = document.getElementById('floor_plan_images_container');
+        const el = document.getElementById('fpImgCount');
+        if (c && el) el.textContent = c.children.length;
+    }
+
+    function addFloorPlanImage() {
+        const container = document.getElementById('floor_plan_images_container');
+        if (!container) return;
+        const newIdx = 'fpimg_' + Date.now();
+        const num = container.children.length + 1;
+
+        const card = document.createElement('div');
+        card.className = 'adm-card adm-repeater-item';
+        card.id = `fp_img_card_${newIdx}`;
+        card.style.cssText = 'border: 1px solid #dcd3c6; background: #fff; margin-bottom: 0; padding: 12px; border-radius: 8px;';
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <strong style="font-size: 12.5px; color: #1e293b;">Image #${num}</strong>
+                <button type="button" class="adm-btn-item-delete" onclick="document.getElementById('fp_img_card_${newIdx}').remove(); updateFpImgCount();" style="padding: 4px 8px; font-size: 11px;">✕</button>
+            </div>
+            <div id="fp_img_preview_${newIdx}" style="display:none; width:100%; height:120px; border-radius:6px; overflow:hidden; margin-bottom:8px; border:1px solid #e2e8f0; background:#f8fafc;">
+                <img id="fp_img_thumb_${newIdx}" src="" style="width:100%;height:100%;object-fit:cover;object-position:top;" alt="Preview">
+            </div>
+            <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 2px;">Upload Image File</label>
+            <input type="file" name="section_files[floor_plan][plan_images][${newIdx}][file]" accept="image/*" class="adm-input" style="font-size: 12px; padding: 6px 10px; margin-bottom: 6px;" onchange="
+                const f=this.files[0];
+                if(f){const r=new FileReader();r.onload=e=>{const p=document.getElementById('fp_img_preview_${newIdx}');const t=document.getElementById('fp_img_thumb_${newIdx}');if(t){t.src=e.target.result;}if(p)p.style.display='block';};r.readAsDataURL(f);}
+            ">
+            <input type="hidden" name="sections[floor_plan][plan_images][${newIdx}][image]" value="">
+        `;
+        container.appendChild(card);
+        updateFpImgCount();
     }
 
     // --- Project Gallery Drag-and-Drop & Row Management ---
@@ -5226,7 +5591,11 @@
             }
         }
 
-        if (menu) menu.classList.remove('show');
+        if (menu) {
+            menu.classList.remove('show');
+            menu.classList.remove('dropup');
+        }
+        wrap.style.zIndex = '';
     }
 
     function removeAmenityCard(btn) {
@@ -5257,7 +5626,7 @@
                 <div class="adm-metric-input-wrap" style="flex: 1; min-width: 150px;">
                     <div class="adm-metric-input-group">
                         <span class="adm-metric-prefix-icon" title="Amenity Icon">
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#FAF5EB" stroke="#DFCFB2" stroke-width="1.2"/><path d="M7.5 12.5L10.5 15.5L16.5 9.5" stroke="#BFA16A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                         <input type="text"
                                name="sections[amenities][items][${newIdx}][name]"
@@ -5456,10 +5825,10 @@
 
     const ALL_CARD_ATTRIBUTES = ['New', 'Offer', 'Off plan', 'Ready'];
     const ATTR_STYLES = {
-        'New':      { bg: '#ecfdf5', border: '#a7f3d0', text: '#065f46', activeBg: '#059669' },
+        'New':      { bg: '#faf6f0', border: 'rgba(191,161,106,0.3)', text: '#BFA16A', activeBg: '#BFA16A' },
         'Offer':    { bg: '#fffbeb', border: '#fde68a', text: '#92400e', activeBg: '#d97706' },
-        'Off plan': { bg: '#f1f5f9', border: '#cbd5e1', text: '#334155', activeBg: '#1a4731' },
-        'Ready':    { bg: '#eff6ff', border: '#bfdbfe', text: '#1e40af', activeBg: '#2563eb' }
+        'Off plan': { bg: '#f1f5f9', border: '#cbd5e1', text: '#334155', activeBg: '#BFA16A' },
+        'Ready':    { bg: '#faf6f0', border: 'rgba(191,161,106,0.3)', text: '#BFA16A', activeBg: '#BFA16A' }
     };
 
     class BadgeManager {
@@ -5504,7 +5873,7 @@
                     `;
                 } else {
                     this.selected.forEach(attr => {
-                        const style = ATTR_STYLES[attr] || { bg: '#f1f5f9', border: '#cbd5e1', text: '#334155', activeBg: '#1a4731' };
+                        const style = ATTR_STYLES[attr] || { bg: '#f1f5f9', border: '#cbd5e1', text: '#334155', activeBg: '#BFA16A' };
                         const pill = document.createElement('div');
                         pill.className = 'badge-drag-pill badge-pill-selected';
                         pill.draggable = true;
@@ -5857,12 +6226,47 @@
             image: '{{ asset("about_community.png") }}',
             desc: 'Editorial story narrative, community overview paragraphs & video player showcase.'
         },
+        'amenities': {
+            key: 'amenities',
+            name: 'Features & Amenities',
+            badge: 'AMENITIES CHECKLIST',
+            image: '{{ asset("amenities.png") }}',
+            desc: 'Features and amenities checklist with green checkmark or custom icons, title, and lifestyle subtitle.'
+        },
+        'payment_plan': {
+            key: 'payment_plan',
+            name: 'Payment Plan',
+            badge: 'PAYMENT SCHEDULE',
+            image: '{{ asset("payment_plan.png") }}',
+            desc: 'Payment breakdown bar, milestone cards, and high-resolution payment plan sheets gallery with lightbox.'
+        },
         'content': {
             key: 'content',
             name: 'Article & Booking',
             badge: 'ARTICLE & BOOKING',
             image: '{{ asset("article_booking.png") }}',
             desc: 'Intro text area, "Read More" button, Summernote editor & side appointment form.'
+        },
+        'gallery': {
+            key: 'gallery',
+            name: 'Project Gallery',
+            badge: 'PHOTO SHOWCASE',
+            image: '{{ asset("card.png") }}',
+            desc: 'Interactive photo grid showcasing exterior, interior & master development photos.'
+        },
+        'master_plan': {
+            key: 'master_plan',
+            name: 'Master Plan',
+            badge: 'MASTER LAYOUT',
+            image: '{{ asset("card.png") }}',
+            desc: 'Master community layout plan diagram with title and high-resolution photo.'
+        },
+        'location': {
+            key: 'location',
+            name: 'Location & Connectivity',
+            badge: 'CONNECTIVITY',
+            image: '{{ asset("card.png") }}',
+            desc: 'Nearby landmarks, driving times accordion and interactive location map.'
         },
         'communities': {
             key: 'communities',
@@ -5983,7 +6387,7 @@
                 </div>
                 <div style="flex-shrink:0; margin-left:8px;">
                     ${isSelected 
-                        ? '<span style="color:#16a34a; font-weight:700; font-size:12px; display:inline-flex; align-items:center; gap:3px;">✓ Selected</span>' 
+                        ? '<span style="color:#BFA16A; font-weight:700; font-size:12px; display:inline-flex; align-items:center; gap:3px;">✓ Selected</span>' 
                         : '<span style="border:1px solid #bbf7d0; background:#f0fdf4; color:#15803d; font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:6px; display:inline-block;">+ Add</span>'
                     }
                 </div>
@@ -6033,7 +6437,7 @@
                     card.setAttribute('data-key', key);
                     card.style.cssText = 'display:flex; align-items:center; gap:10px; background:#ffffff; border:1.5px solid #cbd5e1; border-radius:8px; padding:6px 12px; cursor:grab; user-select:none; box-shadow:0 1px 3px rgba(0,0,0,0.04); transition:all 0.18s ease;';
                     card.innerHTML = `
-                        <span style="font-size:11px; font-weight:700; color:#1a4731; background:#f0fdf4; border:1px solid #bbf7d0; padding:2px 6px; border-radius:4px;">#${idx + 1}</span>
+                        <span style="font-size:11px; font-weight:700; color:#BFA16A; background:#faf6f0; border:1px solid rgba(191,161,106,0.3); padding:2px 6px; border-radius:4px;">#${idx + 1}</span>
                         <img src="${info.image}" alt="" style="width:48px; height:34px; object-fit:cover; border-radius:5px; border:1px solid #cbd5e1; flex-shrink:0;">
                         <div style="cursor:pointer;" onclick="switchTab('${key}')" title="Click to open editor for this section">
                             <strong style="font-size:13px; color:#1e293b; display:block;">${info.name}</strong>

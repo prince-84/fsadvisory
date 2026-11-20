@@ -3,8 +3,8 @@
 :root {
   --font-color-default: #313131;
   --color-default: #313131;
-  --color-primary: #1a4731;
-  --color-primary-hover: #123322;
+  --color-primary: #BFA16A;
+  --color-primary-hover: #aa8d58;
   --color-secondary: #52565e;
   --color-dark: #1a1a1a;
   --color-muted: #777777;
@@ -136,7 +136,7 @@ img {
   background: var(--color-primary-hover);
   color: #ffffff !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(26, 71, 49, 0.35);
+  box-shadow: 0 4px 12px rgba(191, 161, 106, 0.35);
 }
 
 /* Section Header */
@@ -149,7 +149,7 @@ img {
   font-size: 36px;
   font-weight: 700;
   position: relative;
-  color: #1a4731;
+  color: #BFA16A;
   display: inline-block;
   margin-bottom: 14px;
 }
@@ -403,7 +403,7 @@ header[class*="Header"].sticky-header,
 }
 
 .dropdownItem:hover {
-  background: rgba(26, 71, 49, 0.08);
+  background: rgba(191, 161, 106, 0.08);
   color: var(--color-primary);
 }
 
@@ -622,7 +622,7 @@ header[class*="Header"].sticky-header,
   letter-spacing: .5px;
   cursor: pointer;
   text-transform: uppercase;
-  background-color: #d9232d !important;
+  background-color: #BFA16A !important;
   border: none;
   border-radius: 4px;
   padding: 14px 32px;
@@ -634,7 +634,7 @@ header[class*="Header"].sticky-header,
 }
 
 .heroBookBtn:hover {
-  background-color: #b71a23 !important;
+  background-color: #aa8d58 !important;
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(217, 35, 45, 0.5) !important;
 }
@@ -704,8 +704,8 @@ header[class*="Header"].sticky-header,
 
 .inputField:focus {
   background: #ffffff;
-  border-color: #1a4731;
-  box-shadow: 0 0 0 3px rgba(26, 71, 49, 0.15);
+  border-color: #BFA16A;
+  box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.15);
 }
 
 .submitBtn {
@@ -715,19 +715,19 @@ header[class*="Header"].sticky-header,
   font-weight: 700;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  background: #1a4731;
+  background: #BFA16A;
   color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 2px 8px rgba(26, 71, 49, 0.3);
+  box-shadow: 0 2px 8px rgba(191, 161, 106, 0.3);
 }
 
 .submitBtn:hover {
-  background: #123322;
+  background: #aa8d58;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(26, 71, 49, 0.4);
+  box-shadow: 0 4px 14px rgba(191, 161, 106, 0.4);
 }
 
 .successMessage {
@@ -890,7 +890,7 @@ header[class*="Header"].sticky-header,
   width: 38px !important;
   height: 38px !important;
   border-radius: 50% !important;
-  background: #1a4731 !important;
+  background: #BFA16A !important;
   opacity: 1 !important;
   z-index: 1 !important;
 }
@@ -982,8 +982,75 @@ header[class*="Header"].sticky-header,
 
 .communitiesGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.community-card-hidden {
+  display: none !important;
+}
+
+@keyframes fadeInProjectCard {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cardCustom.card-just-revealed {
+  animation: fadeInProjectCard 0.45s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+.showMoreProjectsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 45px;
+  padding-bottom: 10px;
+}
+
+.showMoreProjectsBtn {
+  background: #BFA16A;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 13px 38px;
+  border-radius: 999px;
+  border: 1.5px solid #BFA16A;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 14px rgba(191, 161, 106, 0.3);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.showMoreProjectsBtn:hover {
+  background: #aa8d58;
+  border-color: #aa8d58;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(191, 161, 106, 0.45);
+}
+
+.showMoreProjectsBtn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(191, 161, 106, 0.3);
+}
+
+.showMoreProjectsBtn .showMoreIcon {
+  transition: transform 0.3s ease;
+}
+
+.showMoreProjectsBtn:hover .showMoreIcon {
+  transform: translateY(2px);
 }
 
 .cardCustom {
@@ -1046,18 +1113,18 @@ header[class*="Header"].sticky-header,
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #1a4731;
+  background: #BFA16A;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 3;
-  box-shadow: 0 4px 14px rgba(26, 71, 49, 0.45);
+  box-shadow: 0 4px 14px rgba(191, 161, 106, 0.45);
   transition: transform 0.25s ease, background-color 0.25s ease;
 }
 
 .cardCustom:hover .sparkleBtn {
   transform: scale(1.08);
-  background: #123322;
+  background: #aa8d58;
 }
 
 .bottomContent {
@@ -1118,7 +1185,7 @@ header[class*="Header"].sticky-header,
 
 .planBadge {
   background: #ffffff;
-  color: #1a4731;
+  color: #BFA16A;
   font-size: 12px;
   font-weight: 700;
   padding: 6px 15px;
@@ -1129,7 +1196,7 @@ header[class*="Header"].sticky-header,
 }
 
 .cardBookBtn {
-  background: #1a4731;
+  background: #BFA16A;
   color: #ffffff;
   font-size: 13px;
   font-weight: 800;
@@ -1144,15 +1211,15 @@ header[class*="Header"].sticky-header,
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(26, 71, 49, 0.45);
+  box-shadow: 0 4px 14px rgba(191, 161, 106, 0.45);
   border: 1.5px solid rgba(255, 255, 255, 0.25);
   transition: all 0.25s ease;
 }
 
 .cardCustom:hover .cardBookBtn {
-  background: #133825;
+  background: #aa8d58;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(26, 71, 49, 0.6);
+  box-shadow: 0 6px 18px rgba(191, 161, 106, 0.6);
 }
 
 [class*="AboutVideo-module__"] [class*="description"] p,
@@ -1287,7 +1354,36 @@ header[class*="Header"].sticky-header,
 .saimaArticleContentCol h2,
 .saimaSummernoteExpanded h2,
 .saimaSummernoteBodyContent h2 {
-  color: #1a4731 !important;
+  color: #BFA16A !important;
+}
+
+/* UI Content & Overview Hyperlinks -> Golden #BFA16A */
+.fsAboutDesc a,
+.fsAboutDesc p a,
+.saimaContentCol a,
+.saimaShortContent a,
+.saimaDynamicContent a,
+.saimaLongContentBody a,
+.saimaSummernoteBodyContent a,
+.saimaSummernoteExpanded a,
+.GolfAboutVideo-module__mC9tiq__description a,
+article a:not(.btn):not(.saimaTocLink) {
+  color: #BFA16A !important;
+  text-decoration: underline !important;
+  font-weight: 600 !important;
+  transition: color 0.15s ease !important;
+}
+.fsAboutDesc a:hover,
+.fsAboutDesc p a:hover,
+.saimaContentCol a:hover,
+.saimaShortContent a:hover,
+.saimaDynamicContent a:hover,
+.saimaLongContentBody a:hover,
+.saimaSummernoteBodyContent a:hover,
+.saimaSummernoteExpanded a:hover,
+.GolfAboutVideo-module__mC9tiq__description a:hover,
+article a:not(.btn):not(.saimaTocLink):hover {
+  color: #aa8d58 !important;
 }
 
 /* Sold Out Badge (Card Top-Right, White background, Red text) */
@@ -1325,12 +1421,16 @@ header[class*="Header"].sticky-header,
   }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 640px) {
   .communitiesGrid {
     grid-template-columns: 1fr;
-    max-width: 380px;
+    max-width: 400px;
     margin: 0 auto;
-    gap: 18px;
+    gap: 20px;
+  }
+
+  .communitiesGrid .cardCustom {
+    height: 440px;
   }
 
   .centeredRowStart {
@@ -1354,7 +1454,7 @@ header[class*="Header"].sticky-header,
 .overviewMainTitle {
   font-size: 32px;
   font-weight: 800;
-  color: #1a4731;
+  color: #BFA16A;
   margin-bottom: 20px;
   line-height: 1.3;
   letter-spacing: -0.2px;
@@ -1363,7 +1463,7 @@ header[class*="Header"].sticky-header,
 .overviewSubHeading {
   font-size: 20px;
   font-weight: 700;
-  color: #1a4731;
+  color: #BFA16A;
   margin-top: 24px;
   margin-bottom: 10px;
   line-height: 1.35;
@@ -1375,7 +1475,7 @@ header[class*="Header"].sticky-header,
 .overviewSection h2 {
   font-size: 26px !important;
   font-weight: 700 !important;
-  color: #1a4731 !important;
+  color: #BFA16A !important;
   line-height: 1.35 !important;
   margin-top: 32px !important;
   margin-bottom: 12px !important;
@@ -1386,7 +1486,7 @@ header[class*="Header"].sticky-header,
 .overviewSection h3 {
   font-size: 20px !important;
   font-weight: 700 !important;
-  color: #1a4731 !important;
+  color: #BFA16A !important;
   line-height: 1.4 !important;
   margin-top: 24px !important;
   margin-bottom: 10px !important;
@@ -1396,7 +1496,7 @@ header[class*="Header"].sticky-header,
 .overviewSection h4 {
   font-size: 17px !important;
   font-weight: 700 !important;
-  color: #1a4731 !important;
+  color: #BFA16A !important;
   line-height: 1.4 !important;
   margin-top: 20px !important;
   margin-bottom: 8px !important;
@@ -1671,7 +1771,7 @@ table tbody tr:hover td,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #1a4731;
+  background-color: #BFA16A;
   color: #ffffff !important;
   font-size: 15px;
   font-weight: 600;
@@ -1679,14 +1779,14 @@ table tbody tr:hover td,
   border-radius: 8px;
   text-decoration: none;
   transition: all 0.25s ease;
-  box-shadow: 0 2px 8px rgba(26, 71, 49, 0.25);
+  box-shadow: 0 2px 8px rgba(191, 161, 106, 0.25);
   cursor: pointer;
 }
 
 .investmentActionBtn:hover {
-  background-color: #123322;
+  background-color: #aa8d58;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(26, 71, 49, 0.35);
+  box-shadow: 0 4px 14px rgba(191, 161, 106, 0.35);
 }
 
 .investmentRightCol {
@@ -1764,8 +1864,8 @@ table tbody tr:hover td,
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: rgba(26, 71, 49, 0.14);
-  color: #1a4731;
+  background: rgba(191, 161, 106, 0.14);
+  color: #BFA16A;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2086,7 +2186,7 @@ table tbody tr:hover td,
 
 .faqItemOpen {
   border-color: var(--color-primary);
-  box-shadow: 0 4px 15px rgba(26, 71, 49, 0.12);
+  box-shadow: 0 4px 15px rgba(191, 161, 106, 0.12);
 }
 
 .faqQuestion {
@@ -2244,7 +2344,7 @@ table tbody tr:hover td,
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: #1a4731;
+  color: #BFA16A;
   text-align: center;
   margin-bottom: 4px;
   text-transform: uppercase;
@@ -2383,7 +2483,7 @@ table tbody tr:hover td,
 }
 
 .linkItem:hover {
-  color: #1a4731;
+  color: #BFA16A;
   transform: translateX(3px);
 }
 
@@ -2412,7 +2512,7 @@ table tbody tr:hover td,
 }
 
 .contactLink:hover {
-  color: #1a4731;
+  color: #BFA16A;
 }
 
 .contactIcon {
@@ -2503,7 +2603,7 @@ table tbody tr:hover td,
 .scrollTopBtn:hover {
   background: var(--color-primary-hover);
   transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 6px 20px rgba(26, 71, 49, 0.45);
+  box-shadow: 0 6px 20px rgba(191, 161, 106, 0.45);
 }
 
 /* ==========================================================================
@@ -2675,9 +2775,9 @@ table tbody tr:hover td,
 }
 
 .phoneUnifiedContainer:focus-within {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(26, 71, 49, 0.15);
+  box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.15);
 }
 
 .countryTriggerWrapper {
@@ -2788,9 +2888,9 @@ table tbody tr:hover td,
 }
 
 .countrySearchInput:focus {
-  border-color: #1a4731;
+  border-color: #BFA16A;
   background: #ffffff;
-  box-shadow: 0 0 0 2px rgba(26, 71, 49, 0.12);
+  box-shadow: 0 0 0 2px rgba(191, 161, 106, 0.12);
 }
 
 .countryListItems {
@@ -2888,8 +2988,8 @@ table tbody tr:hover td,
 
 .aboutBadge {
   display: inline-block;
-  background: rgba(26, 71, 49, 0.2);
-  border: 1px solid rgba(26, 71, 49, 0.5);
+  background: rgba(191, 161, 106, 0.2);
+  border: 1px solid rgba(191, 161, 106, 0.5);
   color: #d8c8b8;
   padding: 6px 16px;
   border-radius: 30px;
@@ -2948,7 +3048,7 @@ table tbody tr:hover td,
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(26, 71, 49, 0.2);
+  border: 1px solid rgba(191, 161, 106, 0.2);
 }
 
 .aboutFeaturedImage {
@@ -2971,7 +3071,7 @@ table tbody tr:hover td,
   display: inline-block;
   font-size: 13px;
   font-weight: 700;
-  color: #1a4731;
+  color: #BFA16A;
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 8px;
@@ -3008,15 +3108,15 @@ table tbody tr:hover td,
 
 .aboutServiceCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(26, 71, 49, 0.12);
-  border-color: #1a4731;
+  box-shadow: 0 12px 30px rgba(191, 161, 106, 0.12);
+  border-color: #BFA16A;
 }
 
 .aboutIconBox {
   width: 56px;
   height: 56px;
-  background: rgba(26, 71, 49, 0.1);
-  color: #1a4731;
+  background: rgba(191, 161, 106, 0.1);
+  color: #BFA16A;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -3052,7 +3152,7 @@ table tbody tr:hover td,
 
 .aboutPillarCard {
   background: #fcfbfa;
-  border-left: 3px solid #1a4731;
+  border-left: 3px solid #BFA16A;
   border-radius: 0 10px 10px 0;
   padding: 30px 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
@@ -3066,7 +3166,7 @@ table tbody tr:hover td,
 }
 
 .aboutPillarIcon {
-  color: #1a4731;
+  color: #BFA16A;
 }
 
 .aboutPillarTitle {
@@ -3107,7 +3207,7 @@ table tbody tr:hover td,
 .aboutWhyUsIconBox {
   width: 48px;
   height: 48px;
-  background: #1a4731;
+  background: #BFA16A;
   color: #ffffff;
   border-radius: 8px;
   display: flex;
@@ -3232,7 +3332,7 @@ table tbody tr:hover td,
 }
 
 .aboutInputField:focus {
-  border-color: #1a4731;
+  border-color: #BFA16A;
 }
 
 .aboutSubmitBtn {
@@ -3242,7 +3342,7 @@ table tbody tr:hover td,
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  background: #1a4731;
+  background: #BFA16A;
   color: #ffffff;
   border: none;
   border-radius: 4px;
@@ -3252,7 +3352,7 @@ table tbody tr:hover td,
 }
 
 .aboutSubmitBtn:hover {
-  background: #123322;
+  background: #aa8d58;
   transform: translateY(-1px);
 }
 
@@ -3303,8 +3403,8 @@ table tbody tr:hover td,
 
 .contactBadge {
   display: inline-block;
-  background: rgba(26, 71, 49, 0.2);
-  border: 1px solid rgba(26, 71, 49, 0.5);
+  background: rgba(191, 161, 106, 0.2);
+  border: 1px solid rgba(191, 161, 106, 0.5);
   color: #d8c8b8;
   padding: 6px 16px;
   border-radius: 30px;
@@ -3360,16 +3460,16 @@ table tbody tr:hover td,
 
 .channelCard:hover {
   transform: translateY(-4px);
-  border-color: #1a4731;
-  box-shadow: 0 10px 25px rgba(26, 71, 49, 0.12);
+  border-color: #BFA16A;
+  box-shadow: 0 10px 25px rgba(191, 161, 106, 0.18);
 }
 
 .iconCircle {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: rgba(26, 71, 49, 0.1);
-  color: #1a4731;
+  background: rgba(191, 161, 106, 0.16);
+  color: #BFA16A;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3378,7 +3478,7 @@ table tbody tr:hover td,
 }
 
 .channelCard:hover .iconCircle {
-  background: #1a4731;
+  background: #BFA16A;
   color: #ffffff;
 }
 
@@ -3398,15 +3498,15 @@ table tbody tr:hover td,
 .channelAction {
   font-size: 13.5px;
   font-weight: 700;
-  color: #1a4731;
+  color: #BFA16A;
   margin-top: auto;
 }
 
 .channelBadge {
   font-size: 12px;
   font-weight: 600;
-  color: #1a4731;
-  background: rgba(26, 71, 49, 0.08);
+  color: #BFA16A;
+  background: rgba(191, 161, 106, 0.08);
   padding: 4px 10px;
   border-radius: 20px;
   margin-top: auto;
@@ -3439,7 +3539,7 @@ table tbody tr:hover td,
   display: inline-block;
   font-size: 13px;
   font-weight: 700;
-  color: #1a4731;
+  color: #BFA16A;
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 8px;
@@ -3481,9 +3581,9 @@ table tbody tr:hover td,
 .contactHighlightPara {
   font-size: 16px;
   font-weight: 700;
-  color: #1a4731;
+  color: #BFA16A;
   line-height: 1.5;
-  border-left: 3px solid #1a4731;
+  border-left: 3px solid #BFA16A;
   padding-left: 14px;
   margin-top: 6px;
 }
@@ -3508,7 +3608,7 @@ table tbody tr:hover td,
 
 .featureIcon,
 .contactFeatureIcon {
-  color: #1a4731;
+  color: #BFA16A;
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -3538,7 +3638,7 @@ table tbody tr:hover td,
 .formCard,
 .contactFormCard {
   background: #ffffff;
-  border: 1.5px solid #1a4731;
+  border: 1.5px solid #BFA16A;
   border-radius: 12px;
   padding: 36px 30px;
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
@@ -3596,7 +3696,7 @@ table tbody tr:hover td,
 .textareaField:focus,
 .contactInputField:focus,
 .contactTextareaField:focus {
-  border-color: #1a4731;
+  border-color: #BFA16A;
 }
 
 .submitBtn,
@@ -3607,7 +3707,7 @@ table tbody tr:hover td,
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  background: #1a4731;
+  background: #BFA16A;
   color: #ffffff;
   border: none;
   border-radius: 4px;
@@ -3618,7 +3718,7 @@ table tbody tr:hover td,
 
 .submitBtn:hover,
 .contactSubmitBtn:hover {
-  background: #123322;
+  background: #aa8d58;
   transform: translateY(-1px);
 }
 
@@ -3744,8 +3844,8 @@ table tbody tr:hover td,
 .termsBadge,
 .disclaimerBadge {
   display: inline-block;
-  background: rgba(26, 71, 49, 0.2);
-  border: 1px solid rgba(26, 71, 49, 0.5);
+  background: rgba(191, 161, 106, 0.2);
+  border: 1px solid rgba(191, 161, 106, 0.5);
   color: #d8c8b8;
   padding: 6px 16px;
   border-radius: 30px;
@@ -3811,7 +3911,7 @@ table tbody tr:hover td,
 .privacyContactBlock,
 .termsHighlightBlock {
   background: #faf8f5;
-  border: 1.5px solid #1a4731;
+  border: 1.5px solid #BFA16A;
   border-radius: 12px;
   padding: 34px 32px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
@@ -3834,7 +3934,7 @@ table tbody tr:hover td,
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #1a4731;
+  background: #BFA16A;
   color: #ffffff;
   font-size: 16px;
   font-weight: 800;
@@ -3907,7 +4007,7 @@ table tbody tr:hover td,
 .legalBulletList li::before,
 .privacyBulletList li::before {
   content: "•";
-  color: #1a4731;
+  color: #BFA16A;
   font-weight: bold;
   font-size: 20px;
   position: absolute;
@@ -4000,7 +4100,7 @@ table tbody tr:hover td,
 .privacyUseLabel {
   font-size: 15px;
   font-weight: 700;
-  color: #1a4731;
+  color: #BFA16A;
   min-width: 170px;
   flex-shrink: 0;
 }
@@ -4019,7 +4119,7 @@ table tbody tr:hover td,
   align-items: center;
   gap: 12px;
   background: #fdfcfb;
-  border: 1px dashed #1a4731;
+  border: 1px dashed #BFA16A;
   border-radius: 8px;
   padding: 16px 20px;
   font-size: 14.5px;
@@ -4033,7 +4133,7 @@ table tbody tr:hover td,
 .disclaimerSubNotice {
   margin-top: 18px;
   background: #faf8f5;
-  border-left: 3px solid #1a4731;
+  border-left: 3px solid #BFA16A;
   padding: 14px 18px;
   border-radius: 0 6px 6px 0;
   font-size: 14.5px;
@@ -4044,7 +4144,7 @@ table tbody tr:hover td,
 .legalSubNotice a,
 .termsSubNotice a,
 .disclaimerSubNotice a {
-  color: #1a4731;
+  color: #BFA16A;
   font-weight: 600;
   text-decoration: underline;
 }
@@ -4068,7 +4168,7 @@ table tbody tr:hover td,
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #1a4731;
+  background: #BFA16A;
   color: #ffffff !important;
   font-size: 14.5px;
   font-weight: 700;
@@ -4082,7 +4182,7 @@ table tbody tr:hover td,
 .termsContactBtn:hover,
 .disclaimerContactBtn:hover,
 .privacyContactBtn:hover {
-  background: #123322;
+  background: #aa8d58;
   transform: translateY(-2px);
   color: #ffffff !important;
 }
@@ -4090,7 +4190,7 @@ table tbody tr:hover td,
 .legalSecondaryLink,
 .termsSecondaryLink,
 .disclaimerSecondaryLink {
-  color: #1a4731;
+  color: #BFA16A;
   font-size: 15px;
   font-weight: 600;
   text-decoration: none;
@@ -4107,7 +4207,7 @@ table tbody tr:hover td,
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #1a4731;
+  color: #BFA16A;
   font-size: 15px;
   font-weight: 600;
   text-decoration: none;
@@ -4166,4 +4266,46 @@ table tbody tr:hover td,
   .disclaimerBlockTitle {
     font-size: 20px;
   }
+}
+
+/* ALL Headings & Titles Across Entire Website -> #BFA16A */
+h1, h2, h3, h4, h5, h6,
+h1 *, h2 *, h3 *, h4 *, h5 *, h6 *,
+article h1, article h2, article h3, article h4, article h5, article h6,
+article h1 *, article h2 *, article h3 *, article h4 *, article h5 *, article h6 *,
+.locMainTitle, .locMainTitle *,
+.fsProjectHeroTitle, .fsProjectHeroTitle *,
+.fsHeroTitleDark, .fsHeroTitleGold,
+.note-editable h1, .note-editable h2, .note-editable h3, .note-editable h4, .note-editable h5, .note-editable h6,
+.note-editable h1 *, .note-editable h2 *, .note-editable h3 *, .note-editable h4 * {
+  color: #BFA16A !important;
+}
+
+/* UI Content & Overview Hyperlinks -> Golden #BFA16A */
+.fsAboutDesc a,
+.fsAboutDesc p a,
+.saimaContentCol a,
+.saimaShortContent a,
+.saimaDynamicContent a,
+.saimaLongContentBody a,
+.saimaSummernoteBodyContent a,
+.saimaSummernoteExpanded a,
+.GolfAboutVideo-module__mC9tiq__description a,
+article a:not(.btn):not(.saimaTocLink) {
+  color: #BFA16A !important;
+  text-decoration: underline !important;
+  font-weight: 600 !important;
+  transition: color 0.15s ease !important;
+}
+.fsAboutDesc a:hover,
+.fsAboutDesc p a:hover,
+.saimaContentCol a:hover,
+.saimaShortContent a:hover,
+.saimaDynamicContent a:hover,
+.saimaLongContentBody a:hover,
+.saimaSummernoteBodyContent a:hover,
+.saimaSummernoteExpanded a:hover,
+.GolfAboutVideo-module__mC9tiq__description a:hover,
+article a:not(.btn):not(.saimaTocLink):hover {
+  color: #aa8d58 !important;
 }

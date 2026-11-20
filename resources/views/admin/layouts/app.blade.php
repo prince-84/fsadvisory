@@ -80,10 +80,11 @@
             border-color: #d6cbbe !important;
         }
         .note-editable {
-            font-family: inherit !important;
-            font-size: 14px !important;
-            line-height: 1.7 !important;
-            color: #1f2937 !important;
+            font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+            font-size: 14.5px !important;
+            font-weight: 400 !important;
+            line-height: 1.6 !important;
+            color: #2B2B2B !important;
             padding: 14px !important;
             background: #ffffff !important;
         }
@@ -439,14 +440,241 @@
 </script>
 
 <style>
-    /* Prevent Summernote modal backdrop from freezing or greying out the page */
+    /* Summernote Modal Backdrop & Centered Modal Dialogs (Link, Video, Help, etc.) */
     .note-modal-backdrop {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        background: rgba(15, 23, 42, 0.5) !important;
+        backdrop-filter: blur(2px) !important;
+        z-index: 99999 !important;
+    }
+
+    .note-modal {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 100000 !important;
         display: none !important;
-        pointer-events: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        width: 0 !important;
-        height: 0 !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 20px !important;
+        box-sizing: border-box !important;
+        background: transparent !important;
+    }
+
+    .note-modal.open,
+    .note-modal[style*="display: block"] {
+        display: flex !important;
+    }
+
+    .note-modal .note-modal-content {
+        background: #ffffff !important;
+        border-radius: 12px !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
+        border: 1px solid #e2e8f0 !important;
+        max-width: 520px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        overflow: hidden !important;
+        position: relative !important;
+        animation: noteModalSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    @keyframes noteModalSlideIn {
+        from { opacity: 0; transform: scale(0.96) translateY(-10px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .note-modal .note-modal-header {
+        padding: 16px 22px !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        background: #fdfdfd !important;
+    }
+
+    .note-modal .note-modal-title {
+        font-size: 16.5px !important;
+        font-weight: 700 !important;
+        color: #1e293b !important;
+        margin: 0 !important;
+        font-family: inherit !important;
+    }
+
+    .note-modal .note-modal-header .close {
+        background: transparent !important;
+        border: none !important;
+        font-size: 22px !important;
+        line-height: 1 !important;
+        color: #64748b !important;
+        cursor: pointer !important;
+        padding: 4px 8px !important;
+        border-radius: 6px !important;
+        transition: color 0.15s, background-color 0.15s !important;
+    }
+
+    .note-modal .note-modal-header .close:hover {
+        color: #0f172a !important;
+        background-color: #f1f5f9 !important;
+    }
+
+    .note-modal .note-modal-body {
+        padding: 22px !important;
+        background: #ffffff !important;
+    }
+
+    .note-modal .note-form-group,
+    .note-modal .form-group {
+        margin-bottom: 16px !important;
+    }
+
+    .note-modal .note-form-label,
+    .note-modal label {
+        display: block !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+    }
+
+    .note-modal .note-input,
+    .note-modal .form-control {
+        width: 100% !important;
+        padding: 9px 12px !important;
+        font-size: 14px !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
+        box-sizing: border-box !important;
+        outline: none !important;
+        transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s !important;
+    }
+
+    .note-modal .note-input:focus,
+    .note-modal .form-control:focus {
+        border-color: #bfa16a !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 0 0 3px rgba(191, 161, 106, 0.18) !important;
+    }
+
+    .note-modal .sn-checkbox-open-in-new-window,
+    .note-modal .sn-checkbox-use-protocol {
+        margin-top: 10px !important;
+        font-size: 13px !important;
+        color: #475569 !important;
+    }
+
+    .note-modal .sn-checkbox-open-in-new-window label,
+    .note-modal .sn-checkbox-use-protocol label {
+        font-weight: 400 !important;
+        cursor: pointer !important;
+        margin: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .note-modal .sn-checkbox-open-in-new-window input[type="checkbox"],
+    .note-modal .sn-checkbox-use-protocol input[type="checkbox"] {
+        accent-color: #bfa16a !important;
+        width: 16px !important;
+        height: 16px !important;
+        cursor: pointer !important;
+        margin: 0 !important;
+    }
+
+    .note-modal .note-modal-footer {
+        padding: 14px 22px !important;
+        border-top: 1px solid #f1f5f9 !important;
+        background: #fafaf9 !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    .note-modal .note-link-btn,
+    .note-modal .note-btn-primary {
+        background: #bfa16a !important;
+        color: #ffffff !important;
+        border: 1px solid #bfa16a !important;
+        border-radius: 8px !important;
+        padding: 9px 20px !important;
+        font-size: 13.5px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+        transition: background-color 0.15s, opacity 0.15s !important;
+    }
+
+    .note-modal .note-link-btn:not(:disabled):not(.disabled):hover,
+    .note-modal .note-btn-primary:not(:disabled):not(.disabled):hover {
+        background: #aa8c55 !important;
+        border-color: #aa8c55 !important;
+    }
+
+    .note-modal .note-link-btn:disabled,
+    .note-modal .note-btn-primary:disabled,
+    .note-modal .note-link-btn.disabled {
+        opacity: 0.55 !important;
+        cursor: not-allowed !important;
+        background: #cbd5e1 !important;
+        border-color: #cbd5e1 !important;
+        color: #64748b !important;
+    }
+
+    /* Active Hyperlink appearance inside editor */
+    .note-editor .note-editing-area .note-editable a {
+        color: #bfa16a !important;
+        text-decoration: underline !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+    }
+
+    /* Link Popover appearance when clicking on an existing link in editor */
+    .note-popover.note-link-popover,
+    .note-popover {
+        z-index: 99999 !important;
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+        padding: 4px 6px !important;
+    }
+
+    .note-popover .popover-content,
+    .note-popover .note-popover-content {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        padding: 4px 8px !important;
+    }
+
+    .note-popover a {
+        color: #bfa16a !important;
+        font-size: 13px !important;
+        text-decoration: underline !important;
+        max-width: 250px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+
+    .note-popover .note-btn {
+        padding: 4px 8px !important;
+        font-size: 12px !important;
+        border-radius: 4px !important;
     }
 
     /* Elevate active editor and its toolbar so dropdowns float on top of subsequent editors */
@@ -602,6 +830,13 @@
 <script src="{{ asset('vendor/summernote/jquery-3.7.1.min.js') }}"></script>
 <script src="{{ asset('vendor/summernote/summernote-lite.min.js') }}?v={{ filemtime(public_path('vendor/summernote/summernote-lite.min.js')) }}"></script>
 <script>
+    if (typeof jQuery !== 'undefined' && typeof jQuery.summernote !== 'undefined') {
+        jQuery.extend(jQuery.summernote.options, {
+            dialogsInBody: true,
+            dialogsFade: false
+        });
+    }
+
     $(document).ready(function() {
         function stripAutoTagAttrs(html) {
             if (!html || typeof html !== 'string') return html;
@@ -611,9 +846,12 @@
                 .replace(/\s+(?:id|class)=["']\s*["']/gi, '');
         }
 
-        function cleanupAllModalsAndBackdrops() {
-            $('.note-modal-backdrop, .modal-backdrop, .note-modal').remove();
-            $('body').removeClass('modal-open').css('overflow', '');
+        function cleanupImageModalsAndBackdrops() {
+            $('.note-modal.image-dialog, .note-image-dialog').remove();
+            if (!$('.note-modal.link-dialog.open, .note-modal.link-dialog:visible').length) {
+                $('.note-modal-backdrop, .modal-backdrop').remove();
+                $('body').removeClass('modal-open').css('overflow', '');
+            }
         }
 
         // Keep track of active Summernote editor and its saved range
@@ -679,13 +917,13 @@
                         const clean = stripAutoTagAttrs($target.summernote('code'));
                         $target.val(clean);
 
-                        // 4. Clean up any open Summernote modal and backdrops
-                        cleanupAllModalsAndBackdrops();
+                        // 4. Clean up image dialog if any
+                        cleanupImageModalsAndBackdrops();
                     }
                 },
                 error: function(err) {
                     document.body.style.cursor = origCursor;
-                    cleanupAllModalsAndBackdrops();
+                    cleanupImageModalsAndBackdrops();
                     alert('Image upload failed: ' + (err.responseJSON?.message || 'Please check file size and format (max 15MB).'));
                 }
             });
@@ -713,6 +951,8 @@
                         height: customHeight,
                         minHeight: 120,
                         tabsize: 2,
+                        dialogsInBody: true,
+                        dialogsFade: false,
                         tableClassName: '', // Do NOT add default class="table table-bordered" to tables
                         toolbar: [
                             ['style', ['style']],
@@ -726,7 +966,6 @@
                         styleTags: defaultStyleTags,
                         callbacks: {
                             onInit: function() {
-                                cleanupAllModalsAndBackdrops();
                                 const ctx = $thisTextarea.data('summernote');
                                 if (ctx && ctx.modules && ctx.modules.editor) {
                                     const origFormatBlock = ctx.modules.editor.formatBlock.bind(ctx.modules.editor);
@@ -856,7 +1095,7 @@
                 }
             });
             $hiddenInput.trigger('click');
-            cleanupAllModalsAndBackdrops();
+            cleanupImageModalsAndBackdrops();
             return false;
         });
 
@@ -864,14 +1103,30 @@
         $(document).on('change', '.note-modal input[type="file"]', function() {
             if (this.files && this.files[0]) {
                 window.uploadAndInsertSummernoteFile(this.files[0], window.currentActiveSummernote);
-                cleanupAllModalsAndBackdrops();
+                cleanupImageModalsAndBackdrops();
             }
         });
 
-        // Ensure backdrop is killed if any modal ever attempts to open
-        $(document).on('DOMNodeInserted', function(e) {
-            if ($(e.target).hasClass('note-modal-backdrop') || $(e.target).hasClass('modal-backdrop')) {
-                $(e.target).remove();
+        // Ensure range is preserved when clicking Link button so selected text and range are captured
+        $(document).on('mousedown', '.note-btn[data-original-title*="Link"], .note-btn[aria-label*="Link"], button[data-name="link"], button[data-event="showLinkDialog"]', function() {
+            const $editor = $(this).closest('.note-editor').prev('textarea.adm-summernote, textarea.summernote');
+            if ($editor.length) {
+                window.currentActiveSummernote = $editor;
+                $editor.summernote('saveRange');
+            }
+        });
+
+        // Dismiss modal safely when clicking backdrop
+        $(document).on('click', '.note-modal-backdrop', function() {
+            $('.note-modal').removeClass('open').hide();
+            $(this).hide();
+        });
+
+        // Sync textarea and range when link dialog finishes
+        $(document).on('note.modal.hide', '.link-dialog', function() {
+            if (window.currentActiveSummernote && window.currentActiveSummernote.length) {
+                const clean = stripAutoTagAttrs(window.currentActiveSummernote.summernote('code'));
+                window.currentActiveSummernote.val(clean);
             }
         });
 

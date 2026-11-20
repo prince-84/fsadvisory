@@ -18,7 +18,7 @@
         text-decoration: none;
     }
     .cms-action-btn:hover {
-        color: #1a4731;
+        color: #BFA16A;
         background-color: #f1f5f9;
         transform: translateY(-1px);
     }
@@ -357,7 +357,7 @@
                         <span>Show in Navigation Header</span>
                     </label>
                     <label class="adm-check" style="cursor:pointer; font-weight:600; display:flex; align-items:center; gap:8px;">
-                        <input type="checkbox" name="is_published" value="1" checked>
+                        <input type="checkbox" name="is_published" value="1">
                         <span>Publish Immediately</span>
                     </label>
                 </div>
@@ -389,7 +389,7 @@
                                 <h3 style="margin:0; font-size:14px; font-weight:700; color:#111827; text-transform:uppercase; letter-spacing:0.04em;">
                                     Selected Page Sections
                                 </h3>
-                                <span id="tabLayoutCountBadge" style="background:#1a4731; color:#ffffff; font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px;">0 Added</span>
+                                <span id="tabLayoutCountBadge" style="background:#BFA16A; color:#ffffff; font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px;">0 Added</span>
                             </div>
                             <span style="font-size:12px; color:#6b7280;">(Drag ☰ or click ▲ ▼ to reorder &bull; ✎ Edit Content to customize)</span>
                         </div>
@@ -406,10 +406,10 @@
 
                             <!-- 1. BIG BOX: Hero Section -->
                             <div id="dragItemHero" draggable="true" ondragstart="handleDragStart(event, 'hero')" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'hero')" ondragend="handleDragEnd(event)"
-                                 style="display:none; width:220px; border:2px solid #1a4731; border-radius:12px; background:#ffffff; padding:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); position:relative; cursor:grab; user-select:none; transition:transform 0.15s ease, box-shadow 0.15s ease;">
+                                 style="display:none; width:220px; border:2px solid #BFA16A; border-radius:12px; background:#ffffff; padding:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); position:relative; cursor:grab; user-select:none; transition:transform 0.15s ease, box-shadow 0.15s ease;">
                                 
                                 <!-- Order Badge (Top-Left) -->
-                                <span id="heroOrderBadge" style="position:absolute; top:8px; left:8px; z-index:5; background:#1a4731; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.2);">#1</span>
+                                <span id="heroOrderBadge" style="position:absolute; top:8px; left:8px; z-index:5; background:#BFA16A; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.2);">#1</span>
                                 
                                 <!-- Small Delete Cross Button (Top-Right) -->
                                 <button type="button" onclick="event.stopPropagation(); removeSection('hero')" title="Remove Hero Section"
@@ -433,17 +433,17 @@
 
                                 <!-- Edit Content Button -->
                                 <button type="button" onclick="toggleHeroEditorDrawer()" id="heroDrawerBtn" class="adm-btn adm-btn-sm"
-                                        style="width:100%; padding:6px 10px; font-size:12px; background:#faf8f5; border:1px solid #1a4731; color:#1a4731; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer;">
+                                        style="width:100%; padding:6px 10px; font-size:12px; background:#faf8f5; border:1px solid #BFA16A; color:#BFA16A; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer;">
                                     <span>✎ Edit Content</span>
                                 </button>
                             </div>
 
                             <!-- 2. BIG BOX: Project Highlights -->
                             <div id="dragItemHighlights" draggable="true" ondragstart="handleDragStart(event, 'highlights')" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'highlights')" ondragend="handleDragEnd(event)"
-                                 style="display:none; width:220px; border:2px solid #1a4731; border-radius:12px; background:#ffffff; padding:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); position:relative; cursor:grab; user-select:none; transition:transform 0.15s ease, box-shadow 0.15s ease;">
+                                 style="display:none; width:220px; border:2px solid #BFA16A; border-radius:12px; background:#ffffff; padding:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); position:relative; cursor:grab; user-select:none; transition:transform 0.15s ease, box-shadow 0.15s ease;">
                                 
                                 <!-- Order Badge (Top-Left) -->
-                                <span id="hlOrderBadge" style="position:absolute; top:8px; left:8px; z-index:5; background:#1a4731; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.2);">#2</span>
+                                <span id="hlOrderBadge" style="position:absolute; top:8px; left:8px; z-index:5; background:#BFA16A; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.2);">#2</span>
                                 
                                 <!-- Small Delete Cross Button (Top-Right) -->
                                 <button type="button" onclick="event.stopPropagation(); removeSection('highlights')" title="Remove Project Highlights"
@@ -467,17 +467,17 @@
 
                                 <!-- Edit Content Button -->
                                 <button type="button" onclick="toggleHighlightsEditorDrawer()" id="hlDrawerBtn" class="adm-btn adm-btn-sm"
-                                        style="width:100%; padding:6px 10px; font-size:12px; background:#faf8f5; border:1px solid #1a4731; color:#1a4731; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer;">
+                                        style="width:100%; padding:6px 10px; font-size:12px; background:#faf8f5; border:1px solid #BFA16A; color:#BFA16A; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer;">
                                     <span>✎ Edit Content</span>
                                 </button>
                             </div>
 
                             <!-- 3. BIG BOX: About Community -->
                             <div id="dragItemAbout" draggable="true" ondragstart="handleDragStart(event, 'about')" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'about')" ondragend="handleDragEnd(event)"
-                                 style="display:none; width:220px; border:2px solid #1a4731; border-radius:12px; background:#ffffff; padding:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); position:relative; cursor:grab; user-select:none; transition:transform 0.15s ease, box-shadow 0.15s ease;">
+                                 style="display:none; width:220px; border:2px solid #BFA16A; border-radius:12px; background:#ffffff; padding:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); position:relative; cursor:grab; user-select:none; transition:transform 0.15s ease, box-shadow 0.15s ease;">
                                 
                                 <!-- Order Badge (Top-Left) -->
-                                <span id="aboutOrderBadge" style="position:absolute; top:8px; left:8px; z-index:5; background:#1a4731; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.2);">#3</span>
+                                <span id="aboutOrderBadge" style="position:absolute; top:8px; left:8px; z-index:5; background:#BFA16A; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.2);">#3</span>
                                 
                                 <!-- Small Delete Cross Button (Top-Right) -->
                                 <button type="button" onclick="event.stopPropagation(); removeSection('about')" title="Remove About Community"
@@ -501,17 +501,17 @@
 
                                 <!-- Edit Content Button -->
                                 <button type="button" onclick="toggleAboutEditorDrawer()" id="aboutDrawerBtn" class="adm-btn adm-btn-sm"
-                                        style="width:100%; padding:6px 10px; font-size:12px; background:#faf8f5; border:1px solid #1a4731; color:#1a4731; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer;">
+                                        style="width:100%; padding:6px 10px; font-size:12px; background:#faf8f5; border:1px solid #BFA16A; color:#BFA16A; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer;">
                                     <span>✎ Edit Content</span>
                                 </button>
                             </div>
 
                             <!-- 4. BIG BOX: Article & Booking -->
                             <div id="dragItemContent" draggable="true" ondragstart="handleDragStart(event, 'content')" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'content')" ondragend="handleDragEnd(event)"
-                                 style="display:none; width:220px; border:2px solid #1a4731; border-radius:12px; background:#ffffff; padding:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); position:relative; cursor:grab; user-select:none; transition:transform 0.15s ease, box-shadow 0.15s ease;">
+                                 style="display:none; width:220px; border:2px solid #BFA16A; border-radius:12px; background:#ffffff; padding:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); position:relative; cursor:grab; user-select:none; transition:transform 0.15s ease, box-shadow 0.15s ease;">
                                 
                                 <!-- Order Badge (Top-Left) -->
-                                <span id="contentOrderBadge" style="position:absolute; top:8px; left:8px; z-index:5; background:#1a4731; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.2);">#4</span>
+                                <span id="contentOrderBadge" style="position:absolute; top:8px; left:8px; z-index:5; background:#BFA16A; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.2);">#4</span>
                                 
                                 <!-- Small Delete Cross Button (Top-Right) -->
                                 <button type="button" onclick="event.stopPropagation(); removeSection('content')" title="Remove Article & Booking"
@@ -535,17 +535,17 @@
 
                                 <!-- Edit Content Button -->
                                 <button type="button" onclick="toggleContentEditorDrawer()" id="contentDrawerBtn" class="adm-btn adm-btn-sm"
-                                        style="width:100%; padding:6px 10px; font-size:12px; background:#faf8f5; border:1px solid #1a4731; color:#1a4731; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer;">
+                                        style="width:100%; padding:6px 10px; font-size:12px; background:#faf8f5; border:1px solid #BFA16A; color:#BFA16A; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer;">
                                     <span>✎ Edit Content</span>
                                 </button>
                             </div>
 
                             <!-- 5. BIG BOX: Project Cards -->
                             <div id="dragItemCommunities" draggable="true" ondragstart="handleDragStart(event, 'communities')" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'communities')" ondragend="handleDragEnd(event)"
-                                 style="display:none; width:220px; border:2px solid #1a4731; border-radius:12px; background:#ffffff; padding:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); position:relative; cursor:grab; user-select:none; transition:transform 0.15s ease, box-shadow 0.15s ease;">
+                                 style="display:none; width:220px; border:2px solid #BFA16A; border-radius:12px; background:#ffffff; padding:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); position:relative; cursor:grab; user-select:none; transition:transform 0.15s ease, box-shadow 0.15s ease;">
                                 
                                 <!-- Order Badge (Top-Left) -->
-                                <span id="communitiesOrderBadge" style="position:absolute; top:8px; left:8px; z-index:5; background:#1a4731; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.2);">#5</span>
+                                <span id="communitiesOrderBadge" style="position:absolute; top:8px; left:8px; z-index:5; background:#BFA16A; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.2);">#5</span>
                                 
                                 <!-- Small Delete Cross Button (Top-Right) -->
                                 <button type="button" onclick="event.stopPropagation(); removeSection('communities')" title="Remove Project Cards"
@@ -569,17 +569,17 @@
 
                                 <!-- Edit Content Button -->
                                 <button type="button" onclick="toggleCommunitiesEditorDrawer()" id="commDrawerBtn" class="adm-btn adm-btn-sm"
-                                        style="width:100%; padding:6px 10px; font-size:12px; background:#faf8f5; border:1px solid #1a4731; color:#1a4731; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer;">
+                                        style="width:100%; padding:6px 10px; font-size:12px; background:#faf8f5; border:1px solid #BFA16A; color:#BFA16A; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer;">
                                     <span>✎ Edit Content</span>
                                 </button>
                             </div>
 
                             <!-- 6. BIG BOX: FAQ Section -->
                             <div id="dragItemFaq" draggable="true" ondragstart="handleDragStart(event, 'faq')" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'faq')" ondragend="handleDragEnd(event)"
-                                 style="display:none; width:220px; border:2px solid #1a4731; border-radius:12px; background:#ffffff; padding:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); position:relative; cursor:grab; user-select:none; transition:transform 0.15s ease, box-shadow 0.15s ease;">
+                                 style="display:none; width:220px; border:2px solid #BFA16A; border-radius:12px; background:#ffffff; padding:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); position:relative; cursor:grab; user-select:none; transition:transform 0.15s ease, box-shadow 0.15s ease;">
                                 
                                 <!-- Order Badge (Top-Left) -->
-                                <span id="faqOrderBadge" style="position:absolute; top:8px; left:8px; z-index:5; background:#1a4731; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.2);">#6</span>
+                                <span id="faqOrderBadge" style="position:absolute; top:8px; left:8px; z-index:5; background:#BFA16A; color:#ffffff; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.2);">#6</span>
                                 
                                 <!-- Small Delete Cross Button (Top-Right) -->
                                 <button type="button" onclick="event.stopPropagation(); removeSection('faq')" title="Remove FAQ Section"
@@ -603,7 +603,7 @@
 
                                 <!-- Edit Content Button -->
                                 <button type="button" onclick="toggleFaqEditorDrawer()" id="faqDrawerBtn" class="adm-btn adm-btn-sm"
-                                        style="width:100%; padding:6px 10px; font-size:12px; background:#faf8f5; border:1px solid #1a4731; color:#1a4731; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer;">
+                                        style="width:100%; padding:6px 10px; font-size:12px; background:#faf8f5; border:1px solid #BFA16A; color:#BFA16A; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer;">
                                     <span>✎ Edit Content</span>
                                 </button>
                             </div>
@@ -611,9 +611,9 @@
 
                         <!-- Full-Width Section Editor Drawers -->
                         <div id="selectedSectionsDrawersContainer" style="width:100%;">
-<div id="heroEditorDrawer" style="display:none; padding:20px; background:#ffffff; border:1.5px solid #1a4731; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:14px; margin-bottom:14px;">
+<div id="heroEditorDrawer" style="display:none; padding:20px; background:#ffffff; border:1.5px solid #BFA16A; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:14px; margin-bottom:14px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid #e5e7eb;">
-                                    <h4 style="margin:0; font-size:15px; font-weight:700; color:#1a4731; display:flex; align-items:center; gap:8px;">
+                                    <h4 style="margin:0; font-size:15px; font-weight:700; color:#BFA16A; display:flex; align-items:center; gap:8px;">
                                         ✎ Edit Hero Section Content
                                     </h4>
                                     <button type="button" onclick="toggleHeroEditorDrawer()" class="adm-btn adm-btn-ghost" style="padding:4px 10px; font-size:12px; border:1px solid #d1d5db; border-radius:6px;">✕ Close Editor</button>
@@ -637,16 +637,16 @@
                                         <div>
                                             <label class="adm-label" style="font-weight:600; font-size:12.5px; display:flex; justify-content:space-between; align-items:center;">
                                                 <span>Hero Background Image</span>
-                                                <span style="font-size:11px; color:#1a4731; font-weight:600;">Change / Upload</span>
+                                                <span style="font-size:11px; color:#BFA16A; font-weight:600;">Change / Upload</span>
                                             </label>
                                             <div style="display:flex; gap:10px; align-items:center; background:#ffffff; border:1px solid #d1d5db; padding:6px 10px; border-radius:6px;">
-                                                <div style="width:58px; height:38px; border-radius:5px; overflow:hidden; border:1px solid #1a4731; flex-shrink:0; background:#f3f4f6;">
+                                                <div style="width:58px; height:38px; border-radius:5px; overflow:hidden; border:1px solid #BFA16A; flex-shrink:0; background:#f3f4f6;">
                                                     <img id="heroImagePreview" src="{{ asset('images/hero/slide-1.jpg') }}" alt="Preview" style="width:100%; height:100%; object-fit:cover; display:block;">
                                                 </div>
                                                 <div style="flex:1; display:flex; flex-direction:column; gap:4px; min-width:0;">
                                                     <div style="display:flex; gap:6px; align-items:center;">
                                                         <input type="file" id="heroFileInput" name="hero_image_file" accept="image/*" style="display:none;" onchange="handleHeroFileChange(this)">
-                                                        <button type="button" onclick="document.getElementById('heroFileInput').click()" class="adm-btn adm-btn-secondary" style="padding:4px 9px; font-size:11.5px; font-weight:600; white-space:nowrap; background:#faf8f5; border:1px solid #1a4731; color:#1a4731;">
+                                                        <button type="button" onclick="document.getElementById('heroFileInput').click()" class="adm-btn adm-btn-secondary" style="padding:4px 9px; font-size:11.5px; font-weight:600; white-space:nowrap; background:#faf8f5; border:1px solid #BFA16A; color:#BFA16A;">
                                                              Upload Image
                                                         </button>
                                                         <input type="text" id="heroBgImageInput" name="hero_bg_image" class="adm-input" placeholder="/images/hero/slide-1.jpg" value="" style="font-size:12px; padding:4px 8px; height:auto;" oninput="updateHeroPreviewFromUrl(this.value)">
@@ -659,9 +659,9 @@
 
                                 </div>
 
-<div id="hlEditorDrawer" style="display:none; padding:20px; background:#ffffff; border:1.5px solid #1a4731; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:14px; margin-bottom:14px;">
+<div id="hlEditorDrawer" style="display:none; padding:20px; background:#ffffff; border:1.5px solid #BFA16A; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:14px; margin-bottom:14px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid #e5e7eb;">
-                                    <h4 style="margin:0; font-size:15px; font-weight:700; color:#1a4731; display:flex; align-items:center; gap:8px;">
+                                    <h4 style="margin:0; font-size:15px; font-weight:700; color:#BFA16A; display:flex; align-items:center; gap:8px;">
                                         ✎ Edit Project Highlights Content
                                     </h4>
                                     <button type="button" onclick="toggleHighlightsEditorDrawer()" class="adm-btn adm-btn-ghost" style="padding:4px 10px; font-size:12px; border:1px solid #d1d5db; border-radius:6px;">✕ Close Editor</button>
@@ -671,7 +671,7 @@
                                         <input type="text" id="hlSectionTitle" name="highlights_title" class="adm-input" placeholder="e.g. Project Highlights" value="" style="font-size:13px; max-width:350px;">
                                     </div>
 
-                                    <div style="font-size:12px; font-weight:700; color:#1a4731; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">
+                                    <div style="font-size:12px; font-weight:700; color:#BFA16A; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">
                                         Key Highlight Cards (Customize Metric Label &amp; Value):
                                     </div>
 
@@ -750,9 +750,9 @@
                                     </div>
                                 </div>
 
-<div id="aboutEditorDrawer" style="display:none; padding:20px; background:#ffffff; border:1.5px solid #1a4731; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:14px; margin-bottom:14px;">
+<div id="aboutEditorDrawer" style="display:none; padding:20px; background:#ffffff; border:1.5px solid #BFA16A; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:14px; margin-bottom:14px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid #e5e7eb;">
-                                    <h4 style="margin:0; font-size:15px; font-weight:700; color:#1a4731; display:flex; align-items:center; gap:8px;">
+                                    <h4 style="margin:0; font-size:15px; font-weight:700; color:#BFA16A; display:flex; align-items:center; gap:8px;">
                                         ✎ Edit About Community Content
                                     </h4>
                                     <button type="button" onclick="toggleAboutEditorDrawer()" class="adm-btn adm-btn-ghost" style="padding:4px 10px; font-size:12px; border:1px solid #d1d5db; border-radius:6px;">✕ Close Editor</button>
@@ -781,9 +781,9 @@
                                     </div>
                                 </div>
 
-<div id="contentEditorDrawer" style="display:none; padding:20px; background:#ffffff; border:1.5px solid #1a4731; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:14px; margin-bottom:14px;">
+<div id="contentEditorDrawer" style="display:none; padding:20px; background:#ffffff; border:1.5px solid #BFA16A; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:14px; margin-bottom:14px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid #e5e7eb;">
-                                    <h4 style="margin:0; font-size:15px; font-weight:700; color:#1a4731; display:flex; align-items:center; gap:8px;">
+                                    <h4 style="margin:0; font-size:15px; font-weight:700; color:#BFA16A; display:flex; align-items:center; gap:8px;">
                                         ✎ Edit Article & Booking Content
                                     </h4>
                                     <button type="button" onclick="toggleContentEditorDrawer()" class="adm-btn adm-btn-ghost" style="padding:4px 10px; font-size:12px; border:1px solid #d1d5db; border-radius:6px;">✕ Close Editor</button>
@@ -822,9 +822,9 @@
                                     </div>
                                 </div>
 
-<div id="communitiesEditorDrawer" style="display:none; padding:20px; background:#ffffff; border:1.5px solid #1a4731; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:14px; margin-bottom:14px;">
+<div id="communitiesEditorDrawer" style="display:none; padding:20px; background:#ffffff; border:1.5px solid #BFA16A; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:14px; margin-bottom:14px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid #e5e7eb;">
-                                    <h4 style="margin:0; font-size:15px; font-weight:700; color:#1a4731; display:flex; align-items:center; gap:8px;">
+                                    <h4 style="margin:0; font-size:15px; font-weight:700; color:#BFA16A; display:flex; align-items:center; gap:8px;">
                                         ✎ Edit Project Cards Content
                                     </h4>
                                     <button type="button" onclick="toggleCommunitiesEditorDrawer()" class="adm-btn adm-btn-ghost" style="padding:4px 10px; font-size:12px; border:1px solid #d1d5db; border-radius:6px;">✕ Close Editor</button>
@@ -847,11 +847,8 @@
 
                                     <div style="margin-top: 18px;">
                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                            <span style="font-size: 13px; font-weight: 700; color: #1a4731; text-transform: uppercase; letter-spacing: 0.5px;">
-                                                Select Property Cards (Drag &amp; Drop Between Boxes):
-                                            </span>
-                                            <span style="font-size: 12px; color: #64748b;">
-                                                Mouse se card ko pakar kar right box me le aayein
+                                            <span style="font-size: 13px; font-weight: 700; color: #BFA16A; text-transform: uppercase; letter-spacing: 0.5px;">
+                                                Select Property Cards:
                                             </span>
                                         </div>
 
@@ -865,7 +862,6 @@
                                                         <strong style="font-size: 13.5px; color: #1e293b; display: flex; align-items: center; gap: 6px;">
                                                             📁 Available Property Cards (<span id="availableCount">{{ $allAvailableProjects->count() }}</span>)
                                                         </strong>
-                                                        <span style="font-size: 11.5px; color: #64748b;">All created property cards in your system</span>
                                                     </div>
                                                 </div>
 
@@ -886,20 +882,19 @@
                                                     @if($allAvailableProjects->isEmpty())
                                                         <div style="text-align: center; padding: 40px 10px; color: #94a3b8; font-size: 13px;">
                                                             No property cards found.<br>
-                                                            <a href="{{ route('admin.projects.index') }}" target="_blank" style="color: #0284c7; text-decoration: underline;">Create property cards in Projects module</a>
+                                                            <a href="{{ route('admin.projects.index') }}" target="_blank" style="color: #BFA16A; text-decoration: underline;">Create property cards in Projects module</a>
                                                         </div>
                                                     @endif
                                                 </div>
                                             </div>
 
                                             <!-- BOX 2: Selected Cards for This Page -->
-                                            <div style="background: #ffffff; border: 1.5px solid #1a4731; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; box-shadow: 0 4px 14px rgba(26, 71, 49, 0.05);">
+                                            <div style="background: #ffffff; border: 1.5px solid #BFA16A; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; box-shadow: 0 4px 14px rgba(191, 161, 106, 0.1);">
                                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;">
                                                     <div>
-                                                        <strong style="font-size: 13.5px; color: #1a4731; display: flex; align-items: center; gap: 6px;">
+                                                        <strong style="font-size: 13.5px; color: #BFA16A; display: flex; align-items: center; gap: 6px;">
                                                             ✓ Selected Cards for This Page (<span id="selectedCount">0</span>)
                                                         </strong>
-                                                        <span style="font-size: 11.5px; color: #64748b;">Sirf ye cards aapke page par dikhenge</span>
                                                     </div>
                                                     <button type="button" onclick="clearAllSelectedCards()" style="background: none; border: none; font-size: 11.5px; color: #ef4444; cursor: pointer; text-decoration: underline;">Clear All</button>
                                                 </div>
@@ -908,8 +903,7 @@
                                                     <!-- Empty placeholder when 0 cards -->
                                                     <div id="selectedCardsEmptyState" style="text-align: center; padding: 80px 20px; border: 2px dashed #e2e8f0; border-radius: 8px; color: #94a3b8;">
                                                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" style="margin: 0 auto 10px; display: block;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-                                                        <strong style="display: block; font-size: 14px; color: #475569; margin-bottom: 4px;">Drag Cards Here</strong>
-                                                        <span style="font-size: 12px; color: #94a3b8;">Left box se mouse se pakar kar yahan chhor dein (drop karein)</span>
+                                                        <strong style="display: block; font-size: 14px; color: #475569;">Drag Cards Here</strong>
                                                     </div>
                                                 </div>
 
@@ -922,9 +916,9 @@
 
                                 </div>
 
-<div id="faqEditorDrawer" style="display:none; padding:20px; background:#ffffff; border:1.5px solid #1a4731; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:14px; margin-bottom:14px;">
+<div id="faqEditorDrawer" style="display:none; padding:20px; background:#ffffff; border:1.5px solid #BFA16A; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-top:14px; margin-bottom:14px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid #e5e7eb;">
-                                    <h4 style="margin:0; font-size:15px; font-weight:700; color:#1a4731; display:flex; align-items:center; gap:8px;">
+                                    <h4 style="margin:0; font-size:15px; font-weight:700; color:#BFA16A; display:flex; align-items:center; gap:8px;">
                                         ✎ Edit FAQ Section Content
                                     </h4>
                                     <button type="button" onclick="toggleFaqEditorDrawer()" class="adm-btn adm-btn-ghost" style="padding:4px 10px; font-size:12px; border:1px solid #d1d5db; border-radius:6px;">✕ Close Editor</button>
@@ -936,7 +930,7 @@
                                     </div>
 
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #e5e7eb; padding-bottom:8px;">
-                                        <span style="font-size:12.5px; font-weight:700; color:#1a4731; text-transform:uppercase; letter-spacing:0.5px;">
+                                        <span style="font-size:12.5px; font-weight:700; color:#BFA16A; text-transform:uppercase; letter-spacing:0.5px;">
                                             Questions &amp; Answers List:
                                         </span>
                                         <span style="font-size:11.5px; color:#6b7280;">Drag ⇅ to reorder, ✕ to delete</span>
@@ -951,7 +945,7 @@
                                     <div id="faqQuestionsContainer" style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
                                         <!-- FAQ Item 1 (Default) -->
                                         <div class="faq-repeater-row" id="faqCard_0" style="display:grid; grid-template-columns:34px minmax(0, 1fr) minmax(0, 1.5fr) 34px; gap:10px; align-items:center; background:#faf8f5; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px;">
-                                            <div style="display:flex; align-items:center; justify-content:center; width:34px; height:36px; border:1px solid #d1d5db; background:#ffffff; border-radius:6px; color:#1a4731; cursor:grab;" title="Drag to reorder">
+                                            <div style="display:flex; align-items:center; justify-content:center; width:34px; height:36px; border:1px solid #d1d5db; background:#ffffff; border-radius:6px; color:#BFA16A; cursor:grab;" title="Drag to reorder">
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 20V4m0 0L3 8m4-4l4 4"/><path d="M17 4v16m0 0l4-4m-4 4l-4-4"/></svg>
                                             </div>
                                             <input type="text" name="faq_items[0][q]" value="" class="adm-input" placeholder="Question (e.g. Is this a freehold development?)" style="margin:0; min-height:36px; font-size:13px;">
@@ -961,7 +955,7 @@
 
                                         <!-- FAQ Item 2 (Default) -->
                                         <div class="faq-repeater-row" id="faqCard_1" style="display:grid; grid-template-columns:34px minmax(0, 1fr) minmax(0, 1.5fr) 34px; gap:10px; align-items:center; background:#faf8f5; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px;">
-                                            <div style="display:flex; align-items:center; justify-content:center; width:34px; height:36px; border:1px solid #d1d5db; background:#ffffff; border-radius:6px; color:#1a4731; cursor:grab;" title="Drag to reorder">
+                                            <div style="display:flex; align-items:center; justify-content:center; width:34px; height:36px; border:1px solid #d1d5db; background:#ffffff; border-radius:6px; color:#BFA16A; cursor:grab;" title="Drag to reorder">
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 20V4m0 0L3 8m4-4l4 4"/><path d="M17 4v16m0 0l4-4m-4 4l-4-4"/></svg>
                                             </div>
                                             <input type="text" name="faq_items[1][q]" value="" class="adm-input" placeholder="Question (e.g. What is the payment plan schedule?)" style="margin:0; min-height:36px; font-size:13px;">
@@ -971,7 +965,7 @@
                                     </div>
 
                                     <!-- Add Row Button -->
-                                    <button type="button" onclick="addFaqQuestionItem()" style="padding:6px 14px; font-size:12.5px; font-weight:600; cursor:pointer; border:1px dashed #1a4731; color:#1a4731; background:#faf8f5; border-radius:8px; display:inline-flex; align-items:center; gap:6px; transition:all 0.15s ease;">
+                                    <button type="button" onclick="addFaqQuestionItem()" style="padding:6px 14px; font-size:12.5px; font-weight:600; cursor:pointer; border:1px dashed #BFA16A; color:#BFA16A; background:#faf8f5; border-radius:8px; display:inline-flex; align-items:center; gap:6px; transition:all 0.15s ease;">
                                         + Add Row
                                     </button>
                                 </div>
@@ -1355,11 +1349,11 @@
         if (!card || !badge || !check) return;
 
         if (isSelected) {
-            card.style.borderColor = '#1a4731';
+            card.style.borderColor = '#BFA16A';
             card.style.borderStyle = 'solid';
             card.style.background = '#fffaf4';
             badge.innerText = '✓ Added';
-            badge.style.background = '#1a4731';
+            badge.style.background = '#BFA16A';
             check.style.display = 'inline-block';
         } else {
             card.style.borderColor = '#d1d5db';
@@ -1465,7 +1459,7 @@
                 const hint = document.getElementById('heroFileNameHint');
                 if (hint) {
                     hint.textContent = 'Selected: ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
-                    hint.style.color = '#1a4731';
+                    hint.style.color = '#BFA16A';
                     hint.style.fontWeight = '600';
                 }
             };
@@ -1625,7 +1619,7 @@
         e.dataTransfer.setData('text/plain', e.currentTarget.getAttribute('data-id') || '');
         e.dataTransfer.effectAllowed = 'move';
         e.currentTarget.style.opacity = '0.5';
-        e.currentTarget.style.border = '1.5px dashed #0284c7';
+        e.currentTarget.style.border = '1.5px dashed #BFA16A';
     }
 
     function dragCardEnd(e) {
@@ -1805,7 +1799,7 @@
         row.style.cssText = 'display:grid; grid-template-columns:34px minmax(0, 1fr) minmax(0, 1.5fr) 34px; gap:10px; align-items:center; background:#faf8f5; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px;';
 
         row.innerHTML = `
-            <div style="display:flex; align-items:center; justify-content:center; width:34px; height:36px; border:1px solid #d1d5db; background:#ffffff; border-radius:6px; color:#1a4731; cursor:grab;" title="Drag to reorder">
+            <div style="display:flex; align-items:center; justify-content:center; width:34px; height:36px; border:1px solid #d1d5db; background:#ffffff; border-radius:6px; color:#BFA16A; cursor:grab;" title="Drag to reorder">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 20V4m0 0L3 8m4-4l4 4"/><path d="M17 4v16m0 0l4-4m-4 4l-4-4"/></svg>
             </div>
             <input type="text" name="faq_items[${idx}][q]" value="" class="adm-input" placeholder="Question ${cardNum}" style="margin:0; min-height:36px; font-size:13px;">
