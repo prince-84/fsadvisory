@@ -62,6 +62,29 @@ class CityController extends Controller
         $cleanRawSlug = ltrim(preg_replace('#^city/#', '', ltrim($rawSlug, '/')), '/');
         $slug = Str::slug($cleanRawSlug ?: $name);
 
+        // Check if an active city already exists with the same name or slug
+        $existingCity = City::where('slug', $slug)
+            ->orWhereRaw('LOWER(name) = ?', [strtolower($name)])
+            ->first();
+
+        if ($existingCity) {
+            return back()->withInput()->withErrors([
+                'name' => "City '{$name}' (slug: '{$slug}') already exists. Duplicate cities or URLs are not allowed."
+            ]);
+        }
+
+        // Clean up any unlinked / orphaned page leftover from prior deleted records
+        $orphanedPage = Page::where('slug', $slug)
+            ->whereNotIn('id', function($q) { $q->select('page_id')->from('cities')->whereNotNull('page_id'); })
+            ->whereNotIn('id', function($q) { $q->select('page_id')->from('communities')->whereNotNull('page_id'); })
+            ->whereNotIn('id', function($q) { $q->select('page_id')->from('projects')->whereNotNull('page_id'); })
+            ->first();
+
+        if ($orphanedPage) {
+            $orphanedPage->sections()->delete();
+            $orphanedPage->delete();
+        }
+
         $status = $request->input('status', 'draft');
         if (!in_array($status, ['publish', 'draft', 'sold_out'])) {
             $status = 'draft';
@@ -90,18 +113,10 @@ class CityController extends Controller
             $heroBgImage = $request->input('sections.hero.bg_image');
         }
 
-        // Unique slug for Page
-        $uniqueSlug = $slug;
-        $count = 1;
-        while (Page::where('slug', $uniqueSlug)->exists()) {
-            $uniqueSlug = $slug . '-' . $count;
-            $count++;
-        }
-
-        // 1. Create linked Page
+        // 1. Create linked Page with exact clean slug
         $page = Page::create([
             'title'            => $name,
-            'slug'             => $uniqueSlug,
+            'slug'             => $slug,
             'in_navbar'        => $request->boolean('in_navbar', true),
             'navbar_order'     => ((int) Page::max('navbar_order')) + 1,
             'status'           => $status,
@@ -274,7 +289,7 @@ class CityController extends Controller
         // 4. Create City record
         $city = City::create([
             'name'                 => $name,
-            'slug'                 => $uniqueSlug,
+            'slug'                 => $slug,
             'page_id'              => $page->id,
             'image'                => $heroBgImage,
             'status'               => $status,

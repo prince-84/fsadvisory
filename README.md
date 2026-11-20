@@ -3272,3 +3272,18 @@ php artisan optimize:clear
 - resources/views/partials/hero.blade.php
 - resources/views/partials/page-article.blade.php
 - README.md
+
+
+## Changelog — 2026-11-20 (Part 110: Clean Slug Enforcement & Orphan Page Resolution for Cities & Communities)
+
+### What Changed
+- **City & Community Clean Slug Assurance (`CityController.php` & `CommunityController.php`):**
+  - Removed legacy `while (Page::where('slug', $uniqueSlug)->exists())` loop which was unintentionally appending `-1`, `-2` to new city/community slugs.
+  - Added duplicate validation against active lists: if a city or community already exists with the same name or slug, the CMS returns a clear validation error blocking duplicates.
+  - Added automated cleanup for orphaned/unlinked pages left behind by earlier deletions: if an old unlinked page with that slug exists, it is cleanly recycled so the new city or community receives the exact clean slug (e.g. `/city/lahore`).
+  - Fixed existing city record in database (`id: 21` slug updated from `lahore-1` to `lahore`).
+
+### Files Modified
+- app/Http/Controllers/Admin/CityController.php
+- app/Http/Controllers/Admin/CommunityController.php
+- README.md
