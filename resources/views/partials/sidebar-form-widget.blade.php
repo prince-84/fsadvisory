@@ -74,12 +74,14 @@
             <div class="phoneUnifiedContainer" style="margin-bottom: 0; height: 38px !important; background: #fff !important; border: 1px solid #dcdcdc !important; border-radius: 6px !important; display: flex; align-items: center; box-sizing: border-box; width: 100%; max-width: 100%;">
                 <div class="countryTriggerWrapper" style="position: relative; height: 100%;">
                     <button type="button" class="countryTriggerBtn" id="sidebarCountryBtn" aria-label="Country selector" style="height: 100%;">
-                        <span class="flagSlot" id="sidebarFlagSlot"></span>
+                        <span class="flagSlot" id="sidebarFlagSlot">
+                            <img src="https://flagcdn.com/w40/pk.png" srcset="https://flagcdn.com/w80/pk.png 2x" width="22" height="15" alt="Pakistan" class="flagImgUniversal" style="border-radius:2px;object-fit:cover;display:inline-block;vertical-align:middle;box-shadow:0 1px 2px rgba(0,0,0,0.18);flex-shrink:0;">
+                        </span>
                         <span class="caretDown"></span>
                     </button>
                     <ul class="countryDropdownMenu" id="sidebarCountryDropdown" style="display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #ddd; max-height: 240px; overflow-y: auto; z-index: 1000; width: 280px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); padding: 0; margin: 4px 0 0 0; list-style: none;"></ul>
                 </div>
-                <input type="tel" name="phone" id="saimaPhoneInput" class="phoneInputField" value="+971 " required style="flex: 1; min-width: 0; height: 100%; border: none; padding: 0 10px; font-size: 13.5px; outline: none; background: transparent; box-sizing: border-box;">
+                <input type="tel" name="phone" id="saimaPhoneInput" class="phoneInputField" value="+92 " placeholder="+92 300 1234567" required style="flex: 1; min-width: 0; height: 100%; border: none; padding: 0 10px; font-size: 13.5px; outline: none; background: transparent; box-sizing: border-box;">
             </div>
 
             <input type="email" name="email" class="saimaInput" placeholder="Email" required style="width: 100%; height: 38px; padding: 0 12px; border: 1px solid #dcdcdc; border-radius: 6px; font-size: 13.5px; color: #333; box-sizing: border-box; outline: none;">
@@ -101,7 +103,9 @@
         $sbLatestDevs = collect();
         $sbLatestProjects = collect();
         try {
-            $sbLatestAreas = \App\Models\Community::where('is_active', true)->orderBy('id', 'desc')->take(10)->get()
+            $sbLatestAreas = \App\Models\Community::where('is_active', true)
+                ->where(function ($q) { $q->whereNull('status')->orWhere('status', '!=', 'draft'); })
+                ->orderBy('id', 'desc')->take(10)->get()
                 ->map(fn($c) => ['name' => $c->name, 'url' => $c->url]);
             $sbLatestDevs = \App\Models\Developer::where('is_active', true)
                 ->where(function ($q) { $q->whereNull('status')->orWhere('status', '!=', 'draft'); })

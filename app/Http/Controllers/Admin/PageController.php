@@ -34,8 +34,8 @@ class PageController extends Controller
         $generalCount = $pages->reject(fn($p) => in_array($p->slug, $excludedSlugs, true) || in_array($p->id, $excludedIds, true))->count();
         $projectsCount = $totalPagesCount - $generalCount;
         $globalSections = PageBlueprintService::getGlobalSections();
-        $projectPages = Page::whereIn('slug', $projectSlugs)->orderBy('title', 'asc')->get(['id', 'title', 'slug']);
-        $allProjects = \App\Models\Project::with('page')->orderBy('order', 'asc')->get();
+        $projectPages = Page::whereIn('slug', $projectSlugs)->where('status', '!=', 'draft')->where('is_published', true)->orderBy('title', 'asc')->get(['id', 'title', 'slug']);
+        $allProjects = \App\Models\Project::with('page')->where('is_active', true)->where(fn($q) => $q->whereNull('status')->orWhere('status', '!=', 'draft'))->whereDoesntHave('page', fn($q) => $q->where('status', 'draft')->orWhere('is_published', false))->orderBy('order', 'asc')->get();
 
         return view('admin.pages.index', compact('pages', 'globalSections', 'generalCount', 'projectsCount', 'totalPagesCount', 'projectPages', 'projectSlugs', 'projectPageIds', 'cityPageIds', 'citySlugs', 'commPageIds', 'commSlugs', 'allProjects'));
     }
@@ -118,7 +118,7 @@ class PageController extends Controller
         if (!in_array($status, ['publish', 'draft', 'sold_out'])) {
             $status = 'draft';
         }
-        $isPublished = ($status !== 'draft');
+        $isPublished = ($status !== 'draft') && $request->boolean('is_published', false);
 
         // Create page
         $page = Page::create([
@@ -127,7 +127,7 @@ class PageController extends Controller
             'in_navbar'        => $request->boolean('in_navbar', false),
             'navbar_order'     => ((int) Page::max('navbar_order')) + 1,
             'status'           => $status,
-            'is_published'     => $request->boolean('is_published', $isPublished),
+            'is_published'     => $isPublished,
             'meta_title'       => $validated['title'] . ' | Saima Island Abu Dhabi',
             'meta_description' => 'Explore ' . $validated['title'] . ' on Saima Island, Abu Dhabi. Discover freehold residences, pricing, master plan, and world-class amenities.',
             'meta_keywords'    => $validated['title'] . ', Saima Island, Abu Dhabi villas',
@@ -507,10 +507,19 @@ class PageController extends Controller
         }
 
         $projectSlugs = Page::projectSlugs();
-        $projectPages = Page::whereIn('slug', $projectSlugs)->orderBy('title', 'asc')->get(['id', 'title', 'slug']);
+        $projectPages = Page::whereIn('slug', $projectSlugs)->where('status', '!=', 'draft')->where('is_published', true)->orderBy('title', 'asc')->get(['id', 'title', 'slug']);
         $linkedProject = \App\Models\Project::where('page_id', $page->id)->orWhere('slug', $page->slug)->first();
 
-        $allProjects = \App\Models\Project::with('page')->orderBy('order', 'asc')->get();
+        $allProjects = \App\Models\Project::with('page')
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->whereDoesntHave('page', function ($q) {
+                $q->where('status', 'draft')->orWhere('is_published', false);
+            })
+            ->orderBy('order', 'asc')
+            ->get();
 
         $commSection = $page->sections->firstWhere('section_key', 'communities') 
                     ?? $page->sections->firstWhere('section_key', 'projects');
@@ -531,8 +540,25 @@ class PageController extends Controller
             $selectedProjectIds = [];
         }
 
-        $communities = \App\Models\Community::with('city')->orderBy('order', 'asc')->orderBy('name', 'asc')->get();
-        $developers = \App\Models\Developer::orderBy('order', 'asc')->orderBy('name', 'asc')->get();
+        $communities = \App\Models\Community::with('city')
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->whereDoesntHave('page', function ($q) {
+                $q->where('status', 'draft')->orWhere('is_published', false);
+            })
+            ->orderBy('order', 'asc')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $developers = \App\Models\Developer::where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->orderBy('order', 'asc')
+            ->orderBy('name', 'asc')
+            ->get();
 
         return view('admin.pages.edit', compact('page', 'projectPages', 'linkedProject', 'projectSlugs', 'allProjects', 'selectedProjectIds', 'communities', 'developers'));
     }

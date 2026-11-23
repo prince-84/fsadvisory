@@ -3287,3 +3287,327 @@ php artisan optimize:clear
 - app/Http/Controllers/Admin/CityController.php
 - app/Http/Controllers/Admin/CommunityController.php
 - README.md
+
+
+## Changelog — 2026-11-23 (Part 111: Project Detail Page Summary Heading H1 to H2)
+
+### What Changed
+- **Project Detail Page Heading Semantic Update (`page-about.blade.php`):**
+  - Updated auto project title below the hero banner from `<h1>` to `<h2>` (`<h2 class="fsProjectSummaryTitle">`), resolving SEO duplicate H1 tags while retaining the exact same visual styling and responsive layout.
+
+### Files Modified
+- resources/views/partials/page-about.blade.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 112: Developer Detail Page Footer Dynamic Projects Filtering)
+
+### What Changed
+- **Developer Detail Page Footer Projects Integration (`footer.blade.php`):**
+  - Updated the contextual footer resolution on developer detail pages (`/developer/{slug}`) to query and display the latest 10 active projects linked to that developer (via `developer_id`, brand keyword, developer name match, or assigned featured projects).
+  - The middle footer column header now dynamically reads `[Developer] Projects` (e.g. "Saima Projects", "Al Ghafour Projects"), with each item directly linking to its respective `/project/{slug}` detail page.
+
+### Files Modified
+- resources/views/partials/footer.blade.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 113: Area / Community Detail Page Footer Dropdown Projects Filtering)
+
+### What Changed
+- **Area / Community Detail Page Footer Contextual Projects (`footer.blade.php`):**
+  - Updated the contextual footer resolution on Area / Community detail pages (`/area/{slug}`).
+  - Instead of listing other areas, the footer now specifically queries and displays only the projects that were assigned to that community via the CMS dropdown (`community_id`), or selected in featured projects.
+  - The column header now reads `[Area Name] Projects` (e.g. `Gulberg Projects`), with each link opening the corresponding `/project/{slug}` detail page.
+
+### Files Modified
+- resources/views/partials/footer.blade.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 114: City Detail Page Footer Dynamic Communities Filtering)
+
+### What Changed
+- **City Detail Page Footer Communities Integration (`footer.blade.php`):**
+  - Updated the contextual footer resolution on City detail pages (`/city/{slug}`).
+  - The footer now dynamically displays only the communities / areas that were assigned to that city via the CMS dropdown (`communities.city_id == $currCity->id`), or selected in the city's featured communities.
+  - The column header now reads `[City Name] Areas` (e.g. `Lahore Areas`, `Karachi Areas`), with each item directly linking to its `/area/{slug}` detail page.
+
+### Files Modified
+- resources/views/partials/footer.blade.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 115: Default Draft Status on Creation & Public 404 Protection for 5 Entities)
+
+### What Changed
+- **Default Draft Status for All 5 Page Types on Creation**:
+  - **Dynamic Pages (`Page`)**: Form status defaults to `draft`. `PageController::store` strictly enforces `status = 'draft'` and `is_published = false` unless explicitly changed.
+  - **Project Detail Pages (`Project`)**: In `resources/views/admin/projects/index.blade.php`, the create property status dropdown is now set to `draft` by default (styled in draft badge styling), and the `is_published` checkbox default has been unchecked. `ProjectController::store` sets both the project card and linked page to `status = 'draft'`, `is_active = false`, and `is_published = false`.
+  - **City Detail Pages (`City`)**: Create form dropdown defaults to `draft`. `CityController::store` enforces `status = 'draft'`, `is_active = false`, and linked page `is_published = false`.
+  - **Area / Community Detail Pages (`Community`)**: Create form dropdown defaults to `draft`. `CommunityController::store` enforces `status = 'draft'`, `is_active = false`, and linked page `is_published = false`.
+  - **Developer Detail Pages (`Developer`)**: Create form dropdown defaults to `draft`. `DeveloperController::store` enforces `status = 'draft'` and `is_active = false`.
+- **Strict Public UI 404 Protection (`routes/web.php`)**:
+  - Enforced strict `abort(404)` on public routes for all 5 entities whenever `status === 'draft'` or inactive (`!is_active` / `!is_published`):
+    - `/{slug}` (Dynamic custom pages)
+    - `/project/{slug}` (Project detail pages)
+    - `/city/{slug}` (City detail pages)
+    - `/area/{slug}` (Area / Community detail pages)
+    - `/developer/{slug}` (Developer detail pages)
+  - Excluded draft entities from all public listings, footer links, navigation dropdowns, and sidebar widgets.
+
+### Files Modified
+- app/Http/Controllers/Admin/PageController.php
+- app/Http/Controllers/Admin/ProjectController.php
+- resources/views/admin/projects/index.blade.php
+- resources/views/partials/footer.blade.php
+- resources/views/partials/sidebar-form-widget.blade.php
+- routes/web.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 114: City Detail Page Footer Dynamic Communities Filtering)
+
+### What Changed
+- **City Detail Page Footer Communities Integration (`footer.blade.php`):**
+  - Updated the contextual footer resolution on City detail pages (`/city/{slug}`).
+  - The footer now dynamically displays only the communities / areas that were assigned to that city via the CMS dropdown (`communities.city_id == $currCity->id`), or selected in the city's featured communities.
+  - The column header now reads `[City Name] Areas` (e.g. `Lahore Areas`, `Karachi Areas`), with each item directly linking to its `/area/{slug}` detail page.
+
+### Files Modified
+- resources/views/partials/footer.blade.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 115: Default Draft Status on Creation & Public 404 Protection for 5 Entities)
+
+### What Changed
+- **Default Draft Status for All 5 Page Types on Creation**:
+  - **Dynamic Pages (`Page`)**: Form status defaults to `draft`. `PageController::store` strictly enforces `status = 'draft'` and `is_published = false` unless explicitly changed.
+  - **Project Detail Pages (`Project`)**: In `resources/views/admin/projects/index.blade.php`, the create property status dropdown is now set to `draft` by default (styled in draft badge styling), and the `is_published` checkbox default has been unchecked. `ProjectController::store` sets both the project card and linked page to `status = 'draft'`, `is_active = false`, and `is_published = false`.
+  - **City Detail Pages (`City`)**: Create form dropdown defaults to `draft`. `CityController::store` enforces `status = 'draft'`, `is_active = false`, and linked page `is_published = false`.
+  - **Area / Community Detail Pages (`Community`)**: Create form dropdown defaults to `draft`. `CommunityController::store` enforces `status = 'draft'`, `is_active = false`, and linked page `is_published = false`.
+  - **Developer Detail Pages (`Developer`)**: Create form dropdown defaults to `draft`. `DeveloperController::store` enforces `status = 'draft'` and `is_active = false`.
+- **Strict Public UI 404 Protection (`routes/web.php`)**:
+  - Enforced strict `abort(404)` on public routes for all 5 entities whenever `status === 'draft'` or inactive (`!is_active` / `!is_published`):
+    - `/{slug}` (Dynamic custom pages)
+    - `/project/{slug}` (Project detail pages)
+    - `/city/{slug}` (City detail pages)
+    - `/area/{slug}` (Area / Community detail pages)
+    - `/developer/{slug}` (Developer detail pages)
+  - Excluded draft entities from all public listings, footer links, navigation dropdowns, and sidebar widgets.
+
+### Files Modified
+- app/Http/Controllers/Admin/PageController.php
+- app/Http/Controllers/Admin/ProjectController.php
+- resources/views/admin/projects/index.blade.php
+- resources/views/partials/footer.blade.php
+- resources/views/partials/sidebar-form-widget.blade.php
+- routes/web.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 116: Mobile Navbar Horizontal Scroll Fix, Desktop Drawer Isolation, & Blog Default Draft Status)
+
+### What Changed
+- **Mobile Navbar Horizontal Scroll Removal & Layout Adjustment (`header.blade.php`, `saima.css`)**:
+  - Replaced off-screen `right: -100%` positioning on `.mobileDrawer` with GPU-accelerated `transform: translateX(105%)`, `right: 0`, and `visibility: hidden; pointer-events: none;`.
+  - Added strict `overflow-x: hidden !important;` and `max-width: 100% !important;` to `html, body` and `overflow-x: clip` to `.header`, eliminating the unwanted horizontal scrollbar under the navbar on mobile devices.
+- **Desktop Mobile Drawer Display Fix (`header.blade.php`, `saima.css`)**:
+  - Added `@media (min-width: 1025px)` rules enforcing `display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;` for `.mobileDrawer`, `#mobileDrawer`, `.mobileDrawerOverlay`, and `#mobileBackdrop`.
+  - Added a `window.addEventListener('resize')` listener in `header.blade.php` to immediately close and reset the mobile drawer whenever the viewport is resized to desktop (such as when DevTools inspect is closed).
+- **Default Draft Status for New Blogs (`admin/blogs/index.blade.php`)**:
+  - Updated the Blog creation form top status badge and hidden input default from `publish` to `draft` (`status = 'draft'`), displaying the amber `#f59e0b` Draft pill by default.
+  - New blogs are saved as draft by default, excluded from `/blogs` list, and protected with strict 404 until manually published.
+
+### Files Modified
+- resources/views/admin/blogs/index.blade.php
+- resources/views/partials/header.blade.php
+- public/css/saima.css
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 117: Mobile Drawer Close Button Alignment & Dropdown Chevrons Crisp White Visibility)
+
+### What Changed
+- **Mobile Drawer Close Button Left Alignment (`header.blade.php`, `saima.css`)**:
+  - Added `margin-right: 10px !important;`, `min-width: 36px;`, and `flex-shrink: 0;` to `#mobileDrawerClose`, pulling the circular close button slightly inward to the left so it is completely visible, well-padded, and never clipped or cut off by the drawer edge.
+- **Mobile Dropdown Chevron Icons Crisp White Color (`header.blade.php`, `saima.css`)**:
+  - Set explicit `stroke: #ffffff !important;` and `color: #ffffff !important;` on `#mobileChevronIcon`, `#mobileCommChevronIcon`, `#mobileDevChevronIcon`, and their child SVG paths.
+  - Increased chevron icon dimensions to 18x18px with `stroke-width="2.5"`, ensuring high-contrast, crystal-clear visibility against the dark navy mobile navigation background.
+
+### Files Modified
+- resources/views/partials/header.blade.php
+- public/css/saima.css
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 118: Universal Phone Flag Selector Pakistan Default & Reliable Country Detection)
+
+### What Changed
+- **Resolved US Flag Override Across Global Website**:
+  - Investigated the root cause of the American flag (🇺🇸 `+1`) automatically overwriting phone inputs on the website: a legacy background fetch (`checkIpCountryAsync`) in `universal-phone-selector.js` was querying an external IP API (`api.country.is`) which, when the user visited with an active VPN or proxy set to US, returned `country: 'US'` and forcefully overrode all phone inputs across the website with the US flag.
+  - Purged obsolete sessionStorage/localStorage cache key `hudayriyat_user_country` and migrated to `fs_advisory_active_country`.
+  - Added device timezone resolution via `Intl.DateTimeFormat().resolvedOptions().timeZone` with first-priority mapping for Pakistan (`Asia/Karachi`, `Asia/Islamabad`, etc. -> `pk`).
+  - Guarded against proxy/VPN overwriting: when the user's device timezone matches Pakistan or another definitive country, the background IP check is strictly prevented from overriding it with a VPN IP.
+  - Default fallback for `getCountryByCode` and `detectInitialCountry` changed from `ae` to `pk` (Pakistan, 🇵🇰 `+92`).
+  - Added `sessionStorage.setItem('fs_country_manual', code)` whenever the user manually selects any country from the dropdown, ensuring their explicit choice is never overridden.
+- **Server-Side Blade Templates Updated to Pakistan (`+92`)**:
+  - Replaced hardcoded UAE SVG flags and `value="+971 "` across all blade form views with the crisp Pakistan flag image and `value="+92 "` (with placeholder `+92 300 1234567`):
+    - `resources/views/partials/hero.blade.php` (Homepage hero callback form)
+    - `resources/views/partials/contact.blade.php` (Contact form section)
+    - `resources/views/partials/project-hero.blade.php` (Project detail modal request form)
+    - `resources/views/partials/sidebar-form-widget.blade.php` (Sidebar appointment form)
+    - `resources/views/partials/page-article.blade.php` (Article sidebar appointment form)
+    - `resources/views/contact-us.blade.php` (Contact Us page form)
+    - `resources/views/about-us.blade.php` (About Us page form)
+    - `resources/views/layouts/app.blade.php` (Global 'List Your Property' modal form)
+
+### Files Modified
+- public/js/universal-phone-selector.js
+- resources/views/partials/hero.blade.php
+- resources/views/partials/contact.blade.php
+- resources/views/partials/project-hero.blade.php
+- resources/views/partials/sidebar-form-widget.blade.php
+- resources/views/partials/page-article.blade.php
+- resources/views/contact-us.blade.php
+- resources/views/about-us.blade.php
+- resources/views/layouts/app.blade.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 119: Project Detail Dummy Developer/Community Removal & Automatic Deletion Hook)
+
+### What Changed
+- **Removal of Dummy Developer / Community Placeholder on Project Detail Page**:
+  - In `app/Models/Project.php`, updated `getDeveloperAttribute()`: removed legacy fallback `'Modon Properties'`. If no developer is linked or if dummy text is found, it cleanly returns `null`.
+  - In `resources/views/partials/page-about.blade.php`, updated Developer and Community resolution:
+    - If no Developer is chosen in CMS, `$projectDevName` is empty and developer metadata is completely hidden.
+    - If no Community is chosen in CMS, `$projectCommName` is empty and community metadata is completely hidden.
+    - Wrapped the metadata row (`.fsProjectSummaryMeta`) in `@if(!empty($projectDevName) || !empty($projectCommName))`. If neither is selected, the line is omitted entirely from the UI with zero dummy text.
+- **Model Deletion Hooks for Developer & Community (`Developer.php`, `Community.php`)**:
+  - Added Eloquent `booted()` deleting lifecycle hooks:
+    - When a `Developer` is deleted, any project linked via `developer_id` or `developer` name has both fields automatically cleared (`null`).
+    - When a `Community` is deleted, any project linked via `community_id` has both `community_id` and `location` automatically cleared (`null`).
+- **Database Cleanup**:
+  - Ran migration script updating all 13 legacy project records where dummy `developer = 'Modon Properties'` was saved to `null`.
+
+### Files Modified
+- app/Models/Project.php
+- app/Models/Developer.php
+- app/Models/Community.php
+- resources/views/partials/page-about.blade.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 120: Global Mobile Responsive Sticky Bottom Bar with Register Now Modal & Page-Aware WhatsApp)
+
+### What Changed
+- **Global Sticky Bottom Bar on Mobile Devices (`layouts/app.blade.php`)**:
+  - Added `#fsMobileStickyBottomBar` fixed at screen bottom (`position: fixed; bottom: 0; left: 0; right: 0; z-index: 99990;`).
+  - Added strict desktop isolation: on laptops and desktops, `#fsMobileStickyBottomBar` is completely hidden with `display: none !important;`.
+  - On mobile responsive (`@media (max-width: 768px)`), displays two full-width side-by-side action buttons:
+    1. **REGISTER NOW**: Luxury bronze `#BFA16A` button with user registration icon.
+    2. **WHATSAPP**: Vibrant green `#25D366` button with official WhatsApp SVG icon.
+  - Added mobile body bottom padding (`padding-bottom: 64px !important;`) and adjusted `#scrollTopBtn` (`bottom: 74px !important;`) to prevent sticky bar overlap.
+- **Dedicated Register Modal (`#fsMobileStickyRegisterModal`)**:
+  - Clicking "REGISTER NOW" opens an elegant modal with Full Name, Email Address, and Phone Number input with the Universal Flag Selector (defaulting to Pakistan 🇵🇰 `+92`).
+  - Connected to `universal-phone-selector.js` via `mobileStickyCountryBtn` / `mobileStickyCountryDropdown`.
+  - AJAX submit handler sends lead to `/api/leads` with source `'Mobile Sticky Bottom Bar'`, page URL, and displays success message.
+- **Dynamic Page-Aware WhatsApp Button**:
+  - Clicking "WHATSAPP" executes `handleMobileStickyWhatsApp(event)`, dynamically resolving the current page's title and live URL (`window.location.href`).
+  - Opens WhatsApp (`wa.me/923322495575`) with a pre-filled message: `"Hello FS Advisory, I am interested in [Page Title]. Please share details. [Page URL]"`.
+
+### Files Modified
+- resources/views/layouts/app.blade.php
+- public/js/universal-phone-selector.js
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 121: Phone Flag Pakistan Default Lock, Mobile Sticky Modal Isolation, & Draft Dropdown Exclusion)
+
+### What Changed
+- **Issue 1 — Pakistan Default Flag Lock (`public/js/universal-phone-selector.js`)**:
+  - Disabled external IP geolocation override (`checkIpCountryAsync()`) and removed `en-US` browser language / US timezone fallbacks so VPN/proxy sessions cannot switch the phone selector to USA (`+1`).
+  - Purged stale `sessionStorage` / `localStorage` keys (`hudayriyat_user_country`, `fs_advisory_active_country`, and stale `'us'` manual values) and defaulted strictly to Pakistan (🇵🇰 `+92`).
+- **Issues 2 & 3 — Mobile Sticky Modal Strict Closed Default & Desktop/Inspect Isolation (`resources/views/partials/mobile-sticky-bar.blade.php`, `resources/views/layouts/app.blade.php`, `dynamic-page.blade.php`, `areas/show.blade.php`, `cities/show.blade.php`, `communities/show.blade.php`, `developers/show.blade.php`)**:
+  - Extracted the mobile sticky bottom bar and Register modal into a reusable partial `resources/views/partials/mobile-sticky-bar.blade.php` included globally across all page layouts.
+  - Removed conflicting CSS `display: flex !important` default and JS inline `!important` display overrides; `#fsMobileStickyRegisterModal` is strictly hidden by default (`display: none !important`) and opens ONLY when clicking "REGISTER NOW" at `<= 768px`.
+  - Added both `@media (min-width: 769px)` CSS force-hide and `resize` / `matchMedia` listeners to automatically close the modal when DevTools inspect is closed or viewport expands to desktop.
+- **Issue 4 — Draft Pages Excluded from All Dropdowns (`app/helpers.php`, `Admin/ProjectController.php`, `Admin/PageController.php`, `Admin/CommunityController.php`, `Admin/CityController.php`)**:
+  - Updated `get_navbar_items()` and `get_navbar_developers()` in `app/helpers.php` to exclude any Project, Developer, or linked/matching Page with `status = 'draft'` or `is_published = false`.
+  - Updated Admin CMS dropdown queries (`$pages`, `$projectPages`, `$allProjects`, `$communities`, `$developers`, `$cities`) so draft items do not appear in selection dropdowns until published.
+
+### Files Modified
+- public/js/universal-phone-selector.js
+- resources/views/partials/mobile-sticky-bar.blade.php
+- resources/views/layouts/app.blade.php
+- resources/views/dynamic-page.blade.php
+- resources/views/areas/show.blade.php
+- resources/views/cities/show.blade.php
+- resources/views/communities/show.blade.php
+- resources/views/developers/show.blade.php
+- app/helpers.php
+- app/Http/Controllers/Admin/ProjectController.php
+- app/Http/Controllers/Admin/PageController.php
+- app/Http/Controllers/Admin/CommunityController.php
+- app/Http/Controllers/Admin/CityController.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 122: Complete Organization JSON-LD Schema Across All Page Headers)
+
+### What Changed
+- **Enriched Organization JSON-LD Schema (`app/helpers.php` — `render_header_schemas()`)**:
+  - Upgraded the header `Organization` JSON-LD schema with complete Schema.org fields: `@context`, `@type: Organization`, `@id`, `name` (`FS Real Estate Advisory`), `alternateName` (`FS Advisory`), canonical `url`, `logo` (`ImageObject`), `image`, `description`, `telephone` (`+92-332-2495575`), `email` (`info@fsadvisory.pk`), `address` (`PostalAddress` — Karachi, PK), `areaServed` (`Pakistan`), `contactPoint` (`customer service`, English/Urdu), and dynamic `sameAs` social URLs from CMS Footer settings.
+  - Added optional `?array $customFaqs` support in `render_header_schemas()` for entity detail pages.
+- **Sitewide Header Schema Coverage**:
+  - Verified `layouts/app.blade.php` and `dynamic-page.blade.php` render `render_header_schemas()` in `<head>`.
+  - Added `{!! render_header_schemas(...) !!}` into `<head>` of standalone detail templates (`areas/show.blade.php`, `cities/show.blade.php`, `communities/show.blade.php`, `developers/show.blade.php`) so every page across the website outputs valid `Organization` JSON-LD schema in `<head>`.
+
+### Files Modified
+- app/helpers.php
+- resources/views/areas/show.blade.php
+- resources/views/cities/show.blade.php
+- resources/views/communities/show.blade.php
+- resources/views/developers/show.blade.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 123: Exact RealEstateAgent Organization JSON-LD Schema in Sitewide Header)
+
+### What Changed
+- **Exact `RealEstateAgent` JSON-LD Schema (`app/helpers.php` — `render_header_schemas()`)**:
+  - Updated the `RealEstateAgent` JSON-LD block rendered in `<head>` across all pages to match the exact requested specification:
+    - `@id`: `https://fsadvisory.pk/#real-estate-agent`
+    - `name`: `FS Real Estate and Advisory`
+    - `url`: `https://fsadvisory.pk/`
+    - `telephone`: `+923322495575`
+    - `description`: `FS Real Estate and Advisory provides residential and commercial real estate advisory services, property buying, selling, renting, and investment guidance in Karachi, Pakistan.`
+    - `areaServed`: `City: Karachi` & `Country: Pakistan`.
+
+### Files Modified
+- app/helpers.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 124: Mobile Sticky WhatsApp Button Production Domain URL)
+
+### What Changed
+- **Production URL in Mobile Sticky WhatsApp Message (`resources/views/partials/mobile-sticky-bar.blade.php`)**:
+  - Updated `handleMobileStickyWhatsApp()` to always construct the message link using `https://fsadvisory.pk` + current pathname instead of `window.location.href` (replacing local `http://127.0.0.1:8000` with `https://fsadvisory.pk`).
+
+### Files Modified
+- resources/views/partials/mobile-sticky-bar.blade.php
+- README.md
+
+
+## Changelog — 2026-11-23 (Part 125: Removed Extra Organization Schema Fields, Exact RealEstateAgent JSON-LD Only)
+
+### What Changed
+- **Cleaned Header Schema (`app/helpers.php` — `render_header_schemas()`)**:
+  - Removed the separate `Organization` block with extra properties (`alternateName`, `logo`, `image`, `email`, `address`, `contactPoint`, `sameAs`) so `<head>` outputs ONLY the exact requested `RealEstateAgent` JSON-LD block (plus dynamic `FAQPage` schema).
+
+### Files Modified
+- app/helpers.php
+- README.md

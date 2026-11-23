@@ -23,18 +23,21 @@
     $projectTitle = $projectObj?->title ?: ($page?->title ?: 'Project');
 
     // Developer resolution from CMS
-    $projectDev = $projectObj?->developerRel ?: ($projectObj?->developer_id ? \App\Models\Developer::find($projectObj->developer_id) : ($projectObj?->developer ? \App\Models\Developer::where('name', $projectObj->developer)->first() : null));
-    $projectDevName = $projectDev?->name ?: ($projectObj?->developer ?: '');
+    $projectDev = null;
+    if ($projectObj?->developer_id) {
+        $projectDev = \App\Models\Developer::find($projectObj->developer_id);
+    } elseif (!empty($projectObj?->developer) && trim($projectObj->developer) !== 'Modon Properties') {
+        $projectDev = \App\Models\Developer::where('name', $projectObj->developer)->first();
+    }
+    $projectDevName = $projectDev?->name ?: (!empty($projectObj?->developer) && trim($projectObj->developer) !== 'Modon Properties' ? $projectObj->developer : '');
     $projectDevUrl = $projectDev ? url('/developer/' . $projectDev->slug) : null;
 
     // Community / Neighbourhood resolution from CMS
-    $projectComm = $projectObj?->community ?: ($projectObj?->community_id ? \App\Models\Community::with('city')->find($projectObj->community_id) : null);
-    if (!$projectComm && !empty($projectObj?->location)) {
-        $rawLoc = trim($projectObj->location);
-        $commNameCandidate = trim(explode(',', $rawLoc)[0]);
-        $projectComm = \App\Models\Community::with('city')->where('name', $rawLoc)->orWhere('name', $commNameCandidate)->first();
+    $projectComm = null;
+    if ($projectObj?->community_id) {
+        $projectComm = \App\Models\Community::with('city')->find($projectObj->community_id);
     }
-    $projectCommName = $projectComm ? ($projectComm->name . ($projectComm->city ? ', ' . $projectComm->city->name : '')) : ($projectObj?->location ?: '');
+    $projectCommName = $projectComm ? ($projectComm->name . ($projectComm->city ? ', ' . $projectComm->city->name : '')) : '';
     $projectCommUrl = $projectComm?->url ?: null;
 
     $hasContent = !empty(trim(strip_tags((string)$aboutDesc)));
@@ -178,10 +181,11 @@
     @if(($part ?? 'all') !== 'body')
     <div id="alt-services" class="fsProjectSummaryWrapper" style="margin-bottom: 0 !important;">
         <!-- 1. Project Title Summary (Image 2 Style) -->
-        <h1 class="fsProjectSummaryTitle">
+        <h2 class="fsProjectSummaryTitle">
             {{ $projectTitle }} Summary
-        </h1>
+        </h2>
 
+        @if(!empty($projectDevName) || !empty($projectCommName))
         <!-- 2. Developer & Community Subtitle Line (Image 2 Style) -->
         <div class="fsProjectSummaryMeta">
             @if(!empty($projectDevName))
@@ -221,6 +225,7 @@
                 </span>
             @endif
         </div>
+        @endif
 
         </div>
     @endif

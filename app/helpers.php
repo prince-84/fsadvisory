@@ -279,6 +279,17 @@ if (! function_exists('get_navbar_items')) {
                         $q->where('status', 'draft')->orWhere('is_published', false);
                     });
 
+                // Slugs of any Page in draft or unpublished status
+                $draftPageSlugs = [];
+                try {
+                    $draftPageSlugs = \App\Models\Page::where('status', 'draft')
+                        ->orWhere('is_published', false)
+                        ->pluck('slug')
+                        ->map(fn($s) => trim(preg_replace('#^(project|city|area|developer)/#', '', trim($s, '/')), '/'))
+                        ->filter()
+                        ->all();
+                } catch (\Throwable $e) {}
+
                 if (\Illuminate\Support\Facades\Schema::hasColumn('projects', $column)) {
                     if ($type === 'commercial') {
                         $query->where($column, true);
@@ -291,13 +302,14 @@ if (! function_exists('get_navbar_items')) {
                     return collect();
                 }
 
-                // Latest 5 projects (ordered by id desc so newly added project always appears at the top)
+                // Latest 10 active non-draft projects
                 $dbProjects = $query->orderBy('id', 'desc')->take(10)->get();
 
                 foreach ($dbProjects as $dp) {
                     $pSlug = trim($dp->slug ?: ($dp->page->slug ?? ''), '/');
                     $cleanSlug = ltrim(preg_replace('#^project/#', '', $pSlug), '/');
                     if (empty($cleanSlug)) continue;
+                    if (in_array($cleanSlug, $draftPageSlugs, true)) continue;
                     $url = '/project/' . $cleanSlug;
                     $items->push((object)[
                         'id' => $dp->id,
@@ -370,6 +382,16 @@ if (! function_exists('get_navbar_developers')) {
 
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('developers')) {
+                $draftDevSlugs = [];
+                try {
+                    $draftDevSlugs = \App\Models\Page::where('status', 'draft')
+                        ->orWhere('is_published', false)
+                        ->pluck('slug')
+                        ->map(fn($s) => trim(preg_replace('#^developer/#', '', trim($s, '/')), '/'))
+                        ->filter()
+                        ->all();
+                } catch (\Throwable $e) {}
+
                 $query = \App\Models\Developer::where('is_active', true)
                     ->where(function ($q) {
                         $q->whereNull('status')->orWhere('status', '!=', 'draft');
@@ -383,6 +405,7 @@ if (! function_exists('get_navbar_developers')) {
                     $dSlug = trim($dev->slug, '/');
                     $cleanSlug = ltrim(preg_replace('#^developer/#', '', $dSlug), '/');
                     if (empty($cleanSlug)) continue;
+                    if (in_array($cleanSlug, $draftDevSlugs, true)) continue;
                     $url = '/developer/' . $cleanSlug;
                     $items->push((object)[
                         'id' => $dev->id,
@@ -592,27 +615,48 @@ if (! function_exists('canonical_url')) {
 if (! function_exists('render_header_schemas')) {
     /**
      * Render exact JSON-LD schemas in document header (<head>) for:
-     * 1. Organization
+     * 1. Organization / RealEstateAgent (exact requested JSON-LD schema)
      * 2. FAQPage (100% dynamic for complete page)
-     * 3. RealEstateAgent
      */
-    function render_header_schemas(?\App\Models\Page $page = null, ?\App\Models\Blog $blog = null): string
+    function render_header_schemas(?\App\Models\Page $page = null, ?\App\Models\Blog $blog = null, ?array $customFaqs = null): string
     {
         try {
-            $siteUrl = 'https://fsadvisory.pk/';
-            $siteName = 'FS Real Estate Advisory';
-
-            // 1. Organization Schema
+            // 1. Organization / RealEstateAgent Schema (Exact Requested Structure)
             $orgSchema = [
                 '@context' => 'https://schema.org',
-                '@type' => 'Organization',
-                'name' => $siteName,
-                'url' => $siteUrl,
+                '@type' => 'RealEstateAgent',
+                '@id' => 'https://fsadvisory.pk/#real-estate-agent',
+                'name' => 'FS Real Estate and Advisory',
+                'url' => 'https://fsadvisory.pk/',
+                'telephone' => '+923322495575',
+                'description' => 'FS Real Estate and Advisory provides residential and commercial real estate advisory services, property buying, selling, renting, and investment guidance in Karachi, Pakistan.',
+                'areaServed' => [
+                    [
+                        '@type' => 'City',
+                        'name' => 'Karachi',
+                    ],
+                    [
+                        '@type' => 'Country',
+                        'name' => 'Pakistan',
+                    ],
+                ],
             ];
 
             // 2. Dynamic FAQPage Schema
             $faqSchemaString = '';
-            $faqs = get_page_faqs($page, $blog);
+            $faqs = [];
+            if (is_array($customFaqs) && !empty($customFaqs)) {
+                foreach ($customFaqs as $f) {
+                    $q = trim((string) ($f['question'] ?? ($f['q'] ?? '')));
+                    $a = trim((string) ($f['answer'] ?? ($f['a'] ?? '')));
+                    if ($q !== '' && $a !== '') {
+                        $faqs[] = ['question' => $q, 'answer' => strip_tags($a)];
+                    }
+                }
+            }
+            if (empty($faqs)) {
+                $faqs = get_page_faqs($page, $blog);
+            }
             if (!empty($faqs)) {
                 $entities = [];
                 foreach ($faqs as $item) {
@@ -637,21 +681,10 @@ if (! function_exists('render_header_schemas')) {
                     . "\n    </script>\n";
             }
 
-            // 3. RealEstateAgent Schema
-            $agentSchema = [
-                '@context' => 'https://schema.org',
-                '@type' => 'RealEstateAgent',
-                'name' => $siteName,
-                'url' => $siteUrl,
-            ];
-
             return "    <!-- Organization Schema (JSON-LD) -->\n    <script type=\"application/ld+json\">\n"
                 . json_encode($orgSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
                 . "\n    </script>\n"
-                . $faqSchemaString
-                . "    <!-- RealEstateAgent Schema (JSON-LD) -->\n    <script type=\"application/ld+json\">\n"
-                . json_encode($agentSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-                . "\n    </script>\n";
+                . $faqSchemaString;
         } catch (\Throwable $e) {
             return '';
         }

@@ -24,8 +24,25 @@ class CommunityController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        $cities = City::where('is_active', true)->orderBy('name', 'asc')->get();
-        $allProjects = Project::with('page')->orderBy('order', 'asc')->get();
+        $cities = City::where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->whereDoesntHave('page', function ($q) {
+                $q->where('status', 'draft')->orWhere('is_published', false);
+            })
+            ->orderBy('name', 'asc')
+            ->get();
+        $allProjects = Project::with('page')
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->whereDoesntHave('page', function ($q) {
+                $q->where('status', 'draft')->orWhere('is_published', false);
+            })
+            ->orderBy('order', 'asc')
+            ->get();
         $totalCommunities = $communities->count();
         $activeCommunities = $communities->where('is_active', true)->count();
 
@@ -37,7 +54,15 @@ class CommunityController extends Controller
      */
     public function create()
     {
-        $cities = City::where('is_active', true)->orderBy('name', 'asc')->get();
+        $cities = City::where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->whereDoesntHave('page', function ($q) {
+                $q->where('status', 'draft')->orWhere('is_published', false);
+            })
+            ->orderBy('name', 'asc')
+            ->get();
         $assignedProjects = collect();
         return view('admin.communities.create', compact('cities', 'assignedProjects'));
     }
@@ -322,8 +347,25 @@ class CommunityController extends Controller
         $selectedProjectIds = (array) ($commContent['selected_ids'] ?? ($commContent['project_ids'] ?? []));
         $faqContent = $sections['faq']->content ?? [];
         $faqItems = (array) ($faqContent['items'] ?? []);
-        $allProjects = Project::with('page')->orderBy('order', 'asc')->get();
-        $cities = City::where('is_active', true)->orderBy('name', 'asc')->get();
+        $allProjects = Project::with('page')
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->whereDoesntHave('page', function ($q) {
+                $q->where('status', 'draft')->orWhere('is_published', false);
+            })
+            ->orderBy('order', 'asc')
+            ->get();
+        $cities = City::where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->whereDoesntHave('page', function ($q) {
+                $q->where('status', 'draft')->orWhere('is_published', false);
+            })
+            ->orderBy('name', 'asc')
+            ->get();
 
         // Projects assigned to this community via community_id (selected from dropdown)
         $assignedProjects = Project::where('community_id', $community->id)

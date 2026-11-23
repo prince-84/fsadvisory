@@ -41,6 +41,18 @@ class Developer extends Model implements Auditable
         'faqs'              => 'array',
     ];
 
+    protected static function booted()
+    {
+        static::deleting(function ($developer) {
+            Project::where('developer_id', $developer->id)
+                ->orWhere('developer', $developer->name)
+                ->update([
+                    'developer_id' => null,
+                    'developer' => null
+                ]);
+        });
+    }
+
     /**
      * Projects associated with this developer.
      */

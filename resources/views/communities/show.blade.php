@@ -41,6 +41,9 @@
     <meta name="twitter:description" content="{{ $community->short_content ? strip_tags($community->short_content) : '' }}">
     <meta name="twitter:image" content="{{ $ogImg }}">
 
+    <!-- Header Schemas: Organization, Dynamic FAQPage & RealEstateAgent (JSON-LD) -->
+    {!! render_header_schemas($community->page ?? ($page ?? null), null, is_array($community->faqs ?? null) ? $community->faqs : null) !!}
+
     @include('partials.seo-head-scripts')
     @include('partials.favicon')
 
@@ -593,6 +596,7 @@
             });
         });
     </script>
+    @include('partials.mobile-sticky-bar')
 </body>
 </html>
 

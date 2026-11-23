@@ -566,12 +566,12 @@
                     </a>
                 </div>
 
-                <!-- Right: Status Dropdown -->
+                <!-- Right: Status Dropdown (Defaults to Draft for new blog) -->
                 @php
-                    $currStatus = old('status', $blog->status ?? 'publish');
+                    $currStatus = old('status', $blog->status ?? 'draft');
                     $badgeConfig = match($currStatus) {
-                        'draft' => ['bg' => '#fffbeb', 'border' => '#fde68a', 'color' => '#b45309', 'dot' => '#f59e0b', 'label' => 'Draft'],
-                        default => ['bg' => '#f0fdf4', 'border' => '#bbf7d0', 'color' => '#15803d', 'dot' => '#22c55e', 'label' => 'Published'],
+                        'publish' => ['bg' => '#f0fdf4', 'border' => '#bbf7d0', 'color' => '#15803d', 'dot' => '#22c55e', 'label' => 'Published'],
+                        default   => ['bg' => '#fffbeb', 'border' => '#fde68a', 'color' => '#b45309', 'dot' => '#f59e0b', 'label' => 'Draft'],
                     };
                 @endphp
                 <div class="adm-status-dropdown-wrap">

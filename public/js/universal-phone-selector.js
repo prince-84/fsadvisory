@@ -25,81 +25,73 @@
     }
 
     window.getCountryByCode = function(code) {
-        if (!code) return BY_CODE['ae'] || COUNTRIES[0];
-        return BY_CODE[code.toLowerCase()] || BY_CODE['ae'] || COUNTRIES[0];
+        if (!code) return BY_CODE['pk'] || COUNTRIES[0];
+        return BY_CODE[code.toLowerCase()] || BY_CODE['pk'] || COUNTRIES[0];
     };
 
     window._registeredPhoneInstances = window._registeredPhoneInstances || [];
     window._activeCountry = window._activeCountry || null;
+    window._tzDetectedCountry = null;
+
+    // Purge any stale cache keys immediately
+    try {
+        sessionStorage.removeItem('hudayriyat_user_country');
+        localStorage.removeItem('hudayriyat_user_country');
+        sessionStorage.removeItem('fs_advisory_active_country');
+        if (sessionStorage.getItem('fs_country_manual') === 'us') {
+            sessionStorage.removeItem('fs_country_manual');
+        }
+    } catch(e) {}
 
     // Detect Country
     function detectInitialCountry() {
-        const cached = sessionStorage.getItem('hudayriyat_user_country');
-        if (cached && BY_CODE[cached.toLowerCase()]) {
-            return cached.toLowerCase();
+        const manual = sessionStorage.getItem('fs_country_manual');
+        if (manual && BY_CODE[manual.toLowerCase()]) {
+            return manual.toLowerCase();
         }
 
-        let detected = 'ae';
+        let detected = 'pk'; // Default fallback for FS Real Estate Advisory is strictly Pakistan (+92)
         try {
             const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
-            if (tz.includes('karachi') || tz.includes('pakistan')) detected = 'pk';
-            else if (tz.includes('dubai') || tz.includes('abu_dhabi')) detected = 'ae';
-            else if (tz.includes('riyadh')) detected = 'sa';
-            else if (tz.includes('kolkata') || tz.includes('calcutta') || tz.includes('delhi')) detected = 'in';
-            else if (tz.includes('london')) detected = 'gb';
-            else if (tz.includes('new_york') || tz.includes('chicago') || tz.includes('los_angeles') || tz.includes('denver') || tz.includes('phoenix') || tz.includes('america')) detected = 'us';
-            else if (tz.includes('toronto') || tz.includes('vancouver') || tz.includes('montreal')) detected = 'ca';
-            else if (tz.includes('qatar') || tz.includes('doha')) detected = 'qa';
-            else if (tz.includes('kuwait')) detected = 'kw';
-            else if (tz.includes('muscat')) detected = 'om';
-            else if (tz.includes('bahrain')) detected = 'bh';
-            else if (tz.includes('berlin') || tz.includes('frankfurt')) detected = 'de';
-            else if (tz.includes('paris')) detected = 'fr';
-            else if (tz.includes('rome') || tz.includes('milan')) detected = 'it';
-            else if (tz.includes('madrid')) detected = 'es';
-            else if (tz.includes('istanbul')) detected = 'tr';
-            else if (tz.includes('cairo')) detected = 'eg';
-            else if (tz.includes('sydney') || tz.includes('melbourne')) detected = 'au';
-            else if (tz.includes('singapore')) detected = 'sg';
-            else if (tz.includes('tokyo')) detected = 'jp';
-            else if (tz.includes('seoul')) detected = 'kr';
-            else if (tz.includes('dhaka')) detected = 'bd';
-            else if (tz.includes('colombo')) detected = 'lk';
-            else if (tz.includes('kuala_lumpur')) detected = 'my';
-            else if (tz.includes('jakarta')) detected = 'id';
-            else if (tz.includes('manila')) detected = 'ph';
-            else if (tz.includes('johannesburg')) detected = 'za';
-            else if (tz.includes('lagos')) detected = 'ng';
-            else if (tz.includes('nairobi')) detected = 'ke';
-            else if (tz.includes('sao_paulo')) detected = 'br';
-            else if (tz.includes('mexico')) detected = 'mx';
+            if (tz.includes('karachi') || tz.includes('pakistan') || tz.includes('islamabad')) {
+                detected = 'pk';
+            } else if (tz.includes('dubai') || tz.includes('abu_dhabi')) {
+                detected = 'ae';
+            } else if (tz.includes('riyadh') || tz.includes('saudi')) {
+                detected = 'sa';
+            } else if (tz.includes('kolkata') || tz.includes('calcutta') || tz.includes('delhi')) {
+                detected = 'in';
+            } else if (tz.includes('london')) {
+                detected = 'gb';
+            } else if (tz.includes('doha') || tz.includes('qatar')) {
+                detected = 'qa';
+            } else if (tz.includes('kuwait')) {
+                detected = 'kw';
+            } else if (tz.includes('muscat') || tz.includes('oman')) {
+                detected = 'om';
+            } else if (tz.includes('bahrain') || tz.includes('manama')) {
+                detected = 'bh';
+            } else if (tz.includes('toronto') || tz.includes('vancouver') || tz.includes('montreal')) {
+                detected = 'ca';
+            } else if (tz.includes('sydney') || tz.includes('melbourne') || tz.includes('brisbane')) {
+                detected = 'au';
+            } else if (tz.includes('berlin') || tz.includes('frankfurt')) {
+                detected = 'de';
+            } else if (tz.includes('paris')) {
+                detected = 'fr';
+            } else if (tz.includes('singapore')) {
+                detected = 'sg';
+            } else if (tz.includes('tokyo')) {
+                detected = 'jp';
+            }
         } catch(e) {}
+
         return detected;
     }
 
-    // IP Geolocation Check (background fetch)
+    // No external IP override: device timezone and explicit selection are honored
     function checkIpCountryAsync() {
-        fetch('https://api.country.is')
-            .then(res => res.json())
-            .then(data => {
-                if (data && data.country && BY_CODE[data.country.toLowerCase()]) {
-                    const code = data.country.toLowerCase();
-                    sessionStorage.setItem('hudayriyat_user_country', code);
-                    window.setUniversalCountry(code);
-                }
-            })
-            .catch(() => {
-                fetch('https://ipapi.co/json/')
-                    .then(r => r.json())
-                    .then(d => {
-                        if (d && d.country_code && BY_CODE[d.country_code.toLowerCase()]) {
-                            const code = d.country_code.toLowerCase();
-                            sessionStorage.setItem('hudayriyat_user_country', code);
-                            window.setUniversalCountry(code);
-                        }
-                    })
-                    .catch(() => {});
-            });
+        // Disabled to prevent VPN/proxy IP from overriding Pakistan
     }
 
     window.setUniversalCountry = function(code) {
@@ -213,6 +205,8 @@
                 const code = item.getAttribute('data-code');
                 const selected = window.getCountryByCode(code);
                 if (selected) {
+                    sessionStorage.setItem('fs_country_manual', selected.code);
+                    sessionStorage.setItem('fs_advisory_active_country', selected.code);
                     window.setUniversalCountry(selected.code);
                     input.focus();
                 }
@@ -377,7 +371,8 @@
             ['sidebarCountryBtn', 'sidebarCountryDropdown', 'sidebarFlagSlot', 'saimaPhoneInput'],
             ['heroModalCountryBtn', 'heroModalCountryDropdown', 'heroModalFlagSlot', 'heroModalPhoneInput'],
             ['pageArticleCountryBtn', 'pageArticleCountryDropdown', 'pageArticleFlagSlot', 'pageArticlePhoneInput'],
-            ['blogCountryBtn', 'blogCountryDropdown', 'blogFlagSlot', 'blogPhoneInput']
+            ['blogCountryBtn', 'blogCountryDropdown', 'blogFlagSlot', 'blogPhoneInput'],
+            ['mobileStickyCountryBtn', 'mobileStickyCountryDropdown', 'mobileStickyFlagSlot', 'mobileStickyPhoneInput']
         ];
         pairs.forEach(([bId, dId, fId, iId]) => {
             const b = document.getElementById(bId);
@@ -402,7 +397,7 @@
             wrapper.dataset.universalUpgraded = 'true';
 
             const originalInput = wrapper.querySelector('input[type="tel"], input');
-            const originalVal = originalInput ? originalInput.value : '+971 ';
+            const originalVal = originalInput ? originalInput.value : '+92 ';
 
             const uid = 'autoPhone_' + idx + '_' + Math.floor(Math.random()*10000);
             const unifiedDiv = document.createElement('div');

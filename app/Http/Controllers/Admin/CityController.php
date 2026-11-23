@@ -24,7 +24,16 @@ class CityController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        $allProjects = Project::with('page')->orderBy('order', 'asc')->get();
+        $allProjects = Project::with('page')
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->whereDoesntHave('page', function ($q) {
+                $q->where('status', 'draft')->orWhere('is_published', false);
+            })
+            ->orderBy('order', 'asc')
+            ->get();
         $totalCities = $cities->count();
         $activeCities = $cities->where('is_active', true)->count();
 
@@ -321,7 +330,16 @@ class CityController extends Controller
         $selectedProjectIds = (array) ($commContent['selected_ids'] ?? ($commContent['project_ids'] ?? []));
         $faqContent = $sections['faq']->content ?? [];
         $faqItems = (array) ($faqContent['items'] ?? []);
-        $allProjects = Project::with('page')->orderBy('order', 'asc')->get();
+        $allProjects = Project::with('page')
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->whereDoesntHave('page', function ($q) {
+                $q->where('status', 'draft')->orWhere('is_published', false);
+            })
+            ->orderBy('order', 'asc')
+            ->get();
 
         // Communities assigned to this city via city_id
         $assignedCommunities = \App\Models\Community::where('city_id', $city->id)

@@ -34,8 +34,10 @@
                     $kw = 'zameen';
                     $lbl = 'Zameen';
                 } else {
-                    $kw = $cleanDev;
-                    $lbl = $cleanDev;
+                    $brand = preg_replace('/\b(group(\s+and\s+builder(s)?)?|builders?|developers?|properties|pvt|ltd|llc)\b/i', '', $cleanDev);
+                    $brand = trim(preg_replace('/\s+/', ' ', (string) $brand), " \t\n\r\0\x0B-&,");
+                    $kw = !empty($brand) ? strtolower($brand) : strtolower($cleanDev);
+                    $lbl = !empty($brand) ? ucwords(strtolower($brand)) : $cleanDev;
                 }
             }
             if (!$kw && !empty($titleStr)) {
@@ -142,151 +144,93 @@
 
         // --- RESOLVE CONTEXTUAL LINKS (STRICTLY MATCHED BY DETAIL PAGE TYPE, LIMIT: LATEST 10) ---
         if ($currDeveloper) {
-            // Developer Detail Page -> ONLY Developer detail pages (/developer/...) filtered by current developer keyword
+            // Developer Detail Page -> Filter and show the latest 10 PROJECTS of this developer (/project/...)
             [$devKeyword, $devTitle] = $extractBrand($currDeveloper->name, $currDeveloper->name);
-            $matchedDevs = \App\Models\Developer::where('is_active', true)
+            $featuredIds = is_array($currDeveloper->featured_projects)
+                ? array_values(array_filter(array_map('intval', $currDeveloper->featured_projects)))
+                : [];
+
+            $devProjectsQuery = $activeProjectsQuery();
+            $devProjectsQuery->where(function ($q) use ($currDeveloper, $devKeyword, $featuredIds) {
+                $q->where('developer_id', $currDeveloper->id);
+
+                if (!empty($currDeveloper->name)) {
+                    $q->orWhere('developer', 'LIKE', '%' . $currDeveloper->name . '%');
+                }
+
+                if (!empty($devKeyword)) {
+                    $q->orWhere('developer', 'LIKE', '%' . $devKeyword . '%')
+                      ->orWhere('title', 'LIKE', '%' . $devKeyword . '%')
+                      ->orWhere('slug', 'LIKE', '%' . $devKeyword . '%');
+                }
+
+                if (!empty($featuredIds)) {
+                    $q->orWhereIn('id', $featuredIds);
+                }
+            });
+
+            $devProjects = $devProjectsQuery->orderBy('id', 'desc')->take(10)->get();
+
+            if ($devProjects->isNotEmpty()) {
+                $contextualHeader = ($devTitle ?: $currDeveloper->name) . ' Projects';
+                $contextualLinks = $mapProjectLinks($devProjects);
+            }
+        } elseif ($currCity) {
+            // City Detail Page -> ONLY Communities / Areas where this city was selected in CMS dropdown (city_id)
+            $featuredCommIds = is_array($currCity->featured_communities)
+                ? array_values(array_filter(array_map('intval', $currCity->featured_communities)))
+                : [];
+
+            $cityCommunities = \App\Models\Community::where('is_active', true)
                 ->where(function ($q) {
                     $q->whereNull('status')->orWhere('status', '!=', 'draft');
                 })
-                ->where(function ($q) use ($currDeveloper, $devKeyword) {
-                    $q->where('id', $currDeveloper->id);
-                    if (!empty($devKeyword)) {
-                        $q->orWhere('name', 'LIKE', '%' . $devKeyword . '%')
-                          ->orWhere('slug', 'LIKE', '%' . $devKeyword . '%');
+                ->whereDoesntHave('page', function ($q) {
+                    $q->where('status', 'draft')->orWhere('is_published', false);
+                })
+                ->where(function ($q) use ($currCity, $featuredCommIds) {
+                    $q->where('city_id', $currCity->id);
+                    if (!empty($featuredCommIds)) {
+                        $q->orWhereIn('id', $featuredCommIds);
                     }
                 })
+                ->orderBy('order', 'asc')
                 ->orderBy('id', 'desc')
                 ->take(10)
                 ->get();
 
-            if ($matchedDevs->isNotEmpty()) {
-                $contextualHeader = ($devTitle ?: $currDeveloper->name) . ' Developers';
-                foreach ($matchedDevs as $d) {
-                    $dSlug = ltrim(preg_replace('#^developer/#', '', ltrim((string) $d->slug, '/')), '/');
-                    $contextualLinks[] = [
-                        'label' => $d->name,
-                        'url'   => '/developer/' . $dSlug,
-                    ];
-                }
-            }
-        } elseif ($currCity) {
-            // City Detail Page -> ONLY City detail pages (/city/...) filtered by root city keyword (e.g. Islamabad, Karachi)
-            $cityLabel = trim((string) $currCity->name);
-            $cSlug = trim((string) $currCity->slug);
-
-            // Filter out common suffix/number noise words so "Islamabad two" matches "Islamabad" and vice versa
-            $noiseWords = [
-                'city', 'cities', 'urban', 'hub', 'new', 'phase', 'block', 'sector',
-                'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
-                'first', 'second', 'third', 'fourth', 'fifth',
-                '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
-            ];
-            $tokens = preg_split('/[\s\-_]+/', strtolower($cityLabel . ' ' . $cSlug));
-            $cleanTokens = [];
-            foreach ($tokens as $token) {
-                $t = trim($token);
-                if (strlen($t) >= 3 && !in_array($t, $noiseWords, true)) {
-                    $cleanTokens[] = $t;
-                }
-            }
-            if (empty($cleanTokens)) {
-                foreach ($tokens as $token) {
-                    $t = trim($token);
-                    if (strlen($t) >= 3 && !in_array($t, ['city', 'cities'], true)) {
-                        $cleanTokens[] = $t;
-                    }
-                }
-            }
-            $cleanTokens = array_values(array_unique($cleanTokens));
-            $primaryCity = !empty($cleanTokens) ? $cleanTokens[0] : strtolower($cityLabel);
-
-            $matchedCities = \App\Models\City::where('is_active', true)
-                ->where(function ($q) {
-                    $q->whereNull('status')->orWhere('status', '!=', 'draft');
-                })
-                ->where(function ($q) use ($currCity, $cleanTokens) {
-                    $q->where('id', $currCity->id);
-                    foreach ($cleanTokens as $kw) {
-                        if (!empty($kw)) {
-                            $q->orWhere('name', 'LIKE', '%' . $kw . '%')
-                              ->orWhere('slug', 'LIKE', '%' . $kw . '%');
-                        }
-                    }
-                })
-                ->orderBy('id', 'asc')
-                ->take(10)
-                ->get();
-
-            if ($matchedCities->isNotEmpty()) {
-                $contextualHeader = ucwords($primaryCity) . ' Cities';
-                foreach ($matchedCities as $ct) {
-                    $cleanSlug = ltrim(preg_replace('#^city/#', '', ltrim((string) $ct->slug, '/')), '/');
-                    $contextualLinks[] = [
-                        'label' => $ct->name,
-                        'url'   => '/city/' . $cleanSlug,
-                    ];
-                }
-            }
-        } elseif ($currCommunity) {
-            // Area / Community Detail Page -> ONLY Area detail pages (/area/...) filtered by current area name/keyword or city (NO projects)
-            $areaLabel = trim((string) $currCommunity->name);
-            $aSlug = trim((string) $currCommunity->slug);
-
-            $noiseWords = [
-                'area', 'community', 'communities', 'neighbourhood', 'sector', 'block', 'phase',
-                'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
-                'first', 'second', 'third', 'fourth', 'fifth',
-                '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
-            ];
-            $tokens = preg_split('/[\s\-_]+/', strtolower($areaLabel . ' ' . $aSlug));
-            $cleanTokens = [];
-            foreach ($tokens as $token) {
-                $t = trim($token);
-                if (strlen($t) >= 3 && !in_array($t, $noiseWords, true)) {
-                    $cleanTokens[] = $t;
-                }
-            }
-            if (empty($cleanTokens)) {
-                foreach ($tokens as $token) {
-                    $t = trim($token);
-                    if (strlen($t) >= 3 && !in_array($t, ['area', 'community'], true)) {
-                        $cleanTokens[] = $t;
-                    }
-                }
-            }
-            $cleanTokens = array_values(array_unique($cleanTokens));
-            $primaryArea = !empty($cleanTokens) ? $cleanTokens[0] : strtolower($areaLabel);
-
-            $matchedAreas = \App\Models\Community::where('is_active', true)
-                ->where(function ($q) {
-                    $q->whereNull('status')->orWhere('status', '!=', 'draft');
-                })
-                ->where(function ($q) use ($currCommunity, $cleanTokens) {
-                    $q->where('id', $currCommunity->id);
-                    if ($currCommunity->city_id) {
-                        $q->orWhere('city_id', $currCommunity->city_id);
-                    }
-                    foreach ($cleanTokens as $kw) {
-                        if (!empty($kw)) {
-                            $q->orWhere('name', 'LIKE', '%' . $kw . '%')
-                              ->orWhere('slug', 'LIKE', '%' . $kw . '%');
-                        }
-                    }
-                })
-                ->orderBy('id', 'asc')
-                ->take(10)
-                ->get();
-
-            if ($matchedAreas->isNotEmpty()) {
-                $cityName = $currCommunity->city_id ? \App\Models\City::find($currCommunity->city_id)?->name : null;
-                $contextualHeader = ($cityName ? ($cityName . ' ') : (ucwords($primaryArea) . ' ')) . 'Areas';
-                foreach ($matchedAreas as $cm) {
+            if ($cityCommunities->isNotEmpty()) {
+                $contextualHeader = trim($currCity->name) . ' Areas';
+                $contextualLinks = [];
+                foreach ($cityCommunities as $cm) {
                     $cleanSlug = ltrim(preg_replace('#^area/#', '', ltrim((string) $cm->slug, '/')), '/');
                     $contextualLinks[] = [
                         'label' => $cm->name,
                         'url'   => '/area/' . $cleanSlug,
                     ];
                 }
+            }
+        } elseif ($currCommunity) {
+            // Area / Community Detail Page -> ONLY projects where this community was selected in CMS dropdown
+            $featuredIds = is_array($currCommunity->featured_projects)
+                ? array_values(array_filter(array_map('intval', $currCommunity->featured_projects)))
+                : [];
+
+            $areaProjects = $activeProjectsQuery()
+                ->where(function ($q) use ($currCommunity, $featuredIds) {
+                    $q->where('community_id', $currCommunity->id);
+                    if (!empty($featuredIds)) {
+                        $q->orWhereIn('id', $featuredIds);
+                    }
+                })
+                ->orderBy('order', 'asc')
+                ->orderBy('id', 'desc')
+                ->take(10)
+                ->get();
+
+            if ($areaProjects->isNotEmpty()) {
+                $contextualHeader = trim($currCommunity->name) . ' Projects';
+                $contextualLinks = $mapProjectLinks($areaProjects);
             }
         } elseif ($currProject) {
             // Project Detail Page -> ONLY Project detail pages (/project/...) of the same developer/brand

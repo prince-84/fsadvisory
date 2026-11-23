@@ -21,15 +21,27 @@ class ProjectController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        $pages = Page::orderBy('title', 'asc')->get(['id', 'title', 'slug']);
+        $pages = Page::where('status', '!=', 'draft')->where('is_published', true)->orderBy('title', 'asc')->get(['id', 'title', 'slug']);
         $totalProjects = $projects->count();
         $activeProjects = $projects->where('is_active', true)->count();
 
         $communities = \App\Models\Community::with('city')
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->whereDoesntHave('page', function ($q) {
+                $q->where('status', 'draft')->orWhere('is_published', false);
+            })
             ->orderBy('name', 'asc')
             ->get();
 
-        $developers = \App\Models\Developer::orderBy('name', 'asc')->get();
+        $developers = \App\Models\Developer::where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->orderBy('name', 'asc')
+            ->get();
 
         return view('admin.projects.index', compact('projects', 'pages', 'totalProjects', 'activeProjects', 'communities', 'developers'));
     }
@@ -121,7 +133,7 @@ class ProjectController extends Controller
                 'show_in_commercial' => $showInCommercial,
                 'navbar_order'       => (int) ($request->input('navbar_order') ?: (((int) Page::max('navbar_order')) + 1)),
                 'status'             => $status,
-                'is_published'       => $request->boolean('is_published', $isActive),
+                'is_published'       => ($status !== 'draft') && $request->boolean('is_published', false),
                 'meta_title'         => $request->input('meta_title') ?: ($title . ' | Luxury Properties'),
                 'meta_description'   => $request->input('meta_description') ?: ("Explore {$title}. Discover luxury residences, pricing, master plan, and world-class amenities."),
                 'meta_keywords'      => $request->input('meta_keywords') ?: ("{$title}, luxury villas, properties"),
@@ -514,9 +526,18 @@ class ProjectController extends Controller
         }
 
         $projectSlugs = Page::projectSlugs();
-        $projectPages = Page::whereIn('slug', $projectSlugs)->orderBy('title', 'asc')->get(['id', 'title', 'slug']);
+        $projectPages = Page::whereIn('slug', $projectSlugs)->where('status', '!=', 'draft')->where('is_published', true)->orderBy('title', 'asc')->get(['id', 'title', 'slug']);
         $linkedProject = $project;
-        $allProjects = Project::with('page')->orderBy('order', 'asc')->get();
+        $allProjects = Project::with('page')
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->whereDoesntHave('page', function ($q) {
+                $q->where('status', 'draft')->orWhere('is_published', false);
+            })
+            ->orderBy('order', 'asc')
+            ->get();
 
         $commSection = $page->sections->firstWhere('section_key', 'communities') 
                     ?? $page->sections->firstWhere('section_key', 'projects');
@@ -529,8 +550,25 @@ class ProjectController extends Controller
             $selectedProjectIds = [];
         }
 
-        $communities = \App\Models\Community::with('city')->orderBy('order', 'asc')->orderBy('name', 'asc')->get();
-        $developers = \App\Models\Developer::orderBy('order', 'asc')->orderBy('name', 'asc')->get();
+        $communities = \App\Models\Community::with('city')
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->whereDoesntHave('page', function ($q) {
+                $q->where('status', 'draft')->orWhere('is_published', false);
+            })
+            ->orderBy('order', 'asc')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $developers = \App\Models\Developer::where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'draft');
+            })
+            ->orderBy('order', 'asc')
+            ->orderBy('name', 'asc')
+            ->get();
         $isProjectContext = true;
 
         return view('admin.pages.edit', compact(

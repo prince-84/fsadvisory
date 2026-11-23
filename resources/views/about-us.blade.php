@@ -284,18 +284,13 @@
                                                 <div class="countryTriggerWrapper">
                                                     <button type="button" class="countryTriggerBtn" id="aboutCountryBtn" aria-label="Country selector">
                                                         <span class="flagSlot" id="aboutFlagSlot">
-                                                            <svg width="22" height="15" viewBox="0 0 24 16" class="flagSvg">
-                                                                <rect width="24" height="5.33" fill="#00732f"/>
-                                                                <rect y="5.33" width="24" height="5.33" fill="#ffffff"/>
-                                                                <rect y="10.66" width="24" height="5.34" fill="#000000"/>
-                                                                <rect width="6" height="16" fill="#fe0000"/>
-                                                            </svg>
+                                                            <img src="https://flagcdn.com/w40/pk.png" srcset="https://flagcdn.com/w80/pk.png 2x" width="22" height="15" alt="Pakistan" class="flagImgUniversal" style="border-radius:2px;object-fit:cover;display:inline-block;vertical-align:middle;box-shadow:0 1px 2px rgba(0,0,0,0.18);flex-shrink:0;">
                                                         </span>
                                                         <span class="caretDown"></span>
                                                     </button>
                                                     <ul class="countryDropdownMenu" id="aboutCountryDropdown" style="display: none;"></ul>
                                                 </div>
-                                                <input type="tel" name="phone" id="aboutPhoneInput" class="phoneInputField" value="+971 " required>
+                                                <input type="tel" name="phone" id="aboutPhoneInput" class="phoneInputField" value="+92 " placeholder="+92 300 1234567" required>
                                             </div>
                                         </div>
 

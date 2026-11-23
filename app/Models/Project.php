@@ -174,8 +174,23 @@ class Project extends Model implements Auditable
 
     public function getDeveloperAttribute($value): ?string
     {
-        if (!empty($value)) return $value;
-        return $this->getHighlightValue(['developer']) ?: 'Modon Properties';
+        if (!empty($value) && trim($value) !== 'Modon Properties') {
+            return $value;
+        }
+
+        if ($this->developer_id) {
+            $dev = $this->relationLoaded('developerRel') ? $this->developerRel : $this->developerRel()->first();
+            if ($dev) {
+                return $dev->name;
+            }
+        }
+
+        $hl = $this->getHighlightValue(['developer']);
+        if ($hl && trim($hl) !== 'Modon Properties') {
+            return $hl;
+        }
+
+        return null;
     }
 
     public function getPaymentPlanAttribute($value): ?string

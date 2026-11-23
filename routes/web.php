@@ -305,7 +305,7 @@ Route::get('/developer/{slug}', function ($slug) {
     if (!$developer) {
         abort(404);
     }
-    if ((!$developer->is_active || $developer->status === 'draft') && !auth()->check()) {
+    if (!$developer->is_active || $developer->status === 'draft') {
         abort(404);
     }
     return view('developers.show', compact('developer'));
@@ -415,7 +415,10 @@ Route::get('/city/{slug}', function ($slug) {
         ->first();
 
     if ($city) {
-        if ((!$city->is_active || $city->status === 'draft') && !auth()->check()) {
+        if (!$city->is_active || $city->status === 'draft') {
+            abort(404);
+        }
+        if ($city->page && (!$city->page->is_published || $city->page->status === 'draft')) {
             abort(404);
         }
 
@@ -432,7 +435,10 @@ Route::get('/city/{slug}', function ($slug) {
     if ($page) {
         $city = \App\Models\City::where('page_id', $page->id)->first();
         if ($city) {
-            if ((!$city->is_active || $city->status === 'draft') && !auth()->check()) {
+            if (!$city->is_active || $city->status === 'draft') {
+                abort(404);
+            }
+            if (!$page->is_published || $page->status === 'draft') {
                 abort(404);
             }
             return view('cities.show', compact('city', 'page'));
@@ -466,7 +472,10 @@ Route::get('/area/{slug}', function ($slug) {
         ->first();
 
     if ($community) {
-        if ((!$community->is_active || $community->status === 'draft') && !auth()->check()) {
+        if (!$community->is_active || $community->status === 'draft') {
+            abort(404);
+        }
+        if ($community->page && (!$community->page->is_published || $community->page->status === 'draft')) {
             abort(404);
         }
 
@@ -483,7 +492,10 @@ Route::get('/area/{slug}', function ($slug) {
     if ($page) {
         $community = \App\Models\Community::where('page_id', $page->id)->first();
         if ($community) {
-            if ((!$community->is_active || $community->status === 'draft') && !auth()->check()) {
+            if (!$community->is_active || $community->status === 'draft') {
+                abort(404);
+            }
+            if (!$page->is_published || $page->status === 'draft') {
                 abort(404);
             }
             return view('communities.show', compact('community', 'page'));
@@ -568,7 +580,8 @@ Route::get('/{slug}', function ($slug) {
         }
 
         // Check if page belongs to a City and that City is in draft or inactive
-        $city = \App\Models\City::where('slug', $cleanSlug)
+        $city = \App\Models\City::where('page_id', $page->id)
+            ->orWhere('slug', $cleanSlug)
             ->orWhere('slug', '/' . $cleanSlug)
             ->first();
         if ($city && (!$city->is_active || $city->status === 'draft')) {
@@ -576,7 +589,8 @@ Route::get('/{slug}', function ($slug) {
         }
 
         // Check if page belongs to a Project and that Project is in draft or inactive
-        $project = \App\Models\Project::where('slug', $cleanSlug)
+        $project = \App\Models\Project::where('page_id', $page->id)
+            ->orWhere('slug', $cleanSlug)
             ->orWhere('slug', '/' . $cleanSlug)
             ->first();
         if ($project && (!$project->is_active || $project->status === 'draft')) {

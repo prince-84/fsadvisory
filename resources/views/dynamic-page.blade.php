@@ -959,6 +959,7 @@
         }, 3000);
     });
     </script>
+    @include('partials.mobile-sticky-bar')
 </body>
 </html>
 

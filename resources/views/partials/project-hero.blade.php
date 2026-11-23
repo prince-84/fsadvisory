@@ -118,18 +118,13 @@
                     <div class="countryTriggerWrapper" style="position: relative; height: 100%; display: flex; align-items: center;">
                         <button type="button" class="countryTriggerBtn" id="heroModalCountryBtn" aria-label="Country selector" style="height: 100%; border: none; background: transparent; padding: 0 10px; display: flex; align-items: center; gap: 5px; cursor: pointer;">
                             <span class="flagSlot" id="heroModalFlagSlot">
-                                <svg width="22" height="15" viewBox="0 0 24 16" class="flagSvg">
-                                    <rect width="24" height="5.33" fill="#00732f"/>
-                                    <rect y="5.33" width="24" height="5.33" fill="#ffffff"/>
-                                    <rect y="10.66" width="24" height="5.34" fill="#000000"/>
-                                    <rect width="6" height="16" fill="#fe0000"/>
-                                </svg>
+                                <img src="https://flagcdn.com/w40/pk.png" srcset="https://flagcdn.com/w80/pk.png 2x" width="22" height="15" alt="Pakistan" class="flagImgUniversal" style="border-radius:2px;object-fit:cover;display:inline-block;vertical-align:middle;box-shadow:0 1px 2px rgba(0,0,0,0.18);flex-shrink:0;">
                             </span>
                             <span class="caretDown" style="border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #555; display: inline-block;"></span>
                         </button>
                         <ul class="countryDropdownMenu" id="heroModalCountryDropdown" style="display: none;"></ul>
                     </div>
-                    <input type="tel" name="phone" id="heroModalPhoneInput" class="phoneInputField" value="+971 " required style="flex: 1; height: 100%; border: none; padding: 0 12px; font-size: 14px; outline: none; background: transparent; color: #1e293b; width: 100%; box-sizing: border-box;">
+                    <input type="tel" name="phone" id="heroModalPhoneInput" class="phoneInputField" value="+92 " placeholder="+92 300 1234567" required style="flex: 1; height: 100%; border: none; padding: 0 12px; font-size: 14px; outline: none; background: transparent; color: #1e293b; width: 100%; box-sizing: border-box;">
                 </div>
             </div>
 

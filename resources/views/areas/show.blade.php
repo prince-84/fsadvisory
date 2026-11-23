@@ -49,6 +49,9 @@
     <meta name="twitter:description" content="{{ $commOgDesc }}">
     <meta name="twitter:image" content="{{ $commOgImg }}">
 
+    <!-- Header Schemas: Organization, Dynamic FAQPage & RealEstateAgent (JSON-LD) -->
+    {!! render_header_schemas($community->page ?? ($page ?? null), null, is_array($community->faqs ?? null) ? $community->faqs : null) !!}
+
     @include('partials.seo-head-scripts')
     @include('partials.favicon')
 
@@ -405,6 +408,7 @@
             .catch(() => { btn.innerText = origText; btn.disabled = false; alert('Thank you! Your request has been received.'); });
         });
     </script>
+    @include('partials.mobile-sticky-bar')
 </body>
 </html>
 

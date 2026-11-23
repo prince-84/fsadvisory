@@ -60,12 +60,14 @@
                             <div class="phoneUnifiedContainer" style="margin-bottom: 12px; height: 42px !important; background: #fff !important; border: 1px solid #dcdcdc !important;">
                                 <div class="countryTriggerWrapper">
                                     <button type="button" class="countryTriggerBtn" id="pageArticleCountryBtn" aria-label="Country selector" style="height: 100%;">
-                                        <span class="flagSlot" id="pageArticleFlagSlot"></span>
+                                        <span class="flagSlot" id="pageArticleFlagSlot">
+                                            <img src="https://flagcdn.com/w40/pk.png" srcset="https://flagcdn.com/w80/pk.png 2x" width="22" height="15" alt="Pakistan" class="flagImgUniversal" style="border-radius:2px;object-fit:cover;display:inline-block;vertical-align:middle;box-shadow:0 1px 2px rgba(0,0,0,0.18);flex-shrink:0;">
+                                        </span>
                                         <span class="caretDown"></span>
                                     </button>
                                     <ul class="countryDropdownMenu" id="pageArticleCountryDropdown" style="display: none;"></ul>
                                 </div>
-                                <input type="tel" name="phone" id="pageArticlePhoneInput" class="phoneInputField" value="+971 " required>
+                                <input type="tel" name="phone" id="pageArticlePhoneInput" class="phoneInputField" value="+92 " placeholder="+92 300 1234567" required>
                             </div>
                             <input type="email" name="email" class="saimaInput" placeholder="Email" required>
                             <textarea name="comment" class="saimaTextarea" placeholder="Leave a comment here"></textarea>

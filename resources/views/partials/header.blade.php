@@ -111,12 +111,12 @@
 <!-- Mobile Navigation Drawer -->
 <aside id="mobileDrawer" class="mobileDrawer">
     <!-- Top Header inside Drawer: Logo on Left + Close X on Right -->
-    <div class="mobileDrawerHeader" style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); margin-bottom: 10px; width: 100%;">
+    <div class="mobileDrawerHeader" style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); margin-bottom: 10px; width: 100%; box-sizing: border-box; padding-right: 6px;">
         <a href="/" style="display: flex; align-items: center; text-decoration: none;">
             <img src="{{ asset('FS LOGO n FAVICON-08.svg') }}" alt="FS Real Estate Advisory" style="height: 38px; width: auto; object-fit: contain;">
         </a>
-        <button type="button" id="mobileDrawerClose" class="mobileCloseBtn" aria-label="Close menu" style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; border: none; cursor: pointer;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <button type="button" id="mobileDrawerClose" class="mobileCloseBtn" aria-label="Close menu" style="width: 36px; height: 36px; min-width: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.15); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.25); cursor: pointer; flex-shrink: 0; margin-right: 10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="stroke: #ffffff !important;">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
         </button>
@@ -131,9 +131,9 @@
             @if($navbarProjects->isNotEmpty())
                 <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                     <a href="/projects" class="mobileNavLink" style="flex: 1;">PROJECTS</a>
-                    <button type="button" id="mobileProjectsToggle" style="background: none; border: none; padding: 10px 12px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;" aria-label="Toggle Projects Submenu">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="mobileChevronIcon" style="transition: transform 0.25s ease;">
-                            <path d="m6 9 6 6 6-6"/>
+                    <button type="button" id="mobileProjectsToggle" style="background: none; border: none; padding: 10px 12px; color: #ffffff !important; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-right: 6px;" aria-label="Toggle Projects Submenu">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="mobileChevronIcon" style="transition: transform 0.25s ease; stroke: #ffffff !important; color: #ffffff !important;">
+                            <path d="m6 9 6 6 6-6" stroke="#ffffff" style="stroke: #ffffff !important;"/>
                         </svg>
                     </button>
                 </div>
@@ -150,9 +150,9 @@
         <li>
             <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                 <span class="mobileNavLink" style="flex: 1; cursor: pointer;" onclick="document.getElementById('mobileCommercialToggle')?.click()">COMMERCIAL</span>
-                <button type="button" id="mobileCommercialToggle" style="background: none; border: none; padding: 10px 12px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;" aria-label="Toggle Commercial Submenu">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="mobileCommChevronIcon" style="transition: transform 0.25s ease;">
-                        <path d="m6 9 6 6 6-6"/>
+                <button type="button" id="mobileCommercialToggle" style="background: none; border: none; padding: 10px 12px; color: #ffffff !important; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-right: 6px;" aria-label="Toggle Commercial Submenu">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="mobileCommChevronIcon" style="transition: transform 0.25s ease; stroke: #ffffff !important; color: #ffffff !important;">
+                        <path d="m6 9 6 6 6-6" stroke="#ffffff" style="stroke: #ffffff !important;"/>
                     </svg>
                 </button>
             </div>
@@ -167,9 +167,9 @@
         <li>
             <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                 <a href="/developers" class="mobileNavLink" style="flex: 1;">DEVELOPERS</a>
-                <button type="button" id="mobileDevelopersToggle" style="background: none; border: none; padding: 10px 12px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;" aria-label="Toggle Developers Submenu">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="mobileDevChevronIcon" style="transition: transform 0.25s ease;">
-                        <path d="m6 9 6 6 6-6"/>
+                <button type="button" id="mobileDevelopersToggle" style="background: none; border: none; padding: 10px 12px; color: #ffffff !important; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-right: 6px;" aria-label="Toggle Developers Submenu">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="mobileDevChevronIcon" style="transition: transform 0.25s ease; stroke: #ffffff !important; color: #ffffff !important;">
+                        <path d="m6 9 6 6 6-6" stroke="#ffffff" style="stroke: #ffffff !important;"/>
                     </svg>
                 </button>
             </div>
@@ -316,6 +316,13 @@
     mobileMenuBtn?.addEventListener('click', openMenu);
     mobileDrawerClose?.addEventListener('click', closeMenu);
     mobileBackdrop?.addEventListener('click', closeMenu);
+
+    // Auto close drawer when resizing to desktop (e.g. when DevTools inspect is closed)
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 1024) {
+            closeMenu();
+        }
+    });
 
     // Close on any link click
     document.querySelectorAll('.mobileNavLink, .mobileSubItem').forEach(item => {
@@ -523,5 +530,113 @@
         color: #1a1a1a !important;
         padding: 6px !important;
     }
+    .header,
+    #siteHeader {
+        overflow-x: clip !important;
+    }
+    .headerContainer {
+        padding: 0 16px !important;
+    }
+}
+
+/* 1. Prevent Horizontal Scroll on Mobile under Navbar */
+html, body {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* 2. Desktop Safety: NEVER show mobile drawer or backdrop on screens >= 1025px */
+@media (min-width: 1025px) {
+    .mobileDrawer,
+    #mobileDrawer,
+    .mobileDrawerOverlay,
+    #mobileBackdrop,
+    .mobileToggle,
+    #mobileMenuBtn {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: translateX(105%) !important;
+    }
+}
+
+/* 3. Mobile Drawer Transform Animation (Zero Horizontal Scrollbar / Overflow) */
+.mobileDrawer,
+#mobileDrawer {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: auto !important;
+    width: 320px !important;
+    max-width: 85vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    background: #0d1527 !important;
+    padding: 24px 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    z-index: 100005 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    box-shadow: -6px 0 30px rgba(0, 0, 0, 0.5) !important;
+    transform: translateX(105%) !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease !important;
+}
+
+.mobileDrawer.mobileDrawerOpen,
+#mobileDrawer.mobileDrawerOpen {
+    transform: translateX(0) !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+.mobileDrawerOverlay,
+#mobileBackdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(4px) !important;
+    z-index: 100000 !important;
+    display: none !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+.mobileDrawerOverlay.mobileDrawerOverlayActive,
+#mobileBackdrop.mobileDrawerOverlayActive {
+    display: block !important;
+    opacity: 1 !important;
+}
+
+/* 4. Dropdown Chevrons and Close Button Visibility (Crisp White) */
+#mobileChevronIcon,
+#mobileCommChevronIcon,
+#mobileDevChevronIcon,
+#mobileProjectsToggle svg,
+#mobileCommercialToggle svg,
+#mobileDevelopersToggle svg,
+.mobileNavList button svg,
+.mobileNavList svg {
+    stroke: #ffffff !important;
+    color: #ffffff !important;
+}
+
+#mobileChevronIcon path,
+#mobileCommChevronIcon path,
+#mobileDevChevronIcon path {
+    stroke: #ffffff !important;
+}
+
+#mobileDrawerClose {
+    margin-right: 10px !important;
+    flex-shrink: 0 !important;
+}
+
+#mobileDrawerClose svg {
+    stroke: #ffffff !important;
 }
 </style>

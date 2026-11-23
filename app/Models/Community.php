@@ -42,6 +42,17 @@ class Community extends Model implements Auditable
         'url',
     ];
 
+    protected static function booted()
+    {
+        static::deleting(function ($community) {
+            Project::where('community_id', $community->id)
+                ->update([
+                    'community_id' => null,
+                    'location' => null
+                ]);
+        });
+    }
+
     /**
      * The City this neighbourhood/community belongs to.
      */

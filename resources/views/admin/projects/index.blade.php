@@ -398,12 +398,12 @@
                             <div style="display:flex; align-items:center; gap:10px;">
                                 <span class="adm-chip">card &amp; page</span>
 
-                                <!-- Status Dropdown Button -->
+                                <!-- Status Dropdown Button (Defaults to Draft) -->
                                 <div class="adm-status-dropdown-wrap" style="position:relative; display:inline-block;">
-                                    <input type="hidden" name="status" id="add_prop_status" value="publish">
-                                    <button type="button" id="add_prop_status_btn" class="adm-status-btn" onclick="toggleStatusDropdown('add_prop_status_menu')" style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; font-size:12.5px; font-weight:700; border-radius:8px; cursor:pointer; border:1px solid #bbf7d0; background:#f0fdf4; color:#15803d; transition:all 0.15s ease;">
-                                        <span class="status-dot" style="width:7px; height:7px; border-radius:50%; background:#22c55e;"></span>
-                                        <span id="add_prop_status_label">Publish</span>
+                                    <input type="hidden" name="status" id="add_prop_status" value="draft">
+                                    <button type="button" id="add_prop_status_btn" class="adm-status-btn" onclick="toggleStatusDropdown('add_prop_status_menu')" style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; font-size:12.5px; font-weight:700; border-radius:8px; cursor:pointer; border:1px solid #fde68a; background:#fffbeb; color:#b45309; transition:all 0.15s ease;">
+                                        <span class="status-dot" style="width:7px; height:7px; border-radius:50%; background:#f59e0b;"></span>
+                                        <span id="add_prop_status_label">Draft</span>
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                     </button>
                                     <div id="add_prop_status_menu" class="adm-status-menu" style="display:none; position:absolute; right:0; top:calc(100% + 6px); background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; box-shadow:0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05); min-width:140px; padding:6px; z-index:9999;">
@@ -562,7 +562,7 @@
                                 <strong>Show in Navigation Menu</strong>
                             </label>
                             <label style="display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: #334155; cursor: pointer;">
-                                <input type="checkbox" name="is_published" value="1" checked style="width: 16px; height: 16px; accent-color: #BFA16A;">
+                                <input type="checkbox" name="is_published" value="1" style="width: 16px; height: 16px; accent-color: #BFA16A;">
                                 <strong>Published (Publicly accessible)</strong>
                             </label>
                         </div>
