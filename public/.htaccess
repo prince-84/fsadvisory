@@ -15,7 +15,11 @@
     RewriteCond %{HTTP_HOST} ^www\.fsadvisory\.pk$ [NC]
     RewriteRule ^(.*)$ https://fsadvisory.pk/$1 [R=301,L]
 
-    # 3. HANDLE AUTHORIZATION HEADER
+    # 3. 301 REDIRECT EXPLICIT /public/ REQUESTS TO CLEAN URL (SEO DUPLICATE PREVENTION)
+    RewriteCond %{THE_REQUEST} \s/+public/([^\s?]*) [NC]
+    RewriteRule ^ https://fsadvisory.pk/%1 [R=301,L]
+
+    # 4. HANDLE AUTHORIZATION HEADER
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 

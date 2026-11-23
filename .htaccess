@@ -8,10 +8,14 @@
     RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
     # 2. CONTROL DOMAIN / WWW REDIRECT
-    RewriteCond %{HTTP_HOST} ^www\.saimaprojects\.com$ [NC]
-    RewriteRule ^(.*)$ https://saimaprojects.com/$1 [R=301,L]
+    RewriteCond %{HTTP_HOST} ^www\.fsadvisory\.pk$ [NC]
+    RewriteRule ^(.*)$ https://fsadvisory.pk/$1 [R=301,L]
 
-    # 3. ROUTE REQUESTS TO PUBLIC DIRECTORY (FOR CPANEL ROOT SETUP)
+    # 3. 301 REDIRECT EXPLICIT /public/ REQUESTS TO CLEAN URL (SEO DUPLICATE PREVENTION)
+    RewriteCond %{THE_REQUEST} \s/+public/([^\s?]*) [NC]
+    RewriteRule ^ https://fsadvisory.pk/%1 [R=301,L]
+
+    # 4. ROUTE REQUESTS TO PUBLIC DIRECTORY (FOR CPANEL ROOT SETUP)
     RewriteCond %{REQUEST_URI} !^/public/
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>

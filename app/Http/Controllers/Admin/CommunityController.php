@@ -366,10 +366,25 @@ class CommunityController extends Controller
         }
         $isActive = ($status !== 'draft');
 
-        // Check slug uniqueness
-        $existingPage = Page::where('slug', $slug)->where('id', '!=', $community->page_id)->first();
-        if ($existingPage) {
-            $slug = $slug . '-' . $community->id;
+        // Clean up any unlinked / orphaned page leftover from prior deleted records
+        $orphanedPage = Page::where('slug', $slug)
+            ->where('id', '!=', $community->page_id)
+            ->whereNotIn('id', function($q) { $q->select('page_id')->from('cities')->whereNotNull('page_id'); })
+            ->whereNotIn('id', function($q) { $q->select('page_id')->from('communities')->whereNotNull('page_id'); })
+            ->whereNotIn('id', function($q) { $q->select('page_id')->from('projects')->whereNotNull('page_id'); })
+            ->first();
+
+        if ($orphanedPage) {
+            $orphanedPage->sections()->delete();
+            $orphanedPage->delete();
+        }
+
+        // Check if another active community already uses the same slug
+        $otherCommunity = Community::where('slug', $slug)->where('id', '!=', $community->id)->first();
+        if ($otherCommunity) {
+            return back()->withInput()->withErrors([
+                'slug' => "Another Neighbourhood/Community '{$otherCommunity->name}' already uses the slug '{$slug}'."
+            ]);
         }
 
         // Update Community

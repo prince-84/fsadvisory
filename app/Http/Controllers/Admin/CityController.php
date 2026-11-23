@@ -352,10 +352,25 @@ class CityController extends Controller
         }
         $isActive = ($status !== 'draft');
 
-        // Check slug uniqueness
-        $existingPage = Page::where('slug', $slug)->where('id', '!=', $city->page_id)->first();
-        if ($existingPage) {
-            $slug = $slug . '-' . $city->id;
+        // Clean up any unlinked / orphaned page leftover from prior deleted records
+        $orphanedPage = Page::where('slug', $slug)
+            ->where('id', '!=', $city->page_id)
+            ->whereNotIn('id', function($q) { $q->select('page_id')->from('cities')->whereNotNull('page_id'); })
+            ->whereNotIn('id', function($q) { $q->select('page_id')->from('communities')->whereNotNull('page_id'); })
+            ->whereNotIn('id', function($q) { $q->select('page_id')->from('projects')->whereNotNull('page_id'); })
+            ->first();
+
+        if ($orphanedPage) {
+            $orphanedPage->sections()->delete();
+            $orphanedPage->delete();
+        }
+
+        // Check if another active city already uses the same slug
+        $otherCity = City::where('slug', $slug)->where('id', '!=', $city->id)->first();
+        if ($otherCity) {
+            return back()->withInput()->withErrors([
+                'slug' => "Another City '{$otherCity->name}' already uses the slug '{$slug}'."
+            ]);
         }
 
         // Handle cover image

@@ -576,6 +576,7 @@ if (! function_exists('canonical_url')) {
             }
 
             $path = trim(request()->path(), '/');
+            $path = trim((string) preg_replace('#^public(/|$)#', '', $path), '/');
 
             if ($path === '' || $path === '/') {
                 return $base;
