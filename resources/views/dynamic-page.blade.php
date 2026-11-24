@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @php
-    $dpTitle = ($page ?? null)?->meta_title ?: ((($page ?? null)?->title ?? ($project->title ?? ($city->name ?? ($community->name ?? 'Property')))) . ' | FS Real Estate Advisory');
+    $customDpTitle = ($page ?? null)?->meta_title ?: (($project ?? null)?->meta_title ?: (($city ?? null)?->meta_title ?: (($community ?? null)?->meta_title ?: null)));
+    $dpTitle = $customDpTitle ?: ((($page ?? null)?->title ?? ($project->title ?? ($city->name ?? ($community->name ?? 'Property')))) . ' | FS Real Estate Advisory');
     $dpDesc = ($page ?? null)?->meta_description ?: (($project ?? null)?->headline ?: 'Explore luxury real estate properties, floor plans, and investment opportunities with FS Real Estate Advisory.');
     $dpCanonical = canonical_url();
     

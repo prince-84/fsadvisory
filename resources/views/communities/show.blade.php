@@ -6,12 +6,13 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
         $pageMeta = $community->page;
-        $pageTitle = $pageMeta?->meta_title ?: ($community->h1 ?: $community->name);
+        $customMetaTitle = $community->meta_title ?: ($pageMeta?->meta_title ?? null);
+        $pageTitle = $customMetaTitle ?: (($community->h1 ?: $community->name) . ' | FS Real Estate Advisory');
         $pageDesc = $pageMeta?->meta_description ?: (\Illuminate\Support\Str::limit(strip_tags($community->short_content ?: $community->tagline ?: ''), 160));
         $pageKeywords = $pageMeta?->meta_keywords ?: ($community->name . ', real estate, properties');
         $ogImg = $community->image ? (str_starts_with($community->image, 'http') ? $community->image : asset(ltrim($community->image, '/'))) : asset('images/hero/slide-1.jpg');
     @endphp
-    <title>{{ $pageTitle }} | FS Real Estate Advisory</title>
+    <title>{{ $pageTitle }}</title>
     <link rel="canonical" href="{{ canonical_url() }}" />
 
     @if($pageDesc)

@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $community->meta_title ?? (($community->h1 ?: $community->name) . ' | FS Real Estate Advisory') }}</title>
+    @php
+        $customMetaTitle = $community->meta_title ?: ($community->page?->meta_title ?? null);
+        $areaMetaTitle = $customMetaTitle ?: (($community->h1 ?: $community->name) . ' | FS Real Estate Advisory');
+    @endphp
+    <title>{{ $areaMetaTitle }}</title>
     <link rel="canonical" href="{{ canonical_url() }}" />
 
     @php

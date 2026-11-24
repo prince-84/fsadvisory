@@ -6,12 +6,13 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
         $pageMeta = $city->page;
-        $pageTitle = $pageMeta?->meta_title ?: ($city->h1 ?: $city->name);
+        $customMetaTitle = $city->meta_title ?: ($pageMeta?->meta_title ?? null);
+        $pageTitle = $customMetaTitle ?: (($city->h1 ?: $city->name) . ' | FS Real Estate Advisory');
         $pageDesc = $pageMeta?->meta_description ?: (\Illuminate\Support\Str::limit(strip_tags($city->short_content ?: $city->tagline ?: ''), 160));
         $pageKeywords = $pageMeta?->meta_keywords ?: ($city->name . ', real estate, properties');
         $ogImg = $city->image ? (str_starts_with($city->image, 'http') ? $city->image : asset(ltrim($city->image, '/'))) : asset('images/hero/slide-1.jpg');
     @endphp
-    <title>{{ $pageTitle }} | FS Real Estate Advisory</title>
+    <title>{{ $pageTitle }}</title>
     <link rel="canonical" href="{{ canonical_url() }}" />
 
     @if($pageDesc)

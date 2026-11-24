@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $developer->meta_title ?: (($developer->h1 ?: $developer->name) . ' | FS Real Estate Advisory') }}</title>
+    @php
+        $devCustomMetaTitle = $developer->meta_title ?: ($developer->page?->meta_title ?? null);
+        $devMetaTitle = $devCustomMetaTitle ?: (($developer->h1 ?: $developer->name) . ' | FS Real Estate Advisory');
+    @endphp
+    <title>{{ $devMetaTitle }}</title>
     <link rel="canonical" href="{{ canonical_url() }}" />
 
     @if($developer->meta_description)

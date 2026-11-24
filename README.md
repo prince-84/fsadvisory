@@ -3611,3 +3611,24 @@ php artisan optimize:clear
 ### Files Modified
 - app/helpers.php
 - README.md
+
+
+## Changelog — 2026-11-24 (Part 126: Exact SEO Meta Title Display Without Auto Brand Suffix)
+
+### What Changed
+- **Removed Hardcoded Brand Name Suffix when Custom Meta Title is Set**:
+  - Previously, `communities/show.blade.php` and `cities/show.blade.php` unconditionally appended ` | FS Real Estate Advisory` to `<title>`, causing custom SEO Meta Titles defined in CMS (such as `"Gulberg Properties | Luxury Investment & Community Guide"`) to display as `<title>Gulberg Properties | Luxury Investment &amp; Community Guide | FS Real Estate Advisory</title>`.
+  - Updated `<title>` resolution logic across all detail templates:
+    - `resources/views/communities/show.blade.php`: Check `$community->meta_title ?: ($pageMeta?->meta_title ?? null)`. If a custom meta title exists, render it exactly without any appended text. Fallback to `(($community->h1 ?: $community->name) . ' | FS Real Estate Advisory')` only when no custom title is defined.
+    - `resources/views/areas/show.blade.php`: Check `$community->meta_title ?: ($community->page?->meta_title ?? null)`. If set, display as-is.
+    - `resources/views/cities/show.blade.php`: Check `$city->meta_title ?: ($pageMeta?->meta_title ?? null)`. If set, display as-is without suffix.
+    - `resources/views/developers/show.blade.php`: Check `$developer->meta_title ?: ($developer->page?->meta_title ?? null)`. If set, display as-is without suffix.
+    - `resources/views/dynamic-page.blade.php`: Check `$customDpTitle = ($page ?? null)?->meta_title ?: (($project ?? null)?->meta_title ?: (($city ?? null)?->meta_title ?: (($community ?? null)?->meta_title ?: null)))`. If set, render as-is without suffix.
+
+### Files Modified
+- resources/views/areas/show.blade.php
+- resources/views/cities/show.blade.php
+- resources/views/communities/show.blade.php
+- resources/views/developers/show.blade.php
+- resources/views/dynamic-page.blade.php
+- README.md
