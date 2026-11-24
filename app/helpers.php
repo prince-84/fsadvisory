@@ -240,9 +240,17 @@ if (! function_exists('footer_data')) {
 if (! function_exists('is_indexing_enabled')) {
     /**
      * Check if search engine indexing is enabled globally.
+     * Always forces NOINDEX on subdomains (mail, admin, webmail, cpanel, etc.).
      */
     function is_indexing_enabled(): bool
     {
+        try {
+            $host = request()->getHost();
+            if (preg_match('/^(mail|admin|webmail|cpanel|webdisk|autodiscover|cpcontacts|cpcalendars)\./i', $host)) {
+                return false;
+            }
+        } catch (\Throwable $e) {}
+
         return \App\Models\SiteSetting::isIndexingEnabled();
     }
 }

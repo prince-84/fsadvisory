@@ -11,8 +11,8 @@
     RewriteCond %{HTTP:X-Forwarded-Proto} =http
     RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
-    # 2. CONTROL DOMAIN / WWW REDIRECT (Redirect www.fsadvisory.pk to fsadvisory.pk)
-    RewriteCond %{HTTP_HOST} ^www\.fsadvisory\.pk$ [NC]
+    # 2. CONTROL DOMAIN / WWW & SUBDOMAIN REDIRECT (Redirect www & subdomains to apex domain)
+    RewriteCond %{HTTP_HOST} ^(www|mail|webmail|cpanel|webdisk|autodiscover|cpcontacts|cpcalendars)\.fsadvisory\.pk$ [NC]
     RewriteRule ^(.*)$ https://fsadvisory.pk/$1 [R=301,L]
 
     # 3. 301 REDIRECT EXPLICIT /public/ REQUESTS TO CLEAN URL (SEO DUPLICATE PREVENTION)

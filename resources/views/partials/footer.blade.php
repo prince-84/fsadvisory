@@ -386,11 +386,8 @@
             @endforeach
         </div>
 
-        <!-- Bottom Bar: Disclaimer & Copyright -->
+        <!-- Bottom Bar: Copyright -->
         <div class="bottomBar Footer-module__S6Hkya__bottomBar">
-            <p class="disclaimerText Footer-module__S6Hkya__disclaimerText">
-                {{ $fData->disclaimer_text ?: 'Disclaimer: Its not official website. We inform that all property information provided on this website is for general guidance only and does not constitute a formal offer. Prices, availability, and property details may change at any time without prior notice. Images are for illustrative purposes and may not reflect actual properties. For the most accurate and up-to-date information, please contact us directly through the details provided on the website.' }}
-            </p>
             <p class="copyrightText Footer-module__S6Hkya__copyrightText">
                 {{ $fData->copyright_text ?: '© ' . date('Y') . ' FS Real Estate Advisory. All Rights Reserved.' }}
             </p>

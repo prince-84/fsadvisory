@@ -67,6 +67,18 @@ class SitemapController extends Controller
     }
 
     /**
+     * Helper to return standard XML sitemap response with noindex header.
+     */
+    protected function xmlResponse(string $xml): Response
+    {
+        return response($xml, 200, [
+            'Content-Type'  => 'application/xml; charset=utf-8',
+            'Cache-Control' => 'public, max-age=3600',
+            'X-Robots-Tag'  => 'noindex',
+        ]);
+    }
+
+    /**
      * Helper to format ISO 8601 timestamp with milliseconds UTC (e.g. 2026-08-04T06:52:44.914Z)
      */
     protected function formatDate($date): string
@@ -130,7 +142,7 @@ class SitemapController extends Controller
 
         // 6. Dynamic pages latest updated_at
         $excludedSlugs = array_merge(
-            ['', '/', 'home', 'about-us', 'contact-us', 'privacy-policy', 'terms-and-conditions'],
+            ['', '/', 'home', 'about-us', 'contact-us', 'privacy-policy', 'terms-and-conditions', 'disclaimer'],
             Page::projectSlugs(),
             City::pluck('slug')->all(),
             Community::pluck('slug')->all()
@@ -166,25 +178,22 @@ class SitemapController extends Controller
         ];
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        $xml .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
         foreach ($sitemaps as $sm) {
-            $xml .= "    <url>\n";
+            $xml .= "    <sitemap>\n";
             $xml .= "        <loc>{$sm['url']}</loc>\n";
             $xml .= "        <lastmod>{$sm['lastmod']}</lastmod>\n";
-            $xml .= "    </url>\n";
+            $xml .= "    </sitemap>\n";
         }
-        $xml .= '</urlset>';
+        $xml .= '</sitemapindex>';
 
-        return response($xml, 200, [
-            'Content-Type'  => 'application/xml; charset=utf-8',
-            'Cache-Control' => 'public, max-age=3600',
-        ]);
+        return $this->xmlResponse($xml);
     }
 
     /**
      * Secondary /sitemap/page-sitemap.xml:
-     * Outputs strictly the 6 core pages:
-     * Home (priority 1.0) and Contact, About, Privacy Policy, Disclaimer, Terms (priority 0.5).
+     * Outputs strictly the core pages:
+     * Home (priority 1.0) and Developers, Contact, About, Privacy Policy, Terms (priority 0.5 - 0.8).
      */
     public function pageSitemap(): Response
     {
@@ -252,10 +261,7 @@ class SitemapController extends Controller
 
         $xml .= '</urlset>';
 
-        return response($xml, 200, [
-            'Content-Type'  => 'application/xml; charset=utf-8',
-            'Cache-Control' => 'public, max-age=3600',
-        ]);
+        return $this->xmlResponse($xml);
     }
 
     /**
@@ -294,10 +300,7 @@ class SitemapController extends Controller
 
         $xml .= '</urlset>';
 
-        return response($xml, 200, [
-            'Content-Type'  => 'application/xml; charset=utf-8',
-            'Cache-Control' => 'public, max-age=3600',
-        ]);
+        return $this->xmlResponse($xml);
     }
 
     /**
@@ -336,10 +339,7 @@ class SitemapController extends Controller
 
         $xml .= '</urlset>';
 
-        return response($xml, 200, [
-            'Content-Type'  => 'application/xml; charset=utf-8',
-            'Cache-Control' => 'public, max-age=3600',
-        ]);
+        return $this->xmlResponse($xml);
     }
 
     /**
@@ -378,10 +378,7 @@ class SitemapController extends Controller
 
         $xml .= '</urlset>';
 
-        return response($xml, 200, [
-            'Content-Type'  => 'application/xml; charset=utf-8',
-            'Cache-Control' => 'public, max-age=3600',
-        ]);
+        return $this->xmlResponse($xml);
     }
 
     /**
@@ -427,10 +424,7 @@ class SitemapController extends Controller
 
         $xml .= '</urlset>';
 
-        return response($xml, 200, [
-            'Content-Type'  => 'application/xml; charset=utf-8',
-            'Cache-Control' => 'public, max-age=3600',
-        ]);
+        return $this->xmlResponse($xml);
     }
 
     /**
@@ -443,7 +437,7 @@ class SitemapController extends Controller
     {
         $baseUrl = $this->getBaseUrl();
 
-        $coreSlugs = ['', '/', 'home', 'about-us', 'contact-us', 'privacy-policy', 'terms-and-conditions'];
+        $coreSlugs = ['', '/', 'home', 'about-us', 'contact-us', 'privacy-policy', 'terms-and-conditions', 'disclaimer'];
         $projectSlugs = Page::projectSlugs();
         $citySlugs = City::pluck('slug')->all();
         $commSlugs = Community::pluck('slug')->all();
@@ -485,10 +479,7 @@ class SitemapController extends Controller
 
         $xml .= '</urlset>';
 
-        return response($xml, 200, [
-            'Content-Type'  => 'application/xml; charset=utf-8',
-            'Cache-Control' => 'public, max-age=3600',
-        ]);
+        return $this->xmlResponse($xml);
     }
 
     /**
@@ -524,9 +515,6 @@ class SitemapController extends Controller
 
         $xml .= '</urlset>';
 
-        return response($xml, 200, [
-            'Content-Type'  => 'application/xml; charset=utf-8',
-            'Cache-Control' => 'public, max-age=3600',
-        ]);
+        return $this->xmlResponse($xml);
     }
 }

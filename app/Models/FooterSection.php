@@ -47,7 +47,7 @@ class FooterSection extends Model
                             ['platform' => 'linkedin', 'url' => ''],
                         ],
                         'columns' => static::defaultColumns(),
-                        'disclaimer_text' => 'Disclaimer: Its not official website. We inform that all property information provided on this website is for general guidance only and does not constitute a formal offer. Prices, availability, and property details may change at any time without prior notice. Images are for illustrative purposes and may not reflect actual properties. For the most accurate and up-to-date information, please contact us directly through the details provided on the website.',
+                        'disclaimer_text' => null,
                         'copyright_text' => '© 2026 fsadvisory.pk All Rights Reserved.',
                     ]);
                 }
@@ -62,7 +62,7 @@ class FooterSection extends Model
                 'newsletter_enabled' => false,
                 'social_links' => [],
                 'columns' => static::defaultColumns(),
-                'disclaimer_text' => 'Disclaimer: Its not official website. We inform that all property information provided on this website is for general guidance only and does not constitute a formal offer.',
+                'disclaimer_text' => null,
                 'copyright_text' => '© 2026 fsadvisory.pk All Rights Reserved.',
             ]);
             return $fallback;
