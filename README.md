@@ -3632,3 +3632,17 @@ php artisan optimize:clear
 - resources/views/developers/show.blade.php
 - resources/views/dynamic-page.blade.php
 - README.md
+
+
+## Changelog — 2026-11-26 (Part 127: Blog Full Content Summernote Image Insert Position & Duplicate Fix)
+
+### What Changed
+- **Blog Full Content Summernote Image Upload Fix (`resources/views/admin/blogs/index.blade.php`)**:
+  - Removed conflicting `.adm-summernote` global initialization on `#field_full_content` (switched to `.blog-summernote`) so the blog editor does not get double-bound or trigger duplicate image uploads.
+  - Added native DOM `Range` capture (`savedBlogRange`) on `.note-editable` interaction and capture-phase `mousedown`/`click` interception on the toolbar Picture button, ensuring:
+    1. Uploading 1 image inserts **exactly 1 image** (no duplicate insertion).
+    2. The uploaded image is inserted **at the exact cursor position** inside the content rather than jumping to the top of the editor.
+
+### Files Modified
+- resources/views/admin/blogs/index.blade.php
+- README.md

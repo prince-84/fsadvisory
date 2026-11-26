@@ -691,7 +691,7 @@
                             <div>
                                 <textarea id="field_full_content"
                                           name="content"
-                                          class="blog-input-control adm-summernote"
+                                          class="blog-input-control blog-summernote"
                                           style="display:none;">{{ old('content', $blog->content ?? '') }}</textarea>
                             </div>
 
@@ -938,25 +938,179 @@
         row.querySelector('input').focus();
     }
 
-    // Initialize Summernote on page load
+    // Initialize Summernote on page load for Blog Full Content
     $(document).ready(function() {
-        if ($.fn.summernote) {
-            $('#field_full_content').summernote({
-                height: 260,
-                minHeight: 180,
-                placeholder: 'Enter Blog Content....',
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'underline', 'strikethrough', 'clear']],
-                    ['fontname', ['fontname']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['view', ['fullscreen', 'codeview', 'help']]
-                ]
+        const $blogEditor = $('#field_full_content');
+        if (!$.fn.summernote || !$blogEditor.length) return;
+
+        let savedBlogRange = null;
+        let isUploadingBlogImg = false;
+
+        function getEditableEl() {
+            return $blogEditor.next('.note-editor').find('.note-editable')[0] || null;
+        }
+
+        function captureBlogRange() {
+            const editableEl = getEditableEl();
+            if (!editableEl) return;
+            const sel = window.getSelection();
+            if (sel && sel.rangeCount > 0) {
+                const r = sel.getRangeAt(0);
+                if (editableEl.contains(r.commonAncestorContainer)) {
+                    savedBlogRange = r.cloneRange();
+                }
+            }
+        }
+
+        function insertBlogImageAtCursor(imageUrl) {
+            const editableEl = getEditableEl();
+            if (!editableEl) return;
+
+            editableEl.focus({ preventScroll: true });
+
+            const sel = window.getSelection();
+            let targetRange = null;
+
+            if (savedBlogRange && editableEl.contains(savedBlogRange.commonAncestorContainer)) {
+                targetRange = savedBlogRange.cloneRange();
+            } else {
+                targetRange = document.createRange();
+                targetRange.selectNodeContents(editableEl);
+                targetRange.collapse(false);
+            }
+
+            sel.removeAllRanges();
+            sel.addRange(targetRange);
+
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.style.maxWidth = '100%';
+            img.style.height = 'auto';
+            img.style.borderRadius = '8px';
+            img.style.margin = '15px 0';
+            img.style.display = 'block';
+
+            targetRange.deleteContents();
+            targetRange.insertNode(img);
+
+            const afterRange = document.createRange();
+            afterRange.setStartAfter(img);
+            afterRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(afterRange);
+            savedBlogRange = afterRange.cloneRange();
+
+            $blogEditor.val($blogEditor.summernote('code'));
+        }
+
+        function uploadBlogContentImage(file) {
+            if (!file || isUploadingBlogImg) return;
+            isUploadingBlogImg = true;
+
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}');
+
+            const origCursor = document.body.style.cursor;
+            document.body.style.cursor = 'wait';
+
+            $.ajax({
+                url: '{{ route("admin.upload-content-image") }}',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                    document.body.style.cursor = origCursor;
+                    isUploadingBlogImg = false;
+                    if (res && res.url) {
+                        insertBlogImageAtCursor(res.url);
+                    }
+                },
+                error: function(err) {
+                    document.body.style.cursor = origCursor;
+                    isUploadingBlogImg = false;
+                    alert('Image upload failed: ' + (err.responseJSON?.message || 'Please check file size and format (max 15MB).'));
+                }
             });
         }
+
+        $blogEditor.summernote({
+            height: 260,
+            minHeight: 180,
+            placeholder: 'Enter Blog Content....',
+            dialogsInBody: true,
+            dialogsFade: false,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'strikethrough', 'clear']],
+                ['fontname', ['fontname']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            callbacks: {
+                onInit: function() {
+                    const noteEditorEl = $blogEditor.next('.note-editor')[0];
+                    const editableEl = getEditableEl();
+                    if (editableEl) {
+                        ['keyup', 'mouseup', 'click', 'input', 'blur'].forEach(function(evt) {
+                            editableEl.addEventListener(evt, captureBlogRange);
+                        });
+                    }
+                    if (noteEditorEl) {
+                        noteEditorEl.addEventListener('mousedown', function(e) {
+                            if (e.target.closest('button[data-name="picture"], .note-btn[aria-label="Picture"], .note-btn[data-original-title="Picture"]')) {
+                                captureBlogRange();
+                            }
+                        }, true);
+
+                        noteEditorEl.addEventListener('click', function(e) {
+                            const picBtn = e.target.closest('button[data-name="picture"], .note-btn[aria-label="Picture"], .note-btn[data-original-title="Picture"]');
+                            if (!picBtn) return;
+
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.stopImmediatePropagation();
+
+                            let picker = document.getElementById('blog_full_content_image_picker');
+                            if (!picker) {
+                                picker = document.createElement('input');
+                                picker.type = 'file';
+                                picker.id = 'blog_full_content_image_picker';
+                                picker.accept = 'image/*';
+                                picker.style.display = 'none';
+                                document.body.appendChild(picker);
+                                picker.addEventListener('change', function() {
+                                    if (this.files && this.files[0]) {
+                                        uploadBlogContentImage(this.files[0]);
+                                        this.value = '';
+                                    }
+                                });
+                            }
+                            picker.value = '';
+                            picker.click();
+                        }, true);
+                    }
+                },
+                onImageUpload: function(files) {
+                    if (files && files[0]) {
+                        uploadBlogContentImage(files[0]);
+                    }
+                },
+                onChange: function(contents) {
+                    $blogEditor.val(contents);
+                }
+            }
+        });
+
+        $blogEditor.closest('form').on('submit', function() {
+            if ($blogEditor.data('summernote')) {
+                $blogEditor.val($blogEditor.summernote('code'));
+            }
+        });
     });
 </script>
 @endpush
