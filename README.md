@@ -3695,3 +3695,16 @@ php artisan optimize:clear
 ### Files Modified
 - routes/web.php
 - README.md
+
+
+
+## Changelog — 2026-11-27 (Part 132: Remove Legacy FAQ Subtitle Paragraph on Project Detail Pages)
+
+### What Changed
+- **Project Detail Pages (`resources/views/dynamic-page.blade.php`)**:
+  - Passed `'customSubtitle' => ''` to `partials.faq` whenever rendering a project detail page (`isset($project) && $project` or `request()->is('project/*')`).
+  - This removes the static/legacy subtitle paragraph (`"Key information and helpful answers regarding property purchases on Hudayriyat Island."`) beneath the `Frequently Asked Questions` heading on all project detail pages while leaving all other pages untouched.
+
+### Files Modified
+- resources/views/dynamic-page.blade.php
+- README.md

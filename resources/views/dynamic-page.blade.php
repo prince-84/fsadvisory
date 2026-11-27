@@ -703,7 +703,7 @@
 
     {{-- 7. FAQ Accordion (Full Width) --}}
     @if($orderedSections->contains('section_key', 'faq'))
-        @include('partials.faq', ['page' => $page, 'slug' => $page->slug])
+        @include('partials.faq', ['page' => $page, 'slug' => $page->slug, 'customSubtitle' => ((isset($project) && $project) || request()->is('project/*')) ? '' : null])
     @endif
 
     {{-- 8. Contact & Booking CTA (Full Width) --}}
@@ -840,7 +840,7 @@
     @elseif($sec->section_key === 'landmarks')
         <section class="GolfLandmarks-module__N9ZsyW__landmarksSection"><div class="container"><div class="GolfLandmarks-module__N9ZsyW__header"><h2 class="GolfLandmarks-module__N9ZsyW__title">Nearby Landmarks</h2></div><div class="GolfLandmarks-module__N9ZsyW__landmarksGrid"><div class="GolfLandmarks-module__N9ZsyW__card"><div class="GolfLandmarks-module__N9ZsyW__imgWrapper"><img alt="Ferrari World Abu Dhabi" class="GolfLandmarks-module__N9ZsyW__cardImg" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="100vw" src="/images/golf-estates/landmark-ferrari.jpg"/></div><div class="GolfLandmarks-module__N9ZsyW__cardContent"><h3 class="GolfLandmarks-module__N9ZsyW__landmarkTitle">Ferrari World Abu Dhabi</h3><p class="GolfLandmarks-module__N9ZsyW__landmarkTime">42 Mins</p></div></div><div class="GolfLandmarks-module__N9ZsyW__card"><div class="GolfLandmarks-module__N9ZsyW__imgWrapper"><img alt="Zayed International Airport" class="GolfLandmarks-module__N9ZsyW__cardImg" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="100vw" src="/images/golf-estates/landmark-airport.jpg"/></div><div class="GolfLandmarks-module__N9ZsyW__cardContent"><h3 class="GolfLandmarks-module__N9ZsyW__landmarkTitle">Zayed International Airport</h3><p class="GolfLandmarks-module__N9ZsyW__landmarkTime">25 Mins</p></div></div><div class="GolfLandmarks-module__N9ZsyW__card"><div class="GolfLandmarks-module__N9ZsyW__imgWrapper"><img alt="Louvre Abu Dhabi" class="GolfLandmarks-module__N9ZsyW__cardImg" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="100vw" src="/images/golf-estates/landmark-louvre.jpg"/></div><div class="GolfLandmarks-module__N9ZsyW__cardContent"><h3 class="GolfLandmarks-module__N9ZsyW__landmarkTitle">Louvre Abu Dhabi</h3><p class="GolfLandmarks-module__N9ZsyW__landmarkTime">34 Mins</p></div></div></div></div></section>
     @elseif($sec->section_key === 'faq')
-        @include('partials.faq', ['page' => $page, 'slug' => $page->slug])
+        @include('partials.faq', ['page' => $page, 'slug' => $page->slug, 'customSubtitle' => ((isset($project) && $project) || request()->is('project/*')) ? '' : null])
     @elseif($sec->section_key === 'contact')
         @php
             $hasContactContent = !empty(trim((string)page_section('contact', 'heading', page_section('contact', 'title', '', $page->slug), $page->slug)))
