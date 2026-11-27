@@ -382,6 +382,63 @@
                             </li>
                         @endforeach
                     </ul>
+
+                    @if($loop->last)
+                        @php
+                            $activeSocialLinks = collect($fData->social_links ?? [])
+                                ->filter(fn ($item) => !empty(trim((string) ($item['url'] ?? ''))))
+                                ->values();
+                        @endphp
+                        @if($activeSocialLinks->isNotEmpty())
+                            <div class="footerSocialLinks" style="display: flex; align-items: center; gap: 10px; margin-top: 16px; flex-wrap: wrap;">
+                                @foreach($activeSocialLinks as $sLink)
+                                    @php
+                                        $platform = strtolower(trim((string) ($sLink['platform'] ?? '')));
+                                        $rawSocialUrl = trim((string) ($sLink['url'] ?? ''));
+                                        if ($platform === 'whatsapp' && !preg_match('#^https?://#i', $rawSocialUrl)) {
+                                            $waDigits = preg_replace('/\D+/', '', $rawSocialUrl);
+                                            $socialHref = $waDigits ? ('https://wa.me/' . $waDigits) : $rawSocialUrl;
+                                        } else {
+                                            $socialHref = preg_match('#^https?://#i', $rawSocialUrl) ? $rawSocialUrl : ('https://' . ltrim($rawSocialUrl, '/'));
+                                        }
+                                        $platformTitle = match ($platform) {
+                                            'facebook' => 'Facebook',
+                                            'instagram' => 'Instagram',
+                                            'twitter' => 'X (Twitter)',
+                                            'linkedin' => 'LinkedIn',
+                                            'whatsapp' => 'WhatsApp',
+                                            'youtube' => 'YouTube',
+                                            default => ucfirst($platform),
+                                        };
+                                    @endphp
+                                    <a href="{{ $socialHref }}"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       aria-label="{{ $platformTitle }}"
+                                       title="{{ $platformTitle }}"
+                                       style="width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: #ffffff; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s ease;"
+                                       onmouseover="this.style.borderColor='#BFA16A'; this.style.background='#BFA16A'; this.style.color='#111111';"
+                                       onmouseout="this.style.borderColor='rgba(255,255,255,0.2)'; this.style.background='rgba(255,255,255,0.06)'; this.style.color='#ffffff';">
+                                        @if($platform === 'facebook')
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5z"/></svg>
+                                        @elseif($platform === 'instagram')
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                                        @elseif($platform === 'twitter')
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                        @elseif($platform === 'linkedin')
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                                        @elseif($platform === 'whatsapp')
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                                        @elseif($platform === 'youtube')
+                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                        @else
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                                        @endif
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
+                    @endif
                 </div>
             @endforeach
         </div>

@@ -3646,3 +3646,52 @@ php artisan optimize:clear
 ### Files Modified
 - resources/views/admin/blogs/index.blade.php
 - README.md
+
+
+
+## Changelog — 2026-11-27 (Part 128: Homepage-Only @graph JSON-LD Schema & fs-advisory-logo.svg)
+
+### What Changed
+- **Homepage-Only `@graph` JSON-LD Schema (`app/helpers.php` — `render_header_schemas()`)**:
+  - Updated `render_header_schemas()` so that when rendering the Homepage (`/` or `home` slug), it outputs the exact requested `@graph` schema containing `Organization`, `WebSite`, `["RealEstateAgent", "LocalBusiness"]` (`postalCode: "75290"`), and `BreadcrumbList`, while preserving Homepage's dynamic `FAQPage` schema.
+  - Non-homepage routes continue rendering the standard `RealEstateAgent` schema + dynamic `FAQPage` schema unchanged.
+- **Public Logo File (`public/fs-advisory-logo.svg`)**:
+  - Copied `public/FS LOGO n FAVICON-06.svg` to `public/fs-advisory-logo.svg`.
+
+### Files Modified
+- app/helpers.php
+- public/fs-advisory-logo.svg (created)
+- README.md
+
+
+## Changelog — 2026-11-27 (Part 129: Remove FAQPage JSON-LD Schema from About Us Page)
+
+### What Changed
+- **About Us Page (`app/helpers.php` — `render_header_schemas()`)**:
+  - Excluded `about-us` / `about` from emitting the fallback `FAQPage` JSON-LD schema because the About Us page has no visible FAQ section.
+
+### Files Modified
+- app/helpers.php
+- README.md
+
+
+## Changelog — 2026-11-27 (Part 130: Render CMS Social Media Icons in Public Footer)
+
+### What Changed
+- **Public Footer Social Links (`resources/views/partials/footer.blade.php`)**:
+  - Rendered `$fData->social_links` (Facebook, Instagram, X/Twitter, LinkedIn, WhatsApp, YouTube) under the **Connect With Us** column in the public footer.
+
+### Files Modified
+- resources/views/partials/footer.blade.php
+- README.md
+
+
+## Changelog — 2026-11-27 (Part 131: 301 Redirect from /main-shahra-e-faisal to /main-shahra-e-faisal-karachi)
+
+### What Changed
+- **301 SEO Redirect (`routes/web.php`)**:
+  - Added permanent `301` redirect from `/main-shahra-e-faisal` to `/main-shahra-e-faisal-karachi` so visitors and search engines hitting the old URL are redirected cleanly without a 404.
+
+### Files Modified
+- routes/web.php
+- README.md

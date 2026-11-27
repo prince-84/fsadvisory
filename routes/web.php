@@ -123,6 +123,9 @@ Route::get('/terms', function () {
     return redirect('/terms-and-conditions');
 });
 
+// Legacy SEO 301 Redirects
+Route::get('/main-shahra-e-faisal', fn () => redirect('/main-shahra-e-faisal-karachi', 301));
+
 /*
 |--------------------------------------------------------------------------
 | Admin CMS (/admin)

@@ -629,41 +629,114 @@ if (! function_exists('render_header_schemas')) {
     function render_header_schemas(?\App\Models\Page $page = null, ?\App\Models\Blog $blog = null, ?array $customFaqs = null): string
     {
         try {
-            // 1. Organization / RealEstateAgent Schema (Exact Requested Structure)
-            $orgSchema = [
-                '@context' => 'https://schema.org',
-                '@type' => 'RealEstateAgent',
-                '@id' => 'https://fsadvisory.pk/#real-estate-agent',
-                'name' => 'FS Real Estate and Advisory',
-                'url' => 'https://fsadvisory.pk/',
-                'telephone' => '+923322495575',
-                'description' => 'FS Real Estate and Advisory provides residential and commercial real estate advisory services, property buying, selling, renting, and investment guidance in Karachi, Pakistan.',
-                'areaServed' => [
-                    [
-                        '@type' => 'City',
-                        'name' => 'Karachi',
-                    ],
-                    [
-                        '@type' => 'Country',
-                        'name' => 'Pakistan',
-                    ],
-                ],
-            ];
+            $isHomepage = ($page !== null)
+                ? in_array(trim((string) $page->slug), ['/', 'home'], true)
+                : request()->is('/');
 
-            // 2. Dynamic FAQPage Schema
+            if ($isHomepage) {
+                $orgSchema = [
+                    '@context' => 'https://schema.org',
+                    '@graph' => [
+                        [
+                            '@type' => 'Organization',
+                            '@id' => 'https://fsadvisory.pk/#organization',
+                            'name' => 'FS Real Estate and Advisory',
+                            'url' => 'https://fsadvisory.pk/',
+                            'logo' => 'https://fsadvisory.pk/fs-advisory-logo.svg',
+                            'sameAs' => [
+                                'https://www.instagram.com/fsrealestateadvisorypk/',
+                                'https://www.facebook.com/fsrealestateadvisorypk',
+                            ],
+                        ],
+                        [
+                            '@type' => 'WebSite',
+                            '@id' => 'https://fsadvisory.pk/#website',
+                            'url' => 'https://fsadvisory.pk/',
+                            'name' => 'FS Real Estate and Advisory',
+                            'publisher' => ['@id' => 'https://fsadvisory.pk/#organization'],
+                        ],
+                        [
+                            '@type' => ['RealEstateAgent', 'LocalBusiness'],
+                            '@id' => 'https://fsadvisory.pk/#agent',
+                            'name' => 'FS Real Estate and Advisory',
+                            'url' => 'https://fsadvisory.pk/',
+                            'telephone' => '+923322495575',
+                            'logo' => 'https://fsadvisory.pk/fs-advisory-logo.svg',
+                            'address' => [
+                                '@type' => 'PostalAddress',
+                                'streetAddress' => 'Plot # SB-15/1, K.D.A Block 11 Gulistan-e-Johar',
+                                'addressLocality' => 'Karachi',
+                                'postalCode' => '75290',
+                                'addressCountry' => 'PK',
+                            ],
+                            'openingHoursSpecification' => [
+                                [
+                                    '@type' => 'OpeningHoursSpecification',
+                                    'dayOfWeek' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                                    'opens' => '10:00',
+                                    'closes' => '19:00',
+                                ],
+                            ],
+                            'sameAs' => [
+                                'https://www.instagram.com/fsrealestateadvisorypk/',
+                                'https://www.facebook.com/fsrealestateadvisorypk',
+                            ],
+                        ],
+                        [
+                            '@type' => 'BreadcrumbList',
+                            'itemListElement' => [
+                                [
+                                    '@type' => 'ListItem',
+                                    'position' => 1,
+                                    'name' => 'Home',
+                                    'item' => 'https://fsadvisory.pk/',
+                                ],
+                            ],
+                        ],
+                    ],
+                ];
+            } else {
+                // 1. Organization / RealEstateAgent Schema (Non-Homepage Routes)
+                $orgSchema = [
+                    '@context' => 'https://schema.org',
+                    '@type' => 'RealEstateAgent',
+                    '@id' => 'https://fsadvisory.pk/#real-estate-agent',
+                    'name' => 'FS Real Estate and Advisory',
+                    'url' => 'https://fsadvisory.pk/',
+                    'telephone' => '+923322495575',
+                    'description' => 'FS Real Estate and Advisory provides residential and commercial real estate advisory services, property buying, selling, renting, and investment guidance in Karachi, Pakistan.',
+                    'areaServed' => [
+                        [
+                            '@type' => 'City',
+                            'name' => 'Karachi',
+                        ],
+                        [
+                            '@type' => 'Country',
+                            'name' => 'Pakistan',
+                        ],
+                    ],
+                ];
+            }
+
+            // 2. Dynamic FAQPage Schema (skip on About page which has no visible FAQs)
+            $isAboutPage = ($page !== null && in_array(trim((string) $page->slug), ['about-us', 'about'], true))
+                || ($page === null && (request()->is('about-us') || request()->is('about')));
+
             $faqSchemaString = '';
             $faqs = [];
-            if (is_array($customFaqs) && !empty($customFaqs)) {
-                foreach ($customFaqs as $f) {
-                    $q = trim((string) ($f['question'] ?? ($f['q'] ?? '')));
-                    $a = trim((string) ($f['answer'] ?? ($f['a'] ?? '')));
-                    if ($q !== '' && $a !== '') {
-                        $faqs[] = ['question' => $q, 'answer' => strip_tags($a)];
+            if (!$isAboutPage) {
+                if (is_array($customFaqs) && !empty($customFaqs)) {
+                    foreach ($customFaqs as $f) {
+                        $q = trim((string) ($f['question'] ?? ($f['q'] ?? '')));
+                        $a = trim((string) ($f['answer'] ?? ($f['a'] ?? '')));
+                        if ($q !== '' && $a !== '') {
+                            $faqs[] = ['question' => $q, 'answer' => strip_tags($a)];
+                        }
                     }
                 }
-            }
-            if (empty($faqs)) {
-                $faqs = get_page_faqs($page, $blog);
+                if (empty($faqs)) {
+                    $faqs = get_page_faqs($page, $blog);
+                }
             }
             if (!empty($faqs)) {
                 $entities = [];
